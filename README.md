@@ -1,1 +1,1 @@
-# blog
+# Code for various posts on the R for the Rest of Us blog
