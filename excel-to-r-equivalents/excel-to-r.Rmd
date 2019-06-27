@@ -1,0 +1,105 @@
+---
+title: "Excel to R Equivalents"
+author: "R for the Rest of Us"
+output: 
+    html_document:
+        css: style.css
+        toc: true
+        toc_depth: 1
+        toc_float: true
+        df_print: paged
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      warning = FALSE,
+                      message = FALSE)
+```
+
+```{r echo = FALSE}
+library(tidyverse)
+```
+
+# Introduction
+
+This is a demonstration of Excel to R equivalents. Specifically, I am showing equivalents of six key functions from the [`dplyr` package](http://dplyr.tidyverse.org).
+
+Data comes from the [US National Health and Nutrition Examination Survey](https://www.cdc.gov/nchs/nhanes/index.htm) and was collected from the [NHANES package](https://cran.r-project.org/web/packages/NHANES/index.html). It is a sample of 10,000 people, weighted to be representative of the US population. 
+
+I used the [`clean_names`](https://sfirke.github.io/janitor/reference/clean_names.html) function from the janitor package to make the variable names easy to work with.
+
+
+# Get Data
+
+Let's import the NHANES data into a data frame and then take a look at it.
+
+```{r}
+nhanes <- read_csv("nhanes.csv") 
+
+nhanes
+```
+
+
+# Get Data
+
+I've also made a codebook in case you want to learn more about the variables (most are self-explanatory from their names).
+
+```{r}
+nhanes_codebook <- read_csv("nhanes-codebook.csv") 
+
+nhanes_codebook
+```
+
+
+# select
+
+
+```{r}
+nhanes %>% 
+  select(height)
+```
+
+# mutate
+
+
+```{r}
+nhanes %>%
+  mutate(height_inches = height / 2.54) %>% 
+  select(height, height_inches)
+```
+
+
+# filter
+
+```{r}
+nhanes %>% 
+  filter(height > 150) %>% 
+  select(height)
+```
+
+# summarize
+
+```{r}
+nhanes %>% 
+  summarize(mean_height = mean(height, na.rm = TRUE))
+```
+
+
+# group_by 
+
+```{r}
+nhanes %>% 
+  group_by(gender) %>% 
+  summarize(mean_height = mean(height, na.rm = TRUE))
+```
+
+
+# arrange 
+
+```{r}
+nhanes %>% 
+  arrange(height) %>% 
+  select(height)
+```
+
