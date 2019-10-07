@@ -2,9 +2,9 @@
 # Load packages -----------------------------------------------------------
 
 library(tidyverse)
-library(gmailr)
-library(googlesheets)
 library(janitor)
+library(googlesheets)
+library(gmailr)
 
 
 # Get list of recipients --------------------------------------------------

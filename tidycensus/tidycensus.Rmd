@@ -1,0 +1,55 @@
+---
+title: "Tidycensus Example"
+output: word_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,
+                      include = TRUE,
+                      message = FALSE,
+                      warning = FALSE,
+                      dpi = 150,
+                      fig.height = 6)
+```
+
+```{r include = FALSE}
+# Load Packages
+
+library(tidyverse)
+library(janitor)
+library(tidycensus)
+library(DT)
+
+# Take a look at the variables to find the one we need
+
+load_variables(2017, "acs5", cache = TRUE) %>%
+  datatable()
+
+```
+
+# State-Level Household Median Income Data
+
+Howdy, partner! This is a report about median income throughout these 50 states. Here's a graph so you can see who has the highest median income and who has the lowest. 
+
+```{r}
+
+# Import data
+
+state_median_income_data <- get_acs(geography = "state", 
+                              variables = c(median_income = "B19013_001")) %>% 
+  clean_names()
+
+# Plot results
+
+ggplot(state_median_income_data, aes(x = reorder(name, estimate), y = estimate)) +
+  geom_col() +
+  coord_flip()
+```
+
+
+
+
+
+

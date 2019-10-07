@@ -1,0 +1,97 @@
+---
+title: "Report"
+author: "David Keyes"
+date: "10/7/2019"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,
+                      warning = FALSE,
+                      message = FALSE,
+                      dpi = 150)
+```
+
+```{r}
+library(tidyverse)
+library(flextable)
+library(ggridges)
+library(hrbrthemes)
+library(ggbeeswarm)
+```
+
+
+
+# Introduction
+
+This report looks at schools in five Western states (California, Oregon, Washington, Montana, and Idaho). By looking at the enrollment of schools in these states, we can get a sense of how large or small these schools are. 
+
+
+```{r}
+schools <- read_csv("EducationDataPortal_10.04.2019_schools.csv")
+```
+
+# Methods
+
+We downloaded data from the Urban Institute Education Data portal. In total, there were `r nrow(schools)` schools in the five states which we are focusing on. 
+
+```{r}
+schools %>% 
+  count(state_name) %>% 
+  arrange(desc(n)) %>% 
+  set_names(c("State", "Number of Schools")) %>% 
+  flextable(cwidth = 2,
+            cheight = 0.6,
+            defaults = list(fontname = "Cambria",
+                            padding = 20)) %>% 
+  theme_zebra() %>% 
+  padding(part = "all",
+          padding = 10)
+
+```
+
+
+# Average Enrollment
+
+```{r}
+schools %>% 
+  filter(state_name != "California") %>% 
+  mutate(state_name = factor(state_name)) %>% 
+  mutate(state_name = fct_rev(state_name)) %>% 
+  ggplot(aes(enrollment)) +
+  geom_histogram(bins = 20) +
+  facet_wrap(~state_name) +
+  labs(x = "Enrollment",
+       y = "Number of Schools") +
+  theme_ipsum()
+
+  
+
+```
+
+```{r fig.height = 8}
+schools %>% 
+  ggplot(aes(1, enrollment,
+             color = state_name)) +
+  geom_quasirandom(opacity = 0.5,
+                   show.legend = FALSE) +
+  facet_wrap(~state_name,
+             ncol = 1) +
+  coord_flip() +
+  theme_ipsum() +
+  theme(panel.grid.major.y = element_blank(),
+        panel.grid.minor.y = element_blank(),
+        axis.text.y = element_blank()) +
+  scale_y_continuous(breaks = seq(0, 6000, by = 1000)) +
+  labs(title = "School Enrollment in Five Western States",
+       x = "School Enrollment",
+       y = NULL)
+```
+
+
+
+# Conclusion
+
+Schools in the 
+
+
