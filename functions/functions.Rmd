@@ -21,18 +21,41 @@ library(scales)
 schools <- read_csv("EducationDataPortal_10.04.2019_schools.csv")
 ```
 
+# California
+
+Here are the top 10 schools by enrollment in California.
+
 ```{r}
-schools %>% 
-  filter(state_name == "California") %>% 
-  top_n(10, enrollment) %>% 
-  arrange(desc(enrollment)) %>% 
-  mutate(enrollment = comma(enrollment)) %>% 
-  select(-state_name) %>% 
-  set_names(c("School", "Enrollment")) %>% 
-  flextable() %>% 
-  align(align = "left", j = 1, part = "all") %>% 
-  width(width = 2.5)
+top_schools <- function(state_to_filter) {
+  schools %>% 
+    filter(state_name == state_to_filter) %>% 
+    top_n(10, enrollment) %>% 
+    arrange(desc(enrollment)) %>% 
+    mutate(enrollment = comma(enrollment)) %>% 
+    select(-state_name) %>% 
+    set_names(c("School", "Enrollment")) %>% 
+    flextable() %>% 
+    align(align = "left", j = 1, part = "all") %>% 
+    width(width = 3.0)
+}
+
+top_schools("California")
+
 ```
 
 
+# Oregon
 
+Here are the top 10 schools by enrollment in Oregon.
+
+```{r}
+top_schools("Oregon")
+```
+
+# Washington
+
+Here are the top 10 schools by enrollment in Washington.
+
+```{r}
+top_schools("Washington")
+```

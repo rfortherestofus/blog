@@ -9,7 +9,7 @@ output: word_document
 knitr::opts_chunk$set(echo = FALSE,
                       warning = FALSE,
                       message = FALSE,
-                      dpi = 150)
+                      dpi = 300)
 ```
 
 ```{r}
@@ -40,7 +40,7 @@ schools %>%
   count(state_name) %>% 
   arrange(desc(n)) %>% 
   set_names(c("State", "Number of Schools")) %>% 
-  flextable(cwidth = 2,
+  flextable(cwidth = 3.1,
             cheight = 0.6,
             defaults = list(fontname = "Cambria",
                             padding = 20)) %>% 
@@ -51,29 +51,15 @@ schools %>%
 ```
 
 
-# Average Enrollment
+# Findings
 
-```{r}
-schools %>% 
-  filter(state_name != "California") %>% 
-  mutate(state_name = factor(state_name)) %>% 
-  mutate(state_name = fct_rev(state_name)) %>% 
-  ggplot(aes(enrollment)) +
-  geom_histogram(bins = 20) +
-  facet_wrap(~state_name) +
-  labs(x = "Enrollment",
-       y = "Number of Schools") +
-  theme_ipsum()
+The states examined have a wide range of enrollment. As the graph below indicates, California has the highest absolute number of schools. California also has the largest individual schools, with some up having nearly 6000 students. In contrast, sMontana has the highest concentration of small schools. 
 
-  
-
-```
-
-```{r fig.height = 8}
+```{r fig.height = 7}
 schools %>% 
   ggplot(aes(1, enrollment,
              color = state_name)) +
-  geom_quasirandom(opacity = 0.5,
+  geom_quasirandom(alpha = 0.1,
                    show.legend = FALSE) +
   facet_wrap(~state_name,
              ncol = 1) +
@@ -84,6 +70,7 @@ schools %>%
         axis.text.y = element_blank()) +
   scale_y_continuous(breaks = seq(0, 6000, by = 1000)) +
   labs(title = "School Enrollment in Five Western States",
+       subtitle = "Each dot represents one school",
        x = "School Enrollment",
        y = NULL)
 ```
@@ -92,6 +79,12 @@ schools %>%
 
 # Conclusion
 
-Schools in the 
+Schools in the Western United States have a wide range of enrollment. 
+
+California, being the largest state by poulation, has the most schools by far. California also has a higher number of larger schools than Idaho, Montana, Oregon, or Washington. 
+
+In contrast to California, Montana has a high percentage of very small schools, likely reflecting the rural nature of much of the state. 
+
+
 
 
