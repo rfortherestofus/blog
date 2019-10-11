@@ -1,5 +1,5 @@
 ---
-title: "Functions"
+title: "Functions Example"
 author: "David Keyes"
 output: word_document
 ---
@@ -21,32 +21,34 @@ library(scales)
 schools <- read_csv("EducationDataPortal_10.04.2019_schools.csv")
 ```
 
-# California
+# Introduction 
 
-Here are the top 10 schools by enrollment in California.
+This is a report about the top 15 largest schools in California, Oregon, Washington, Montana, and Idaho.
+
+# California
 
 ```{r}
 top_schools <- function(state_to_filter) {
   schools %>% 
     filter(state_name == state_to_filter) %>% 
-    top_n(10, enrollment) %>% 
+    top_n(15, enrollment) %>% 
     arrange(desc(enrollment)) %>% 
     mutate(enrollment = comma(enrollment)) %>% 
     select(-state_name) %>% 
     set_names(c("School", "Enrollment")) %>% 
     flextable() %>% 
     align(align = "left", j = 1, part = "all") %>% 
-    width(width = 3.0)
+    width(width = 2.5)
 }
+
 
 top_schools("California")
 
+
+
 ```
 
-
 # Oregon
-
-Here are the top 10 schools by enrollment in Oregon.
 
 ```{r}
 top_schools("Oregon")
@@ -54,8 +56,18 @@ top_schools("Oregon")
 
 # Washington
 
-Here are the top 10 schools by enrollment in Washington.
-
 ```{r}
 top_schools("Washington")
+```
+
+# Montana
+
+```{r}
+top_schools("Montana")
+```
+
+# Idaho
+
+```{r}
+top_schools("Idaho")
 ```
