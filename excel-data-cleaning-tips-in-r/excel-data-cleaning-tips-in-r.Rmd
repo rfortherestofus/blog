@@ -1,0 +1,135 @@
+---
+title: "Excel Data Cleaning in Tips in R"
+author: "David Keyes"
+date: "2/21/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(janitor)
+library(lubridate)
+```
+
+# Intro
+
+I'm working on creating R equivalents to the Excel data cleaning tips found [here](https://www.evalu-ate.org/wp-content/uploads/formidable/14/ExcelTips-2020.pdf).
+
+# Identify all cells that contain a specific word or (short) phrase in a column with open-ended text
+
+```{r}
+text_data <- tribble(
+ ~response,
+ "I love excel for data",
+ "Data cleaning is great",
+ "This is fun"
+)
+```
+
+Using square brackets around the letter D might remove the need to determine the case.
+
+```{r}
+text_data %>% 
+  # mutate(response_lower_case = str_to_lower(response)) %>% 
+  mutate(contains_data = case_when(
+    str_detect(response, "[d]ata") ~ "Y",
+    TRUE ~ "N"
+  ))
+```
+
+
+# Identify and remove duplicate data
+
+```{r}
+names_data <- tribble(
+  ~first, ~last,
+  "Joe", "Smith",
+  "Joe", "Smith",
+  "Joe", "Jones"
+)
+```
+
+```{r}
+names_data %>% 
+  distinct(first, last)
+```
+
+```{r}
+names_data %>% 
+  get_dupes(first, last)
+```
+
+
+# Identify the outliers within a data set (e.g., dates or grades)
+
+```{r}
+dates <- tribble(
+  ~date,
+  "1/10/2019",
+  "3/21/2018",
+  "4/3/2019",
+  "11/16/2019",
+  "5/6/2018"
+)
+```
+
+```{r}
+dates %>% 
+  filter(str_detect(date, "2019"))
+```
+
+Try mdy. I think with lubridate you are showing it the format it is and it looked like a US format mdy.
+
+```{r}
+dates %>% 
+  mutate(date = mdy(date)) %>% 
+  mutate(observation_year = year(date)) %>% 
+  filter(observation_year == 2019)
+```
+
+
+# Separate data from a single column into two or more columns (e.g., first and last names)
+
+```{r}
+names_data_2 <- tribble(
+  ~name,
+  "Dottie Smith",
+  "Harold Vicker",
+  "Gloria Perez"
+)
+```
+
+```{r}
+names_data_2 %>% 
+  separate(name, into = c("first", "last"), sep = " ")
+```
+
+
+# Categorize data in a column (e.g., class assignments or subject groups)
+
+```{r}
+agreement_data <- tribble(
+  ~response,
+  "Agree",
+  "Agree",
+  "Strongly Disagree",
+  "Strongly Agree",
+  "Disagree",
+  "Agree",
+  "Agree",
+  "Disagree",
+  "Disagree",
+  "Strongly Disagree",
+  "Agree"
+)
+```
+
+```{r}
+agreement_data %>% 
+  mutate(positive_negative = case_when(
+    response %in% c("Agree", "Strongly Agree") ~ "Positive",
+    response %in% c("Disagree", "Strongly Disagree") ~ "Negative"
+  ))
+```
+
