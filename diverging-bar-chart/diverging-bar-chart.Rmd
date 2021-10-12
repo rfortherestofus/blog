@@ -49,12 +49,10 @@ school_quality_summary %>%
              y = percent_answers,
              fill = opinion)) +
   geom_col() +
-  geom_text(
-    aes(label = percent_answers_label),
-    position = position_stack(vjust = 0.5),
-    color = "white",
-    fontface = "bold"
-  ) +
+  geom_text(aes(label = percent_answers_label),
+            position = position_stack(vjust = 0.5),
+            color = "white",
+            fontface = "bold") +
   coord_flip() +
   scale_x_discrete() +
   scale_fill_viridis_d() +
@@ -88,12 +86,10 @@ school_quality_summary_diverging %>%
              y = percent_answers,
              fill = opinion)) +
   geom_col() +
-  geom_text(
-    aes(label = percent_answers_label),
-    position = position_stack(vjust = 0.5),
-    color = "white",
-    fontface = "bold"
-  ) +
+  geom_text(aes(label = percent_answers_label),
+            position = position_stack(vjust = 0.5),
+            color = "white",
+            fontface = "bold") +
   coord_flip() +
   scale_x_discrete() +
   scale_fill_viridis_d() +
@@ -128,12 +124,10 @@ school_quality_summary_diverging_good_labels %>%
              y = percent_answers,
              fill = opinion)) +
   geom_col() +
-  geom_text(
-    aes(label = percent_answers_label),
-    position = position_stack(vjust = 0.5),
-    color = "white",
-    fontface = "bold"
-  ) +
+  geom_text(aes(label = percent_answers_label),
+            position = position_stack(vjust = 0.5),
+            color = "white",
+            fontface = "bold") +
   coord_flip() +
   scale_x_discrete() +
   scale_fill_viridis_d() +
@@ -169,7 +163,7 @@ school_quality_summary_diverging_right_order %>%
              fill = opinion)) +
   geom_col() +
   geom_text(
-    aes(label = scales::percent(abs(percent_answers), accuracy = 1)),
+    aes(label = percent_answers_label),
     position = position_stack(vjust = 0.5),
     color = "white",
     fontface = "bold"
@@ -197,12 +191,10 @@ school_quality_summary_diverging_right_order %>%
              y = percent_answers,
              fill = opinion)) +
   geom_col() +
-  geom_text(
-    aes(label = percent_answers_label),
-    position = position_stack(vjust = 0.5),
-    color = "white",
-    fontface = "bold"
-  ) +
+  geom_text(aes(label = percent_answers_label),
+            position = position_stack(vjust = 0.5),
+            color = "white",
+            fontface = "bold") +
   coord_flip() +
   scale_x_discrete() +
   scale_fill_viridis_d(breaks = c("Very bad", "Bad", "Good", "Very Good")) +
@@ -228,12 +220,10 @@ school_quality_summary_diverging_right_order %>%
              y = percent_answers,
              fill = opinion)) +
   geom_col() +
-  geom_text(
-    aes(label = percent_answers_label),
-    position = position_stack(vjust = 0.5),
-    color = "white",
-    fontface = "bold"
-  ) +
+  geom_text(aes(label = percent_answers_label),
+            position = position_stack(vjust = 0.5),
+            color = "white",
+            fontface = "bold") +
   coord_flip() +
   scale_x_discrete() +
   scale_fill_manual(breaks = c("Very bad", "Bad", "Good", "Very Good"),
