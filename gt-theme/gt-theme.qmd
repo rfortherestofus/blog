@@ -1,0 +1,365 @@
+---
+title: How to create your own `{gt}` themes.
+author: Albert Rapp
+date: today
+toc: true
+---
+
+
+It is always surprising how a decent table can be transformed into a stunning table by simply applying a theme. 
+For example, have a look at the following table.
+
+```{r}
+#| message: false
+#| warning: false
+#| code-fold: true
+library(tidyverse)
+library(gt)
+
+penguin_counts <- palmerpenguins::penguins |> 
+  filter(!is.na(sex)) |> 
+  mutate(year = as.character(year)) |> 
+  group_by(species, island, sex, year) |> 
+  summarise(n = n(), .groups = 'drop')
+
+penguin_counts_wider <- penguin_counts |> 
+  pivot_wider(
+    names_from = c(species, sex),
+    values_from = n
+  ) |> 
+  # Make missing numbers (NAs) into zero
+  mutate(across(.cols = -(1:2), .fns = ~replace_na(., replace = 0))) |> 
+  arrange(island, year) 
+
+
+actual_colnames <- colnames(penguin_counts_wider)
+desired_colnames <- actual_colnames |> 
+  str_remove('(Adelie|Gentoo|Chinstrap)_') |> 
+  str_to_title()
+
+penguins_table <- penguin_counts_wider |> 
+  mutate(across(.cols = -(1:2), ~if_else(. == 0, NA_integer_, .))) |> 
+  mutate(
+    island = as.character(island), 
+    year = as.numeric(year),
+    island = paste0('Island: ', island)
+  ) |> 
+  gt(groupname_col = 'island', rowname_col = 'year') |> 
+  cols_label(
+    island = 'Island',
+    year = 'Year',
+    Adelie_female = 'Female',
+    Adelie_male = 'Male',
+    Chinstrap_female = 'Female',
+    Chinstrap_male = 'Male',
+    Gentoo_female = 'Female',
+    Gentoo_male = 'Male',
+  ) |> 
+  tab_spanner(
+    label = md('**Adelie**'),
+    columns = 3:4
+  ) |> 
+  tab_spanner(
+    label = md('**Chinstrap**'),
+    columns = c('Chinstrap_female', 'Chinstrap_male')
+  ) |> 
+  tab_spanner(
+    label =  md('**Gentoo**'),
+    columns = contains('Gentoo')
+  ) |> 
+  tab_header(
+    title = 'Penguins in the Palmer Archipelago',
+    subtitle = 'Data is courtesy of the {palmerpenguins} R package'
+  ) |> 
+  sub_missing(missing_text = '-') |>
+  summary_rows(
+    fns = list(
+     'Maximum' = ~max(.),
+      'Total' = ~sum(.)
+    ),
+    fmt = ~fmt_number(., decimals = 0),
+    missing_text = '-'
+  )
+```
+
+
+```{r}
+# Code for this table is folded above.
+# Feel free to look at it if you're interested in this code.
+penguins_table
+```
+
+This is already a pretty decent table.
+But it's also pretty boring because it's a plain black-and-white table.
+Have a look how this table is transformed when we change the theme a little bit.
+Here, I assume that you're already familiar with styling a `{gt}` table.
+If not, you can always read up on that [here](https://gt.albert-rapp.de/styling.html).
+
+::: {.panel-tabset}
+
+## Version 1
+
+```{r}
+penguins_table |> 
+  tab_options(
+    data_row.padding = px(4),
+    summary_row.padding = px(3),
+    row_group.padding = px(6),
+    heading.align = 'left',
+    column_labels.background.color = 'dodgerblue4',
+    heading.title.font.size = px(26),
+    heading.subtitle.font.size = px(14),
+    table_body.hlines.width = px(0)
+  ) |> 
+  tab_style(
+    style = cell_text(
+      color = 'dodgerblue4', 
+      weight = 'bold', 
+      font = google_font('Merriweather')
+    ),
+    locations = list(
+      cells_row_groups(),
+      cells_title(groups = 'title')
+    )
+  ) |> 
+  tab_style(
+    style = cell_fill(color = 'grey90'),
+    locations = list(
+      cells_body(rows = seq(1, nrow(penguin_counts_wider), 2))
+    )
+  )
+```
+
+
+## Version 2 (different row coloring)
+
+```{r}
+penguins_table |> 
+  tab_options(
+    data_row.padding = px(4),
+    summary_row.padding = px(3),
+    row_group.padding = px(6),
+    heading.align = 'left',
+    column_labels.background.color = 'dodgerblue4',
+    heading.title.font.size = px(26),
+    heading.subtitle.font.size = px(14),
+    table_body.hlines.width = px(0)
+  ) |> 
+  tab_style(
+    style = cell_text(
+      color = 'dodgerblue4', 
+      weight = 'bold', 
+      font = google_font('Merriweather')
+    ),
+    locations = list(
+      cells_row_groups(),
+      cells_title(groups = 'title')
+    )
+  ) |> 
+  tab_style(
+    style = cell_fill(color = 'grey90'),
+    locations = list(
+      cells_body(
+        rows = (year %in% c(2007, 2009))
+      )
+    )
+  ) 
+```
+
+
+
+:::
+
+Even though it's the exact same information as before, the table feels different, doesn't it?
+
+## Create a reusable theme
+
+So what if we want to reuse this theme?
+In principle, we can just drop all of the code into a reusable function.
+Let's try that with everything except for making every other row grey (we'll cover that soon enough).
+
+```{r}
+my_gt_theme <- function(gt_tbl) {
+  gt_tbl |> 
+  tab_options(
+    data_row.padding = px(4),
+    summary_row.padding = px(3),
+    row_group.padding = px(6),
+    heading.align = 'left',
+    column_labels.background.color = 'dodgerblue4',
+    heading.title.font.size = px(26),
+    heading.subtitle.font.size = px(14),
+    table_body.hlines.width = px(0)
+  ) |> 
+  tab_style(
+    style = cell_text(
+      color = 'dodgerblue4', 
+      weight = 'bold', 
+      font = google_font('Merriweather')
+    ),
+    locations = list(
+      cells_row_groups(),
+      cells_title(groups = 'title')
+    )
+  )
+}
+```
+
+Then, we could just apply our `{gt}` theme like so.
+
+```{r}
+penguins_table |> 
+  my_gt_theme()
+```
+
+And of course this works with other `{gt}` tables too.
+Otherwise, this function wouldn't really be reusable, wouldn't it?
+
+::: {.panel-tabset}
+
+## New basic table
+
+```{r}
+# towny is part of the {gt} package
+new_table <- towny |> 
+  select(name, status, land_area_km2) |> 
+  slice(1:15) |> 
+  gt() |> 
+  cols_label(
+    name = 'Name',
+    status = 'Status',
+    land_area_km2 = 'Area (in sq. km)'
+  ) |> 
+  tab_header(
+    title = 'Selected Municipalities',
+    subtitle = 'Data comes from the {gt} package'
+  ) 
+new_table
+```
+
+## Applied theme
+
+```{r}
+new_table |> 
+  my_gt_theme()
+```
+
+
+:::
+
+As you can see, with a custom theme function it's easy to make tables look similar.
+For example, this could be used to apply a corporate identity to all of your tables.
+
+## Make your theme dependent on the data
+
+Now, let's work on making every other row grey using our custom theme function.
+To do so, we're going to use a sneaky trick that I've picked up from [Thomas Mock' blog](https://themockup.blog/posts/2020-09-26-functions-and-themes-for-gt-tables/index.html).
+You see, in order to make every other row grey, you need to know how many rows your table has.
+And this is where Thomas Mock's trick comes into play.
+
+What you need to know is that a `{gt}` table also stores the original data.
+For example, if we call `penguins_table` from before this would just show us the table again.
+But if we use the `$` operator to access `_data`, then we get the underlying data.
+
+```{r}
+penguins_table$`_data`
+```
+
+Hence, we can use this in our custom theme function.
+This way, our theme function is reusable for all kinds of `{gt}` tables because our function can always grab the underlying data from the `{gt}` object.
+
+```{r}
+my_modified_gt_theme <- function(gt_tbl) {
+  
+  # Grab number of rows of data from {gt} object
+  n_rows <- nrow(gt_tbl$`_data`)
+  
+  gt_tbl |> 
+  tab_options(
+    data_row.padding = px(4),
+    summary_row.padding = px(3),
+    row_group.padding = px(6),
+    heading.align = 'left',
+    column_labels.background.color = 'dodgerblue4',
+    heading.title.font.size = px(26),
+    heading.subtitle.font.size = px(14),
+    table_body.hlines.width = px(0)
+  ) |> 
+  tab_style(
+    style = cell_text(
+      color = 'dodgerblue4', 
+      weight = 'bold', 
+      font = google_font('Merriweather')
+    ),
+    locations = list(
+      cells_row_groups(),
+      cells_title(groups = 'title')
+    )
+  ) |> 
+  tab_style(
+    style = cell_fill(color = 'grey90'),
+    locations = list(
+      # Use number of rows from data set
+      cells_body(rows = seq(1, n_rows, 2))
+    )
+  )
+}
+```
+
+Now we can use our modified function on our previous tables.
+
+::: {.panel-tabset}
+
+## Penguins
+
+```{r}
+penguins_table |> 
+  my_modified_gt_theme()
+```
+
+
+## Towny
+
+```{r}
+new_table |> 
+  my_modified_gt_theme()
+```
+
+
+:::
+
+
+Unfortunately, this approach cannot create the other version of our Penguins table.
+I mean the one with the different line coloring.
+You know, this one here.
+
+```{r final-table}
+#| echo: false
+penguins_table |> 
+  # Apply original theme function without grey rows
+  my_gt_theme() |> 
+  # Apply more changes afterwards
+  tab_style(
+    style = cell_fill(color = 'grey90'),
+    locations = list(
+      cells_body(
+        rows = (year %in% c(2007, 2009))
+      )
+    )
+  ) 
+```
+
+The reason for this is that the code that was used to create this used the formula `year %in% c(2007, 2009)` which depends on the variables in this specific data set.
+Clearly, you don't want to hard-code these kind of things in a theme function that you want to reuse.
+But you can always apply these custom changes after your theme was applied.
+
+
+```{r final-table}
+#| echo: true
+```
+
+## Conclusion
+
+So that's how you create your own theme.
+It's a really simple and elegant way to make your tables more appealing.
+And if you're looking for a bit of inspiration, you can always check out the [themes from the `{gtExtras}` package](https://jthomasmock.github.io/gtExtras/reference/index.html).
