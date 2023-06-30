@@ -1,0 +1,206 @@
+---
+title: "Big Number Donut Chart"
+output: html_document
+date: "2022-09-06"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      warning = FALSE,
+                      message = FALSE)
+```
+
+
+A lot of data visualizations are designed to show multiple data points (think bar charts that compare results for multiple groups). But what if you want to show just one data point? Say, for example, you want to show what percentage of people have accomplished something? 
+
+There are two techniques we often use in our [consulting work](https://rfortherestofus.com/consulting) to show single data points:
+
+1. Donut charts: These are pie charts with a hole in the middle (hence, donuts). Pie charts with multiple slices are problematic (people have trouble judging the relative sizes of the slices), but pie charts with one slice are very effective.
+
+1. Big numbers: This technique, which puts a single outcome in a big number in order to highlight it, [is often overused](https://stephanieevergreen.com/by-the-numbers/), but done well, can be a very effective communication tool.
+
+In our consulting work, we often combine donut charts and big numbers. Rather than just writing, "65% of people did X," we make something like this:
+
+```{r donut_function, echo = FALSE}
+library(tidyverse)
+library(scales)
+
+big_number_donut_plot <- function(value, font_family, highlight_color) {
+  
+  # Wrangle data to get a data frame in the format we need it in to make our donut chart
+  df <- tibble(x = 1, y = value) %>% 
+    mutate(y_negative = 1 - y) %>% 
+    pivot_longer(cols = -x) 
+  
+  # Create a nicely formatted big number to go in the donut hole
+  big_number_text_label <- percent(value, accuracy = 1)
+  
+  # Create our plot
+  ggplot(df,
+         aes(x = x,
+             y = value,
+             fill = name)) +
+    
+    # Add a bar, but don't add the legend
+    geom_col(show.legend = FALSE) +
+    
+    # A pie/donut chart is a bar chart with polar coordinates
+    # Add polar coordinates and set the direction to -1 
+    # so the filled in part starts at the top and goes clockwise
+    coord_polar(theta = "y",
+                direction = -1) +
+    
+    
+    # Set the limits, which is important for adding the hole
+    xlim(c(-2, 2)) +
+    
+    # Set a color scale with the highlighted section in whatever color
+    # is chosen with the highlight_color argument and the rest in a light gray
+    scale_fill_manual(values = c(highlight_color, "grey90")) +
+    
+    # Set theme_void() to remove grid lines and everything else from the plot
+    theme_void() +
+    
+    # Add the big number in the center of the hole
+    annotate("text",
+             label = big_number_text_label,
+             family = font_family,
+             fontface = "bold",
+             color = highlight_color,
+             size = 12,
+             x = -2,
+             y = 0)
+  
+}
+
+big_number_donut_plot(value = 0.65, 
+                      font_family = "Inter",
+                      highlight_color = "orange")
+```
+
+We've made donut charts with big numbers regularly enough that I decided it was time to develop a function for it. Here's how I did it using `ggplot2`.
+
+# Creating a Function to Make a Donut Chart with Big Number Function in ggplot2
+
+We begin by loading packages. I only need two packages: the `tidyverse` (which loads `ggplot2` and  the `dplyr` package, which I use for data wrangling) and the [`scales` package](https://scales.r-lib.org), which I use to make the nicely formatted number in the hole of the donut.
+
+```{r}
+library(tidyverse)
+library(scales)
+```
+
+Next, let me show you the full function with comments throughout. As you can see, the overall process looks like this:
+
+1. Use the `value` argument to create a data frame that we use for plotting
+
+1. Use the `percent()` function to create a big number as a percentage
+
+1. Plot the donut chart and add the big number to the middle of it
+
+```{r ref.label="donut_function"}
+```
+
+In order to use the function, we'd write code like this. We use three arguments:
+
+1. `value` is the number (from 0 to 1) that we want to highlight. For this function, I assume it's a percentage (you could adjust the function for non-percentages).
+1. `font_family` to use any font for the big number (of course, you have to have the font installed in order for it to work).
+1. `highlight_color` sets the color of the donut chart and the big number. I've used orange here. 
+
+```{r}
+big_number_donut_plot(value = 0.65, 
+                      font_family = "Inter",
+                      highlight_color = "orange")
+```
+
+Let's break apart this function piece by piece in order to see how it works. I've written code and recorded videos to show each step.
+
+First, we create our data frame. 
+
+```{r}
+value <- 0.65
+
+# Wrangle data to get a data frame in the format we need it in to make our donut chart
+df <- tibble(x = 1, y = value) %>% 
+  mutate(y_negative = 1 - y) %>% 
+  pivot_longer(cols = -x) 
+
+df
+```
+
+Next, we create the donut chart. I'm creating it without the big number in the middle first. 
+
+```{r}
+highlight_color <- "orange"
+
+# Create our plot
+ggplot(data = df,
+       aes(x = x,
+           y = value,
+           fill = name)) +
+  
+  # Add a bar, but don't add the legend
+  geom_col(show.legend = FALSE) +
+  
+  # A pie/donut chart is a bar chart with polar coordinates
+  # Add polar coordinates and set the direction to -1 
+  # so the filled in part starts at the top and goes clockwise
+  coord_polar(theta = "y",
+              direction = -1) +
+  
+  # Set the limits, which is important for adding the hole
+  xlim(c(-2, 2)) +
+  
+  # Set a color scale with the highlighted section in whatever color
+  # is chosen with the highlight_color argument and the rest in a light gray
+  scale_fill_manual(values = c(highlight_color, "grey90")) +
+  
+  # Set theme_void() to remove grid lines and everything else from the plot
+  theme_void() 
+```
+
+Finally, we create the big number and add it to the middle of our donut chart. 
+
+```{r}
+font_family <- "Inter"
+
+# Create a nicely formatted big number to go in the donut hole
+big_number_text_label <- percent(value, accuracy = 1)
+
+# Create our plot
+ggplot(data = df,
+       aes(x = x,
+           y = value,
+           fill = name)) +
+  
+  # Add a bar, but don't add the legend
+  geom_col(show.legend = FALSE) +
+  
+  # A pie/donut chart is a bar chart with polar coordinates
+  # Add polar coordinates and set the direction to -1 
+  # so the filled in part starts at the top and goes clockwise
+  coord_polar(theta = "y",
+              direction = -1) +
+  
+  
+  # Set the limits, which is important for adding the hole
+  xlim(c(-2, 2)) +
+  
+  # Set a color scale with the highlighted section in whatever color
+  # is chosen with the highlight_color argument and the rest in a light gray
+  scale_fill_manual(values = c(highlight_color, "grey90")) +
+  
+  # Set theme_void() to remove grid lines and everything else from the plot
+  theme_void() +
+  
+  # Add the big number in the center of the hole
+  annotate(geom = "text",
+           label = big_number_text_label,
+           family = font_family,
+           fontface = "bold",
+           color = highlight_color,
+           size = 12,
+           x = -2,
+           y = 0)
+```
+
+And there we have it: a donut chart with a big number in the middle. I can now use this function for any other projects we work on. And, if you're looking to do something similar, by all means, grab the code and run with it! 
