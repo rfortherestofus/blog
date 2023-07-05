@@ -13,22 +13,20 @@ editor_options:
   chunk_output_type: console
 ---
 
-Like most people, we create tables all the time.
-You know, to report the latest numbers from our projects or to summarize important findings from our data.
-And of course we do not stop at arranging numbers into a table format.
-We also make sure that the table looks nice.
-This is important because
+In our [consulting work](https://rfortherestofus.com/consulting) at R for the Rest of Us, we create tables all the time.
+We don't just make plain tables, we make tables that look good and communicate well. 
+This is important because:
 
-1.  a clean design is more convincing,
-2.  a powerful design stands out so that people actually look at our tables and
-3.  we can use brand colors to imprint a brand identity onto a final product.
+1.  A clean design is more convincing
+2.  A powerful design stands out so that people actually look at our tables
+3.  We can use colors to reflect our clients' branding
 
-For example, we have recently helped the [Oregon Voices project](https://orvoices.org/your-county/) to create customized data reports for every county in Oregon.
+We recently helped the [Oregon Voices project](https://orvoices.org/your-county/) to create customized data reports for every county in Oregon.
 Among other things, this required creating custom tables in their theme so that the tables match nicely with the design of their reports.
 
 [![Page from an Oregon Voices project report](images/ksnip_20230704-203242.png){fig-align="center" width="70%"}](https://orvoices.org/your-county/)
 
-Clearly, designing a table and adding a corporate identity to the design can mean lots of time-consuming work.
+Designing a table and adding a corporate identity to the design can mean lots of time-consuming work.
 But here's the good news: If you have styled your table once, then you can always reuse that theme.
 And the even better news: If you wrap all of that into your very own theme function, then it just takes one function call to transform any table into your design.
 Let me show you how that works.
@@ -60,8 +58,15 @@ ferrari_data <- gtcars |>
   ) |> 
   filter(manufacturer == 'Ferrari') |> 
   arrange(horsepower)
+```
+
+We can see what the `ferrari_data` data looks like:
+
+```{r}
+#| echo: false
 ferrari_data
 ```
+
 
 To turn this dataset into a table, we can just call `gt()`.
 
@@ -77,7 +82,7 @@ gt(ferrari_data) |>
 knitr::include_graphics('ferrari_simple.png')
 ```
 
-Now, let's format the column labels and add a title and subtitle to describe our data.
+Now, let's format the column labels (with the `cols_label()` function) and add a title and subtitle (with the `tab_header()` function) to describe our data.
 This will be the table we'll use to create a custom theme.
 So, we'll save it for later use as well.
 
@@ -94,8 +99,9 @@ ferrari_table <- gt(ferrari_data) |>
     title = 'Ferrari & Horsepower',
     subtitle = 'Data is courtesy of the {gt} R package'
   )
-ferrari_table
 ```
+
+Here's what the saved `ferrari_table` looks like:
 
 ```{r}
 #| echo: false
@@ -149,7 +155,7 @@ ferrari_table |>
 knitr::include_graphics('ferrari_first_style.png')
 ```
 
-Next, let us change the title's font and its color.
+Next, let's change the title's font and color.
 We can achieve this by using `tab_style()` to specify text properties via `cell_text()` on the title cells that we determine via `cells_title()`.
 
 At first, this may feel a bit confusing but once you get accustomed to using nested function calls to style your table it will feel very straightforward.
@@ -255,13 +261,13 @@ ferrari_table |>
 knitr::include_graphics('ferrari_third_style.png')
 ```
 
-Nice, our table is fully styled now.
+Our table is fully styled now.
 Even though it's the exact same information as before, the table feels different, doesn't it?
 
 ## Create a reusable theme
 
 So what if we want to reuse this theme?
-In principle, we can just drop all of the code into a reusable function.
+In principle, we can just drop all of the code into a [reusable function](https://book.rwithoutstatistics.com/packages-chapter.html#creating-your-own-functions).
 Let's try that with everything except for making every other row grey (we'll cover that soon enough).
 
 ```{r}
@@ -322,8 +328,9 @@ new_table <- towny |>
     title = 'Selected Municipalities',
     subtitle = 'Data comes from the gt package'
   ) 
-new_table
 ```
+
+Here's what the unstyled `new_table` looks like:
 
 ```{r}
 #| echo: false
@@ -348,15 +355,16 @@ new_table |>
 knitr::include_graphics('new_table_themed.png')
 ```
 
-As you can see, with a custom theme function it's easy to make tables look similar.
+As you can see, with a custom theme function it's easy to make any table have a similar look-and-feel.
+
+## Advanced section: Make your theme data-dependent
+
 Now, if you're up for it, we can do something more advanced: Let's make our theme data-dependent.
 This is important because some styles require that you have some basic knowledge about the underlying data.
 
 For example, we have already seen that making every other row grey required a vector that we have created with `seq(1, nrow(ferrari_data), 2)`.
 Hence, our theme function should now the underlying data `ferrari_data`.
 To make this happen, we're going to use a sneaky trick that I've picked up from [Thomas Mock's blog](https://themockup.blog/posts/2020-09-26-functions-and-themes-for-gt-tables/index.html).
-
-## Advanced section: Make your theme data-dependent
 
 The trick is this: Every `gt` table also stores the original data and you can access it via `` $`data` ``.
 For example, if we call `ferrari_table` from before, this would just show us the table again.
@@ -421,5 +429,5 @@ knitr::include_graphics('final_theme_fct_applied.png')
 
 Hooray!
 We've learned how to create our own theme and wrap it into a reusable function.
-This is a dead-simple and elegant way to make your tables more appealing.
-And if you're looking for a bit of inspiration, you can always check out the [themes from the `gtExtras` package](https://jthomasmock.github.io/gtExtras/reference/index.html).
+This is an elegant way to make your tables more appealing.
+And if you're looking for a bit of inspiration for your tables, you can always check out the [themes from the `gtExtras` package](https://jthomasmock.github.io/gtExtras/reference/index.html).
