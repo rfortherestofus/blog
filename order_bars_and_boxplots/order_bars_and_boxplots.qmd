@@ -2,6 +2,7 @@
 title: "How to Order Bars and Lines in `ggplot`"
 author: Albert Rapp
 date: today
+format: gfm
 toc: true
 knitr:
   opts_chunk:
@@ -21,7 +22,7 @@ library(tidyverse)
 theme_set(
   theme_minimal(
     base_size = 16,
-    base_family = 'Source Sans Pro'
+    base_family = 'Inter'
   )
 )
 ```
