@@ -3,6 +3,7 @@ title: "Spice up your `gt` table with `ggplot`"
 author: Albert Rapp
 date: today
 toc: true
+format: gfm
 knitr:
   opts_chunk:
     out.width: 70%
@@ -11,6 +12,8 @@ knitr:
 editor_options: 
   chunk_output_type: console
 ---
+
+
 
 Have you ever created a table with `gt` and thought to yourself *"Well, maybe just showing the numbers doesn't cut it? I need to add some visual spice to this table."* If so, then you're in great company.
 Because spicing up tables with visuals is one of my favorite tricks. 

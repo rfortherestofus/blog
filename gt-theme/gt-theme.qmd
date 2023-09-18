@@ -3,7 +3,7 @@ title: How to create your own `gt` themes.
 author: Albert Rapp
 date: today
 toc: true
-format: html
+format: gfm
 knitr:
   opts_chunk:
     cache: true
