@@ -1,0 +1,2074 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>pivot_functions</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="002_pivot_functions_files/libs/clipboard/clipboard.min.js"></script>
+<script src="002_pivot_functions_files/libs/quarto-html/quarto.js"></script>
+<script src="002_pivot_functions_files/libs/quarto-html/popper.min.js"></script>
+<script src="002_pivot_functions_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="002_pivot_functions_files/libs/quarto-html/anchor.min.js"></script>
+<link href="002_pivot_functions_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="002_pivot_functions_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="002_pivot_functions_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="002_pivot_functions_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="002_pivot_functions_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+
+
+<section id="put-your-data-into-the-right-format-with-pivot_longer-and-pivot_wider" class="level1">
+<h1>Put your data into the right format with <code>pivot_longer()</code> and <code>pivot_wider()</code></h1>
+<p>Common wisdom tells us that data wrangling is 90% of the data work. And it’s true. Often, you will have to get your data into the right format before you can get any “real” work done. In the tidyverse, two powerful functions to help you with that are <code>pivot_longer()</code> and <code>pivot_wider()</code>.</p>
+<p>You may have already heard about these functions. If not, that’s great. We will show you everything from the basics to some more advanced tricks with these two functions. And if you’ve already worked with these functions, then chances are that you may not know about the advanced tricks that we’re about to show.</p>
+<p>So great news: Everybody gets to enjoy this blog post. Isn’t that just peachy? Let’s dive in.</p>
+<section id="the-standard-but-powerful-use-case" class="level2">
+<h2 class="anchored" data-anchor-id="the-standard-but-powerful-use-case">The standard but powerful use case</h2>
+<p>Let’s have a look at a data set from the weekly <a href="https://github.com/rfordatascience/tidytuesday/blob/master/data/2023/2023-10-17/readme.md">tidyTuesday challenge</a>. The data of that week’s challenge is Taylor Swift albums. That’s always a fun topic. You can download it straight from GitHub like so.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>taylor_albums <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="st">'https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-10-17/taylor_albums.csv'</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>ep)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>taylor_albums </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 12 × 5
+   album_name                  ep    album_release metacritic_score user_score
+   &lt;chr&gt;                       &lt;lgl&gt; &lt;date&gt;                   &lt;dbl&gt;      &lt;dbl&gt;
+ 1 Taylor Swift                FALSE 2006-10-24                  67        8.5
+ 2 Fearless                    FALSE 2008-11-11                  73        8.4
+ 3 Speak Now                   FALSE 2010-10-25                  77        8.6
+ 4 Red                         FALSE 2012-10-22                  77        8.5
+ 5 1989                        FALSE 2014-10-27                  76        8.2
+ 6 reputation                  FALSE 2017-11-10                  71        8.3
+ 7 Lover                       FALSE 2019-08-23                  79        8.4
+ 8 folklore                    FALSE 2020-07-24                  88        9  
+ 9 evermore                    FALSE 2020-12-11                  85        8.9
+10 Fearless (Taylor's Version) FALSE 2021-04-09                  82        8.9
+11 Red (Taylor's Version)      FALSE 2021-11-12                  91        9  
+12 Midnights                   FALSE 2022-10-21                  85        8.3</code></pre>
+</div>
+</div>
+<p>Let’s try to build a chart from this. For example, we could look whether the Metacritic and user scores look similar. Here’s the line chart that we’re building:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Facetted line chart</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now, if we want to build this with ggplot, we have to do two things in a <code>geom_line()</code> and a <code>geom_point()</code> layer:</p>
+<ol type="1">
+<li>Map the <code>y</code> aesthetic to a <code>score</code> column</li>
+<li>Map the <code>color</code> aesthetic to a <code>score_type</code> column (Metacritic or User)</li>
+</ol>
+<p>But neither of those columns exists in the data. What we have are the columns <code>metacritic_score</code> and <code>user_score</code>. Clearly, the <strong>names</strong> of these columns have the information that should go into the <code>score_type</code> column. And the <strong>values</strong> of those the <code>metacritic_score</code> and <code>user_score</code> columns have the information that should go into a <code>score</code> column.</p>
+<p>Hence, it seems that our data has all the information we need. But it’s just not in the right format. That’s unfortunate but an all too real scenario. When you’re working with data, this happens a lot.</p>
+<p>So let’s not despair and fix the data instead. Luckily, the tidyverse has tools for that. Here, the <code>pivot_longer()</code> function can rearrange our data. We just have to tell it</p>
+<ul>
+<li>which columns should be rearranged,</li>
+<li>what kind of information is in the column names and</li>
+<li>what kind of information is in the values of each.</li>
+</ul>
+<p>Basically, that’s the stuff that we’ve talked about just a few paragraphs ago. Here’s how we would wrap that paragraph into actual code. I hope you will find this is pretty much how we phrased the text earlier.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>taylor_longer <span class="ot">&lt;-</span> taylor_albums <span class="sc">|&gt;</span> </span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">cols =</span> <span class="fu">c</span>(metacritic_score, user_score),</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_to =</span> <span class="st">'score_type'</span>,</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_to =</span> <span class="st">'score'</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>taylor_longer</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 24 × 5
+   album_name   ep    album_release score_type       score
+   &lt;chr&gt;        &lt;lgl&gt; &lt;date&gt;        &lt;chr&gt;            &lt;dbl&gt;
+ 1 Taylor Swift FALSE 2006-10-24    metacritic_score  67  
+ 2 Taylor Swift FALSE 2006-10-24    user_score         8.5
+ 3 Fearless     FALSE 2008-11-11    metacritic_score  73  
+ 4 Fearless     FALSE 2008-11-11    user_score         8.4
+ 5 Speak Now    FALSE 2010-10-25    metacritic_score  77  
+ 6 Speak Now    FALSE 2010-10-25    user_score         8.6
+ 7 Red          FALSE 2012-10-22    metacritic_score  77  
+ 8 Red          FALSE 2012-10-22    user_score         8.5
+ 9 1989         FALSE 2014-10-27    metacritic_score  76  
+10 1989         FALSE 2014-10-27    user_score         8.2
+# ℹ 14 more rows</code></pre>
+</div>
+</div>
+<p>Well, look at that. We have the data in exactly the format that <code>ggplot()</code> craves now. Check it out:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>taylor_longer <span class="sc">|&gt;</span> </span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(album_release, score)) <span class="sc">+</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">col =</span> <span class="st">'dodgerblue4'</span>) <span class="sc">+</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">col =</span> <span class="st">'dodgerblue4'</span>, <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="fu">vars</span>(score_type), <span class="at">scales =</span> <span class="st">'free_y'</span>, <span class="at">ncol =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">16</span>, <span class="at">base_family =</span> <span class="st">'Source Sans Pro'</span>) <span class="sc">+</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">'Release date'</span>,</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">'Taylor Swift Album Ratings'</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="002_pivot_functions_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Finally, let us mention that the new data set <code>taylor_longer</code> has more rows than the initial <code>taylor_albums</code> data set. That’s why it’s usually refered to as being in a <strong>long</strong> format. Hence, the function that makes a data set longer is called <code>pivot_longer()</code>. Similarly, the initial data set <code>taylor_albums</code> is called <strong>wide</strong>.</p>
+</section>
+<section id="why-the-wide-format-then" class="level2">
+<h2 class="anchored" data-anchor-id="why-the-wide-format-then">Why the wide format then?</h2>
+<p>Sometimes it can actually be convenient to have your data in a wide format. For example, check out this table created with <code>gt</code>.</p>
+<div class="cell">
+<div class="cell-output-display">
+
+<div id="wjqlkrvhfg" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>@import url("https://fonts.googleapis.com/css2?family=Chivo:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+#wjqlkrvhfg table {
+  font-family: Chivo, system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#wjqlkrvhfg thead, #wjqlkrvhfg tbody, #wjqlkrvhfg tfoot, #wjqlkrvhfg tr, #wjqlkrvhfg td, #wjqlkrvhfg th {
+  border-style: none;
+}
+
+#wjqlkrvhfg p {
+  margin: 0;
+  padding: 0;
+}
+
+#wjqlkrvhfg .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: 300;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: none;
+  border-top-width: 3px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#wjqlkrvhfg .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#wjqlkrvhfg .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#wjqlkrvhfg .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#wjqlkrvhfg .gt_heading {
+  background-color: #FFFFFF;
+  text-align: left;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#wjqlkrvhfg .gt_bottom_border {
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#wjqlkrvhfg .gt_col_headings {
+  border-top-style: none;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #000000;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#wjqlkrvhfg .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 80%;
+  font-weight: normal;
+  text-transform: uppercase;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#wjqlkrvhfg .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 80%;
+  font-weight: normal;
+  text-transform: uppercase;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#wjqlkrvhfg .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#wjqlkrvhfg .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#wjqlkrvhfg .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #000000;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#wjqlkrvhfg .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#wjqlkrvhfg .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 80%;
+  font-weight: bolder;
+  text-transform: uppercase;
+  border-top-style: none;
+  border-top-width: 2px;
+  border-top-color: #000000;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#wjqlkrvhfg .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 80%;
+  font-weight: bolder;
+  border-top-style: none;
+  border-top-width: 2px;
+  border-top-color: #000000;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  border-bottom-color: #FFFFFF;
+  vertical-align: middle;
+}
+
+#wjqlkrvhfg .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#wjqlkrvhfg .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#wjqlkrvhfg .gt_row {
+  padding-top: 3px;
+  padding-bottom: 3px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#wjqlkrvhfg .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 80%;
+  font-weight: bolder;
+  text-transform: uppercase;
+  border-right-style: solid;
+  border-right-width: 0px;
+  border-right-color: #FFFFFF;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#wjqlkrvhfg .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#wjqlkrvhfg .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#wjqlkrvhfg .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#wjqlkrvhfg .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#wjqlkrvhfg .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#wjqlkrvhfg .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#wjqlkrvhfg .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#wjqlkrvhfg .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#wjqlkrvhfg .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#wjqlkrvhfg .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#wjqlkrvhfg .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#wjqlkrvhfg .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#wjqlkrvhfg .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#wjqlkrvhfg .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#wjqlkrvhfg .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#wjqlkrvhfg .gt_sourcenote {
+  font-size: 12px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#wjqlkrvhfg .gt_left {
+  text-align: left;
+}
+
+#wjqlkrvhfg .gt_center {
+  text-align: center;
+}
+
+#wjqlkrvhfg .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#wjqlkrvhfg .gt_font_normal {
+  font-weight: normal;
+}
+
+#wjqlkrvhfg .gt_font_bold {
+  font-weight: bold;
+}
+
+#wjqlkrvhfg .gt_font_italic {
+  font-style: italic;
+}
+
+#wjqlkrvhfg .gt_super {
+  font-size: 65%;
+}
+
+#wjqlkrvhfg .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#wjqlkrvhfg .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#wjqlkrvhfg .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#wjqlkrvhfg .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#wjqlkrvhfg .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#wjqlkrvhfg .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#wjqlkrvhfg .gt_indent_5 {
+  text-indent: 25px;
+}
+
+tbody tr:last-child {
+  border-bottom: 2px solid #ffffff00;
+}
+</style>
+<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+  <thead>
+    <tr class="gt_heading">
+      <td colspan="4" class="gt_heading gt_title gt_font_normal" style="">Taylor Swift Album Ratings</td>
+    </tr>
+    <tr class="gt_heading">
+      <td colspan="4" class="gt_heading gt_subtitle gt_font_normal gt_bottom_border" style="">Data from TidyTuesday 2023 - Week 42</td>
+    </tr>
+    <tr class="gt_col_headings gt_spanner_row">
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="2" colspan="1" style="border-top-width: 0px; border-top-style: solid; border-top-color: black;" scope="col" id="Album">Album</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="2" colspan="1" style="border-top-width: 0px; border-top-style: solid; border-top-color: black;" scope="col" id="Release">Release</th>
+      <th class="gt_center gt_columns_top_border gt_column_spanner_outer" rowspan="1" colspan="2" scope="colgroup" id="Score">
+        <span class="gt_column_spanner">Score</span>
+      </th>
+    </tr>
+    <tr class="gt_col_headings">
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" style="border-top-width: 0px; border-top-style: solid; border-top-color: black;" scope="col" id="Metacritic">Metacritic</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" style="border-top-width: 0px; border-top-style: solid; border-top-color: black;" scope="col" id="User">User</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td headers="album_name" class="gt_row gt_left">Taylor Swift</td>
+<td headers="album_release" class="gt_row gt_right">2006-10-24</td>
+<td headers="metacritic_score" class="gt_row gt_right">67</td>
+<td headers="user_score" class="gt_row gt_right">8.5</td></tr>
+    <tr><td headers="album_name" class="gt_row gt_left">Fearless</td>
+<td headers="album_release" class="gt_row gt_right">2008-11-11</td>
+<td headers="metacritic_score" class="gt_row gt_right">73</td>
+<td headers="user_score" class="gt_row gt_right">8.4</td></tr>
+    <tr><td headers="album_name" class="gt_row gt_left">Speak Now</td>
+<td headers="album_release" class="gt_row gt_right">2010-10-25</td>
+<td headers="metacritic_score" class="gt_row gt_right">77</td>
+<td headers="user_score" class="gt_row gt_right">8.6</td></tr>
+    <tr><td headers="album_name" class="gt_row gt_left">Red</td>
+<td headers="album_release" class="gt_row gt_right">2012-10-22</td>
+<td headers="metacritic_score" class="gt_row gt_right">77</td>
+<td headers="user_score" class="gt_row gt_right">8.5</td></tr>
+    <tr><td headers="album_name" class="gt_row gt_left">1989</td>
+<td headers="album_release" class="gt_row gt_right">2014-10-27</td>
+<td headers="metacritic_score" class="gt_row gt_right">76</td>
+<td headers="user_score" class="gt_row gt_right">8.2</td></tr>
+    <tr><td headers="album_name" class="gt_row gt_left">reputation</td>
+<td headers="album_release" class="gt_row gt_right">2017-11-10</td>
+<td headers="metacritic_score" class="gt_row gt_right">71</td>
+<td headers="user_score" class="gt_row gt_right">8.3</td></tr>
+    <tr><td headers="album_name" class="gt_row gt_left">Lover</td>
+<td headers="album_release" class="gt_row gt_right">2019-08-23</td>
+<td headers="metacritic_score" class="gt_row gt_right">79</td>
+<td headers="user_score" class="gt_row gt_right">8.4</td></tr>
+    <tr><td headers="album_name" class="gt_row gt_left">folklore</td>
+<td headers="album_release" class="gt_row gt_right">2020-07-24</td>
+<td headers="metacritic_score" class="gt_row gt_right">88</td>
+<td headers="user_score" class="gt_row gt_right">9.0</td></tr>
+    <tr><td headers="album_name" class="gt_row gt_left">evermore</td>
+<td headers="album_release" class="gt_row gt_right">2020-12-11</td>
+<td headers="metacritic_score" class="gt_row gt_right">85</td>
+<td headers="user_score" class="gt_row gt_right">8.9</td></tr>
+    <tr><td headers="album_name" class="gt_row gt_left">Fearless (Taylor's Version)</td>
+<td headers="album_release" class="gt_row gt_right">2021-04-09</td>
+<td headers="metacritic_score" class="gt_row gt_right">82</td>
+<td headers="user_score" class="gt_row gt_right">8.9</td></tr>
+    <tr><td headers="album_name" class="gt_row gt_left">Red (Taylor's Version)</td>
+<td headers="album_release" class="gt_row gt_right">2021-11-12</td>
+<td headers="metacritic_score" class="gt_row gt_right">91</td>
+<td headers="user_score" class="gt_row gt_right">9.0</td></tr>
+    <tr><td headers="album_name" class="gt_row gt_left">Midnights</td>
+<td headers="album_release" class="gt_row gt_right">2022-10-21</td>
+<td headers="metacritic_score" class="gt_row gt_right">85</td>
+<td headers="user_score" class="gt_row gt_right">8.3</td></tr>
+  </tbody>
+  
+  
+</table>
+</div>
+</div>
+</div>
+<p>If you want to create that table, then you need your data set to be in the wide format Just like the initial <code>taylor_albums</code> data set. Thus, you’d need to pass the <code>taylor_albums</code> data set to <code>gt()</code> from the <code>gt</code> package to create this table.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>taylor_albums <span class="sc">|&gt;</span> </span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(album_name, album_release, metacritic_score, user_score) <span class="sc">|&gt;</span> </span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div id="geyxfeqrjl" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#geyxfeqrjl table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#geyxfeqrjl thead, #geyxfeqrjl tbody, #geyxfeqrjl tfoot, #geyxfeqrjl tr, #geyxfeqrjl td, #geyxfeqrjl th {
+  border-style: none;
+}
+
+#geyxfeqrjl p {
+  margin: 0;
+  padding: 0;
+}
+
+#geyxfeqrjl .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#geyxfeqrjl .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#geyxfeqrjl .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#geyxfeqrjl .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#geyxfeqrjl .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#geyxfeqrjl .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#geyxfeqrjl .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#geyxfeqrjl .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#geyxfeqrjl .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#geyxfeqrjl .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#geyxfeqrjl .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#geyxfeqrjl .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#geyxfeqrjl .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#geyxfeqrjl .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#geyxfeqrjl .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#geyxfeqrjl .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#geyxfeqrjl .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#geyxfeqrjl .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#geyxfeqrjl .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#geyxfeqrjl .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#geyxfeqrjl .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#geyxfeqrjl .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#geyxfeqrjl .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#geyxfeqrjl .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#geyxfeqrjl .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#geyxfeqrjl .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#geyxfeqrjl .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#geyxfeqrjl .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#geyxfeqrjl .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#geyxfeqrjl .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#geyxfeqrjl .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#geyxfeqrjl .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#geyxfeqrjl .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#geyxfeqrjl .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#geyxfeqrjl .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#geyxfeqrjl .gt_left {
+  text-align: left;
+}
+
+#geyxfeqrjl .gt_center {
+  text-align: center;
+}
+
+#geyxfeqrjl .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#geyxfeqrjl .gt_font_normal {
+  font-weight: normal;
+}
+
+#geyxfeqrjl .gt_font_bold {
+  font-weight: bold;
+}
+
+#geyxfeqrjl .gt_font_italic {
+  font-style: italic;
+}
+
+#geyxfeqrjl .gt_super {
+  font-size: 65%;
+}
+
+#geyxfeqrjl .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#geyxfeqrjl .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#geyxfeqrjl .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#geyxfeqrjl .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#geyxfeqrjl .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#geyxfeqrjl .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#geyxfeqrjl .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+  <thead>
+    
+    <tr class="gt_col_headings">
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="album_name">album_name</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="album_release">album_release</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="metacritic_score">metacritic_score</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="user_score">user_score</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td headers="album_name" class="gt_row gt_left">Taylor Swift</td>
+<td headers="album_release" class="gt_row gt_right">2006-10-24</td>
+<td headers="metacritic_score" class="gt_row gt_right">67</td>
+<td headers="user_score" class="gt_row gt_right">8.5</td></tr>
+    <tr><td headers="album_name" class="gt_row gt_left">Fearless</td>
+<td headers="album_release" class="gt_row gt_right">2008-11-11</td>
+<td headers="metacritic_score" class="gt_row gt_right">73</td>
+<td headers="user_score" class="gt_row gt_right">8.4</td></tr>
+    <tr><td headers="album_name" class="gt_row gt_left">Speak Now</td>
+<td headers="album_release" class="gt_row gt_right">2010-10-25</td>
+<td headers="metacritic_score" class="gt_row gt_right">77</td>
+<td headers="user_score" class="gt_row gt_right">8.6</td></tr>
+    <tr><td headers="album_name" class="gt_row gt_left">Red</td>
+<td headers="album_release" class="gt_row gt_right">2012-10-22</td>
+<td headers="metacritic_score" class="gt_row gt_right">77</td>
+<td headers="user_score" class="gt_row gt_right">8.5</td></tr>
+    <tr><td headers="album_name" class="gt_row gt_left">1989</td>
+<td headers="album_release" class="gt_row gt_right">2014-10-27</td>
+<td headers="metacritic_score" class="gt_row gt_right">76</td>
+<td headers="user_score" class="gt_row gt_right">8.2</td></tr>
+    <tr><td headers="album_name" class="gt_row gt_left">reputation</td>
+<td headers="album_release" class="gt_row gt_right">2017-11-10</td>
+<td headers="metacritic_score" class="gt_row gt_right">71</td>
+<td headers="user_score" class="gt_row gt_right">8.3</td></tr>
+    <tr><td headers="album_name" class="gt_row gt_left">Lover</td>
+<td headers="album_release" class="gt_row gt_right">2019-08-23</td>
+<td headers="metacritic_score" class="gt_row gt_right">79</td>
+<td headers="user_score" class="gt_row gt_right">8.4</td></tr>
+    <tr><td headers="album_name" class="gt_row gt_left">folklore</td>
+<td headers="album_release" class="gt_row gt_right">2020-07-24</td>
+<td headers="metacritic_score" class="gt_row gt_right">88</td>
+<td headers="user_score" class="gt_row gt_right">9.0</td></tr>
+    <tr><td headers="album_name" class="gt_row gt_left">evermore</td>
+<td headers="album_release" class="gt_row gt_right">2020-12-11</td>
+<td headers="metacritic_score" class="gt_row gt_right">85</td>
+<td headers="user_score" class="gt_row gt_right">8.9</td></tr>
+    <tr><td headers="album_name" class="gt_row gt_left">Fearless (Taylor's Version)</td>
+<td headers="album_release" class="gt_row gt_right">2021-04-09</td>
+<td headers="metacritic_score" class="gt_row gt_right">82</td>
+<td headers="user_score" class="gt_row gt_right">8.9</td></tr>
+    <tr><td headers="album_name" class="gt_row gt_left">Red (Taylor's Version)</td>
+<td headers="album_release" class="gt_row gt_right">2021-11-12</td>
+<td headers="metacritic_score" class="gt_row gt_right">91</td>
+<td headers="user_score" class="gt_row gt_right">9.0</td></tr>
+    <tr><td headers="album_name" class="gt_row gt_left">Midnights</td>
+<td headers="album_release" class="gt_row gt_right">2022-10-21</td>
+<td headers="metacritic_score" class="gt_row gt_right">85</td>
+<td headers="user_score" class="gt_row gt_right">8.3</td></tr>
+  </tbody>
+  
+  
+</table>
+</div>
+</div>
+</div>
+<p>After applying styling you will get the above table. Since the styling is not really part of this blog post, we’ll not cover it. But you can take a peak at the code here:</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gt)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>taylor_albums <span class="sc">|&gt;</span> </span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(album_name, album_release, metacritic_score, user_score) <span class="sc">|&gt;</span> </span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cols_label</span>(</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">album_name =</span> <span class="st">'Album'</span>,</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">album_release =</span> <span class="st">'Release'</span>,</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">metacritic_score =</span> <span class="st">'Metacritic'</span>,</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">user_score =</span> <span class="st">'User'</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_spanner</span>(</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">label =</span> <span class="st">'Score'</span>,</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">columns =</span> <span class="dv">3</span><span class="sc">:</span><span class="dv">4</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_header</span>(</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">'Taylor Swift Album Ratings'</span>,</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">'Data from TidyTuesday 2023 - Week 42'</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>  gtExtras<span class="sc">::</span><span class="fu">gt_theme_538</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+
+<div id="rjwzyswsni" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>@import url("https://fonts.googleapis.com/css2?family=Chivo:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+#rjwzyswsni table {
+  font-family: Chivo, system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#rjwzyswsni thead, #rjwzyswsni tbody, #rjwzyswsni tfoot, #rjwzyswsni tr, #rjwzyswsni td, #rjwzyswsni th {
+  border-style: none;
+}
+
+#rjwzyswsni p {
+  margin: 0;
+  padding: 0;
+}
+
+#rjwzyswsni .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: 300;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: none;
+  border-top-width: 3px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#rjwzyswsni .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#rjwzyswsni .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#rjwzyswsni .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#rjwzyswsni .gt_heading {
+  background-color: #FFFFFF;
+  text-align: left;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#rjwzyswsni .gt_bottom_border {
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#rjwzyswsni .gt_col_headings {
+  border-top-style: none;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #000000;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#rjwzyswsni .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 80%;
+  font-weight: normal;
+  text-transform: uppercase;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#rjwzyswsni .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 80%;
+  font-weight: normal;
+  text-transform: uppercase;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#rjwzyswsni .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#rjwzyswsni .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#rjwzyswsni .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #000000;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#rjwzyswsni .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#rjwzyswsni .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 80%;
+  font-weight: bolder;
+  text-transform: uppercase;
+  border-top-style: none;
+  border-top-width: 2px;
+  border-top-color: #000000;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#rjwzyswsni .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 80%;
+  font-weight: bolder;
+  border-top-style: none;
+  border-top-width: 2px;
+  border-top-color: #000000;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  border-bottom-color: #FFFFFF;
+  vertical-align: middle;
+}
+
+#rjwzyswsni .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#rjwzyswsni .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#rjwzyswsni .gt_row {
+  padding-top: 3px;
+  padding-bottom: 3px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#rjwzyswsni .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 80%;
+  font-weight: bolder;
+  text-transform: uppercase;
+  border-right-style: solid;
+  border-right-width: 0px;
+  border-right-color: #FFFFFF;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#rjwzyswsni .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#rjwzyswsni .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#rjwzyswsni .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#rjwzyswsni .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#rjwzyswsni .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#rjwzyswsni .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#rjwzyswsni .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#rjwzyswsni .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#rjwzyswsni .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#rjwzyswsni .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#rjwzyswsni .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#rjwzyswsni .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#rjwzyswsni .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#rjwzyswsni .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#rjwzyswsni .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#rjwzyswsni .gt_sourcenote {
+  font-size: 12px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#rjwzyswsni .gt_left {
+  text-align: left;
+}
+
+#rjwzyswsni .gt_center {
+  text-align: center;
+}
+
+#rjwzyswsni .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#rjwzyswsni .gt_font_normal {
+  font-weight: normal;
+}
+
+#rjwzyswsni .gt_font_bold {
+  font-weight: bold;
+}
+
+#rjwzyswsni .gt_font_italic {
+  font-style: italic;
+}
+
+#rjwzyswsni .gt_super {
+  font-size: 65%;
+}
+
+#rjwzyswsni .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#rjwzyswsni .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#rjwzyswsni .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#rjwzyswsni .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#rjwzyswsni .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#rjwzyswsni .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#rjwzyswsni .gt_indent_5 {
+  text-indent: 25px;
+}
+
+tbody tr:last-child {
+  border-bottom: 2px solid #ffffff00;
+}
+</style>
+<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+  <thead>
+    <tr class="gt_heading">
+      <td colspan="4" class="gt_heading gt_title gt_font_normal" style="">Taylor Swift Album Ratings</td>
+    </tr>
+    <tr class="gt_heading">
+      <td colspan="4" class="gt_heading gt_subtitle gt_font_normal gt_bottom_border" style="">Data from TidyTuesday 2023 - Week 42</td>
+    </tr>
+    <tr class="gt_col_headings gt_spanner_row">
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="2" colspan="1" style="border-top-width: 0px; border-top-style: solid; border-top-color: black;" scope="col" id="Album">Album</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="2" colspan="1" style="border-top-width: 0px; border-top-style: solid; border-top-color: black;" scope="col" id="Release">Release</th>
+      <th class="gt_center gt_columns_top_border gt_column_spanner_outer" rowspan="1" colspan="2" scope="colgroup" id="Score">
+        <span class="gt_column_spanner">Score</span>
+      </th>
+    </tr>
+    <tr class="gt_col_headings">
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" style="border-top-width: 0px; border-top-style: solid; border-top-color: black;" scope="col" id="Metacritic">Metacritic</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" style="border-top-width: 0px; border-top-style: solid; border-top-color: black;" scope="col" id="User">User</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td headers="album_name" class="gt_row gt_left">Taylor Swift</td>
+<td headers="album_release" class="gt_row gt_right">2006-10-24</td>
+<td headers="metacritic_score" class="gt_row gt_right">67</td>
+<td headers="user_score" class="gt_row gt_right">8.5</td></tr>
+    <tr><td headers="album_name" class="gt_row gt_left">Fearless</td>
+<td headers="album_release" class="gt_row gt_right">2008-11-11</td>
+<td headers="metacritic_score" class="gt_row gt_right">73</td>
+<td headers="user_score" class="gt_row gt_right">8.4</td></tr>
+    <tr><td headers="album_name" class="gt_row gt_left">Speak Now</td>
+<td headers="album_release" class="gt_row gt_right">2010-10-25</td>
+<td headers="metacritic_score" class="gt_row gt_right">77</td>
+<td headers="user_score" class="gt_row gt_right">8.6</td></tr>
+    <tr><td headers="album_name" class="gt_row gt_left">Red</td>
+<td headers="album_release" class="gt_row gt_right">2012-10-22</td>
+<td headers="metacritic_score" class="gt_row gt_right">77</td>
+<td headers="user_score" class="gt_row gt_right">8.5</td></tr>
+    <tr><td headers="album_name" class="gt_row gt_left">1989</td>
+<td headers="album_release" class="gt_row gt_right">2014-10-27</td>
+<td headers="metacritic_score" class="gt_row gt_right">76</td>
+<td headers="user_score" class="gt_row gt_right">8.2</td></tr>
+    <tr><td headers="album_name" class="gt_row gt_left">reputation</td>
+<td headers="album_release" class="gt_row gt_right">2017-11-10</td>
+<td headers="metacritic_score" class="gt_row gt_right">71</td>
+<td headers="user_score" class="gt_row gt_right">8.3</td></tr>
+    <tr><td headers="album_name" class="gt_row gt_left">Lover</td>
+<td headers="album_release" class="gt_row gt_right">2019-08-23</td>
+<td headers="metacritic_score" class="gt_row gt_right">79</td>
+<td headers="user_score" class="gt_row gt_right">8.4</td></tr>
+    <tr><td headers="album_name" class="gt_row gt_left">folklore</td>
+<td headers="album_release" class="gt_row gt_right">2020-07-24</td>
+<td headers="metacritic_score" class="gt_row gt_right">88</td>
+<td headers="user_score" class="gt_row gt_right">9.0</td></tr>
+    <tr><td headers="album_name" class="gt_row gt_left">evermore</td>
+<td headers="album_release" class="gt_row gt_right">2020-12-11</td>
+<td headers="metacritic_score" class="gt_row gt_right">85</td>
+<td headers="user_score" class="gt_row gt_right">8.9</td></tr>
+    <tr><td headers="album_name" class="gt_row gt_left">Fearless (Taylor's Version)</td>
+<td headers="album_release" class="gt_row gt_right">2021-04-09</td>
+<td headers="metacritic_score" class="gt_row gt_right">82</td>
+<td headers="user_score" class="gt_row gt_right">8.9</td></tr>
+    <tr><td headers="album_name" class="gt_row gt_left">Red (Taylor's Version)</td>
+<td headers="album_release" class="gt_row gt_right">2021-11-12</td>
+<td headers="metacritic_score" class="gt_row gt_right">91</td>
+<td headers="user_score" class="gt_row gt_right">9.0</td></tr>
+    <tr><td headers="album_name" class="gt_row gt_left">Midnights</td>
+<td headers="album_release" class="gt_row gt_right">2022-10-21</td>
+<td headers="metacritic_score" class="gt_row gt_right">85</td>
+<td headers="user_score" class="gt_row gt_right">8.3</td></tr>
+  </tbody>
+  
+  
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="but-what-if-we-only-have-long-data" class="level2">
+<h2 class="anchored" data-anchor-id="but-what-if-we-only-have-long-data">But what if we only have long data?</h2>
+<p>Now imagine for a second that we only have the data set <code>taylor_longer</code>. In case you forgot, here’s how it looks.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>taylor_longer</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 24 × 5
+   album_name   ep    album_release score_type       score
+   &lt;chr&gt;        &lt;lgl&gt; &lt;date&gt;        &lt;chr&gt;            &lt;dbl&gt;
+ 1 Taylor Swift FALSE 2006-10-24    metacritic_score  67  
+ 2 Taylor Swift FALSE 2006-10-24    user_score         8.5
+ 3 Fearless     FALSE 2008-11-11    metacritic_score  73  
+ 4 Fearless     FALSE 2008-11-11    user_score         8.4
+ 5 Speak Now    FALSE 2010-10-25    metacritic_score  77  
+ 6 Speak Now    FALSE 2010-10-25    user_score         8.6
+ 7 Red          FALSE 2012-10-22    metacritic_score  77  
+ 8 Red          FALSE 2012-10-22    user_score         8.5
+ 9 1989         FALSE 2014-10-27    metacritic_score  76  
+10 1989         FALSE 2014-10-27    user_score         8.2
+# ℹ 14 more rows</code></pre>
+</div>
+</div>
+<p>Oh snap. We can’t pass this to <code>gt()</code>. This won’t look good. So instead, let’s convert this into wide format.</p>
+<p><em>“How could we possibly to that?”</em>, I can hear you asking. Well, we already know half of the answer. Remember how <code>pivot_longer()</code> helped us to make our table <code>long</code>? This function has a sibling. It’s <code>pivot_wider()</code> and it does exactly what you’d guess.</p>
+<p>But it works the other way around. Instead of throwing column names like <code>metacritic_score</code> and <code>user_score</code> into a the cells of a column <code>score_type</code>, it reverts the process and moves the names <strong>from</strong> the values of a column to the names of a newly created column. But then <code>pivot_wider()</code> will also need to know how to fill these newly created columns. Therefore, you will need to tell it where the values of the new columns should come from.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>taylor_longer <span class="sc">|&gt;</span> </span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_from =</span> score_type,</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_from =</span> score</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 12 × 5
+   album_name                  ep    album_release metacritic_score user_score
+   &lt;chr&gt;                       &lt;lgl&gt; &lt;date&gt;                   &lt;dbl&gt;      &lt;dbl&gt;
+ 1 Taylor Swift                FALSE 2006-10-24                  67        8.5
+ 2 Fearless                    FALSE 2008-11-11                  73        8.4
+ 3 Speak Now                   FALSE 2010-10-25                  77        8.6
+ 4 Red                         FALSE 2012-10-22                  77        8.5
+ 5 1989                        FALSE 2014-10-27                  76        8.2
+ 6 reputation                  FALSE 2017-11-10                  71        8.3
+ 7 Lover                       FALSE 2019-08-23                  79        8.4
+ 8 folklore                    FALSE 2020-07-24                  88        9  
+ 9 evermore                    FALSE 2020-12-11                  85        8.9
+10 Fearless (Taylor's Version) FALSE 2021-04-09                  82        8.9
+11 Red (Taylor's Version)      FALSE 2021-11-12                  91        9  
+12 Midnights                   FALSE 2022-10-21                  85        8.3</code></pre>
+</div>
+</div>
+</section>
+<section id="advanced-tricks" class="level2">
+<h2 class="anchored" data-anchor-id="advanced-tricks">Advanced tricks</h2>
+<p>Cool, we’re</p>
+</section>
+<section id="even-more-advanced-stuff" class="level2">
+<h2 class="anchored" data-anchor-id="even-more-advanced-stuff">Even more advanced stuff</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>nurses <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="st">'https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2021/2021-10-05/nurses.csv'</span>) <span class="sc">|&gt;</span>  janitor<span class="sc">::</span><span class="fu">clean_names</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 1242 Columns: 22
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr  (1): State
+dbl (21): Year, Total Employed RN, Employed Standard Error (%), Hourly Wage ...
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+</div>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
