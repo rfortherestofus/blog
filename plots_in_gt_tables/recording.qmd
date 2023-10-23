@@ -1,0 +1,72 @@
+
+
+```{r}
+library(tidyverse)
+library(gt)
+
+penguin_weights <- palmerpenguins::penguins |>
+  summarise(
+    min = min(body_mass_g, na.rm = TRUE),
+    mean = mean(body_mass_g, na.rm = TRUE),
+    max = max(body_mass_g, na.rm = TRUE),
+    .by = 'species'
+  )
+
+penguin_weights |> 
+  gt() |>
+  tab_spanner(
+    label = 'Penguin\'s Weight',
+    columns = -species
+  ) |> 
+  cols_label_with(fn = str_to_title) |> 
+  fmt_number(decimals = 2) |> 
+  cols_align('left', columns = species)
+
+```
+
+
+
+```{r}
+plot_violin_species <- function(my_species) {
+  gentoo_data <- palmerpenguins::penguins |>
+    filter(!is.na(sex), species == my_species) 
+  
+  gentoo_data |> 
+    ggplot(aes(x = body_mass_g, y = species)) +
+    geom_violin(fill = 'dodgerblue4') +
+    theme_void() +
+    coord_cartesian(
+      xlim = range(palmerpenguins::penguins$body_mass_g, na.rm = TRUE)
+    )
+}
+plot_violin_species('Gentoo')
+
+```
+
+
+
+```{r}
+penguin_weights |> 
+  mutate(Distribution = species) |> 
+  gt() |>
+  tab_spanner(
+    label = 'Penguin\'s Weight',
+    columns = -species
+  ) |> 
+  cols_label_with(fn = str_to_title) |> 
+  fmt_number(decimals = 2) |> 
+  cols_align('left', columns = species) |> 
+  text_transform(
+    locations = cells_body(columns = 'Distribution'),
+    fn = function(column) {
+      map(column, plot_violin_species) |>
+        ggplot_image(height = px(50), aspect_ratio = 3)
+    }
+  ) 
+```
+
+
+
+
+
+

@@ -1,10 +1,15 @@
 # Spice up your `gt` table with `ggplot`
 Albert Rapp
+<<<<<<< Updated upstream
 2023-09-18
+=======
+2023-10-19
+>>>>>>> Stashed changes
 
 - [A basic table](#a-basic-table)
 - [Spice up your table](#spice-up-your-table)
 
+<<<<<<< Updated upstream
 Have you ever created a table with `gt` and thought to yourself *“Well,
 maybe just showing the numbers doesn’t cut it? I need to add some visual
 spice to this table.”* If so, then you’re in great company. Because
@@ -22,6 +27,15 @@ Basically, we need two ingredients. The first thing is a table that we
 want to spice up. And then we need ggplots that we can add. Let’s start
 with the table. Here, we have a basic table summarizing the penguin
 weights of three different species.
+=======
+Have you ever created a table with `gt` and thought to yourself *“Well, maybe just showing the numbers doesn’t cut it? I need to add some visual spice to this table.”* If so, then you’re in great company. Because spicing up tables with visuals is one of my favorite tricks. I like to add visual elements like small lines or bars to tables.
+
+Apart from making your table pretty, visuals help to convey an overall impression of the data to your reader. So, let me show you how you can add any chart to your table by combining the powers of `gt` and `ggplot`.
+
+## A basic table
+
+Basically, we need two ingredients. The first thing is a table that we want to spice up. And then we need ggplots that we can add. Let’s start with the table. Here, we have a basic table summarizing the penguin weights of three different species.
+>>>>>>> Stashed changes
 
 ``` r
 library(tidyverse)
@@ -45,6 +59,7 @@ penguin_weights |>
   cols_align('left', columns = species)
 ```
 
+<<<<<<< Updated upstream
 <div id="jwkcncfwmx" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#jwkcncfwmx table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
@@ -904,6 +919,17 @@ To build this, let’s think about how to create the ggplots. Then, we can
 think about how to add them to the table. So, let us extract the data
 for one species and save it into a variable. If we can do this for one
 species, we can do it for all species.
+=======
+<img src="basic_table.png" style="width:70.0%" />
+
+In this table, we can see the minimum, maximum and mean values of the penguin weights for every species. Not the most exciting table, is it? So, we may want to add a nice visual element like a violin plot. Apart from being an eye-catching element, this would also add more information on the distribution of the weights. The resulting table could look something like this:
+
+<img src="violin_added.png" style="width:70.0%" />
+
+## Spice up your table
+
+To build this, let’s think about how to create the ggplots. Then, we can think about how to add them to the table. So, let us extract the data for one species and save it into a variable. If we can do this for one species, we can do it for all species.
+>>>>>>> Stashed changes
 
 ``` r
 gentoo_data <- palmerpenguins::penguins |>
@@ -918,6 +944,7 @@ gentoo_data |>
   geom_violin(fill = 'dodgerblue4') 
 ```
 
+<<<<<<< Updated upstream
 <img
 src="plots_in_gt_tables_files/figure-commonmark/unnamed-chunk-4-1.png"
 style="width:70.0%" />
@@ -927,6 +954,11 @@ lines and a lot of other stuff that we don’t want to bring into our
 table. If we would take this image and put it into our table, this will
 be too much clutter, right?. So let’s remove all of this with
 `theme_void()`.
+=======
+<img src="plots_in_gt_tables_files/figure-commonmark/unnamed-chunk-6-1.png" style="width:70.0%" />
+
+Nice. It’s a pretty violin plot but notice that we have a lot of grid lines and a lot of other stuff that we don’t want to bring into our table. If we would take this image and put it into our table, this will be too much clutter, right?. So let’s remove all of this with `theme_void()`.
+>>>>>>> Stashed changes
 
 ``` r
 gentoo_data |> 
@@ -935,6 +967,7 @@ gentoo_data |>
   theme_void() 
 ```
 
+<<<<<<< Updated upstream
 <img
 src="plots_in_gt_tables_files/figure-commonmark/unnamed-chunk-5-1.png"
 style="width:70.0%" />
@@ -942,6 +975,11 @@ style="width:70.0%" />
 Perfect. Now, let’s wrap this into a function that can repeat this for
 all species based on the species name. We want to repeat this for every
 species, remember?
+=======
+<img src="plots_in_gt_tables_files/figure-commonmark/unnamed-chunk-7-1.png" style="width:70.0%" />
+
+Perfect. Now, let’s wrap this into a function that can repeat this for all species based on the species name. We want to repeat this for every species, remember?
+>>>>>>> Stashed changes
 
 ``` r
 plot_violin_species <- function(my_species) {
@@ -953,9 +991,13 @@ plot_violin_species <- function(my_species) {
 }
 ```
 
+<<<<<<< Updated upstream
 Next, we need an additional column in our data set where the plots will
 live in. At first, this column is only supposed to contain the data that
 `plot_violin_species()` needs to generates plots.
+=======
+Next, we need an additional column in our data set where the plots will live in. At first, this column is only supposed to contain the data that `plot_violin_species()` needs to generates plots.
+>>>>>>> Stashed changes
 
 ``` r
 penguin_weights |>
@@ -970,6 +1012,7 @@ penguin_weights |>
   cols_align('left', columns = species)
 ```
 
+<<<<<<< Updated upstream
 <div id="eqpxziivil" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#eqpxziivil table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
@@ -1401,6 +1444,11 @@ the content of the `Distribution` column to actual images. And the way
 to do that is to use `text_transform()`, `map()` and the
 `ggplot_image()` helper function. Take a look at the code that does this
 and I’ll explain more afterwards.
+=======
+<img src="text_col_added.png" style="width:70.0%" />
+
+In this table you can see that each row of the `Distribution` column now contains a species name. Now, we have to instruct `gt()` to transform the content of the `Distribution` column to actual images. And the way to do that is to use `text_transform()`, `map()` and the `ggplot_image()` helper function. Take a look at the code that does this and I’ll explain more afterwards.
+>>>>>>> Stashed changes
 
 ``` r
 penguin_weights |>
@@ -1424,6 +1472,7 @@ penguin_weights |>
 
 I know that this looks complicated at first but here’s the rundown:
 
+<<<<<<< Updated upstream
 - First, `text_transform()` needs to know the locations of the cells
   that we want to transform. This information comes from
   `cells_body(columns = 'Distribution')`.
@@ -1431,6 +1480,11 @@ I know that this looks complicated at first but here’s the rundown:
 - Second, `text_transform()` needs a function that takes the whole data
   that is stored in the “Distribution” column and generates **images**
   from this.
+=======
+- First, `text_transform()` needs to know the locations of the cells that we want to transform. This information comes from `cells_body(columns = 'Distribution')`.
+
+- Second, `text_transform()` needs a function that takes the whole data that is stored in the “Distribution” column and generates **images** from this.
+>>>>>>> Stashed changes
 
 This latter function that generates images is defined via
 
@@ -1443,6 +1497,7 @@ function(column) {
 
 This does two things:
 
+<<<<<<< Updated upstream
 1.  In the first step `map()` applies `plot_violin_species()` for every
     species. This will give us a list of **ggplot-objects**. This is not
     what `text_transform()` wants. It wants images.
@@ -1452,6 +1507,13 @@ This does two things:
 
 Now that we understand what’s going on with this, let’s see this in
 action.
+=======
+1.  In the first step `map()` applies `plot_violin_species()` for every species. This will give us a list of **ggplot-objects**. This is not what `text_transform()` wants. It wants images.
+
+2.  Then, the list of **ggplot-objects** is turned into images with the convenient `ggplot_image()` function from `gt`.
+
+Now that we understand what’s going on with this, let’s see this in action.
+>>>>>>> Stashed changes
 
 ``` r
 penguin_weights |>
@@ -1473,6 +1535,7 @@ penguin_weights |>
   ) 
 ```
 
+<<<<<<< Updated upstream
 <div id="yzcdrxtwji" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#yzcdrxtwji table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
@@ -1912,6 +1975,15 @@ x-axis.
 Thus, we need to fix our x-axis in `plot_violin_species()` and set it to
 the range of the whole data. We do this by computing the full range and
 then set `xlim` in `coord_cartesian()` to that range.
+=======
+<img src="wrong_violins_added.png" style="width:70.0%" />
+
+Oh no. It looks like the weights are all very similarly distributed. But this is clearly not the case because the numbers tell us otherwise. Also, we have already seen in the first table that the violin plots are not all in the same location.
+
+The reason why our table doesn’t show this is because `plot_violin_species()` never takes the whole data set into account. Remember? We filter the data to only include data on a specific species data. Hence, the corresponding violin plot is always centered on the x-axis.
+
+Thus, we need to fix our x-axis in `plot_violin_species()` and set it to the range of the whole data. We do this by computing the full range and then set `xlim` in `coord_cartesian()` to that range.
+>>>>>>> Stashed changes
 
 ``` r
 plot_violin_species <- function(my_species) {
@@ -1950,6 +2022,7 @@ penguin_weights |>
   ) 
 ```
 
+<<<<<<< Updated upstream
 <div id="nyzafrdiio" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#nyzafrdiio table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
@@ -2381,3 +2454,10 @@ chart from us today.
 Thus, let us end this blog post on this cheerful note. For more
 information, you may find this [`gt` book
 helpful](https://gt.albert-rapp.de/). See you next time. 👋
+=======
+<img src="final_table.png" style="width:70.0%" />
+
+Excellent. This looks much better. So, crisis averted: No misleading chart from us today.
+
+Thus, let us end this blog post on this cheerful note. For more information, you may find this [`gt` book helpful](https://gt.albert-rapp.de/). See you next time. 👋
+>>>>>>> Stashed changes

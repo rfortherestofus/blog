@@ -3,6 +3,8 @@ title: "How to Order Bars and Lines in `ggplot`"
 author: Albert Rapp
 date: today
 toc: true
+format: gfm
+wrap: none
 knitr:
   opts_chunk:
     out.width: 70%

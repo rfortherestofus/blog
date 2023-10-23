@@ -1,0 +1,77 @@
+
+```{r}
+library(tidyverse)
+```
+
+```{r}
+scatterplot <- palmerpenguins::penguins |> 
+  filter(!is.na(sex)) |> 
+  ggplot(aes(bill_length_mm, flipper_length_mm, col = species)) +
+  geom_point(size = 2.5)+
+  labs(
+    x = 'Bill length (in mm)',
+    y = 'Flipper length (in mm)',
+    col = 'Species',
+    title = 'Measurements of different Penguin Species'
+  ) +
+  theme_minimal(base_size = 16) +
+  theme(legend.position = 'top')
+scatterplot
+```
+
+```{r}
+scatterplot +
+  geom_text(
+    x = 35,
+    y = 217.5,
+    label = 'Important penguins',
+    fontface = 'bold', 
+    size = 4.5,
+    show.legend = FALSE,
+    color = 'black'
+  ) +
+  geom_rect(
+    xmin = 40,
+    xmax = 47,
+    ymin = 210,
+    ymax = 225,
+    alpha = 0.01,
+    fill = 'grey40',
+    col = 'black'
+  )
+```
+
+
+```{r}
+scatterplot +
+  annotate(
+    'text',
+    x = 35,
+    y = 217.5,
+    label = 'Important penguins',
+    fontface = 'bold', 
+    size = 4.5,
+    color = 'black'
+  ) +
+  annotate(
+    'rect',
+    xmin = 40,
+    xmax = 47,
+    ymin = 210,
+    ymax = 225,
+    alpha = 0.5,
+    fill = 'grey40',
+    col = 'black'
+  ) +
+  annotate(
+    'curve',
+    x = 32.5, 
+    y = 219.5,
+    yend = 225,
+    xend = 39.75,
+    linewidth = 1,
+    curvature = -0.5,
+    arrow = arrow(length = unit(0.5, 'cm'))
+  )
+```
+

@@ -1,0 +1,63 @@
+
+
+```{r}
+library(tidyverse)
+theme_set(
+  theme_minimal(
+    base_size = 16,
+    base_family = 'Source Sans Pro'
+  )
+)
+```
+
+```{r}
+gt::gtcars |> 
+  count(mfr) |> 
+  mutate(mfr = fct_reorder(mfr, n)) |> 
+  ggplot(aes(x = n, y = mfr)) +
+  geom_col() +
+  labs(
+    x = 'Counts',
+    y = element_blank(),
+    title = 'Number of Manufacturers in the data set'
+  )
+```
+
+```{r}
+min_max_weights <- palmerpenguins::penguins |> 
+  summarise(
+    min_weight = min(body_mass_g, na.rm = TRUE),
+    max_weight = max(body_mass_g, na.rm = TRUE),
+    .by = species
+  ) |> 
+  pivot_longer(
+    cols = -1,
+    names_to = 'type',
+    values_to = 'weight'
+  )
+```
+
+
+```{r}
+min_max_weights |> 
+  summarise(
+    calculated_minimum = min(weight),
+    .by = species
+  )
+```
+
+
+```{r}
+min_max_weights |> 
+  mutate(species = fct_reorder(species, weight, .fun = max)) |> 
+  ggplot(aes(x = weight, y = species)) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 6) +
+  labs(
+    x = 'Body weight (in g)',
+    y = element_blank(),
+    title = 'Range of Body Weights for Different Penguin Species'
+  )
+```
+
+

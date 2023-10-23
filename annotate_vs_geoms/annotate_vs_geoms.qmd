@@ -1,6 +1,10 @@
 ---
 title: "Annotation vs. Geoms: What's the Use of `annotate()`?"
+author: Albert Rapp
+date: today
+toc: true
 format: gfm
+wrap: none
 knitr:
   opts_chunk:
     out.width: 70%

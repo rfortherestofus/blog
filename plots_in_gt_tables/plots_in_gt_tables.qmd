@@ -4,6 +4,10 @@ author: Albert Rapp
 date: today
 toc: true
 format: gfm
+<<<<<<< Updated upstream
+=======
+wrap: none
+>>>>>>> Stashed changes
 knitr:
   opts_chunk:
     out.width: 70%
@@ -33,6 +37,7 @@ Here, we have a basic table summarizing the penguin weights of three different s
 ```{r}
 #| message: false
 #| warning: false
+#| results: hide
 
 library(tidyverse)
 library(gt)
@@ -56,6 +61,22 @@ penguin_weights |>
 ```
 
 
+```{r}
+#| echo: false
+penguin_weights |>
+  gt() |>
+  tab_spanner(
+    label = 'Penguin\'s Weight',
+    columns = -species
+  ) |> 
+  cols_label_with(fn = str_to_title) |> 
+  fmt_number(decimals = 2) |> 
+  cols_align('left', columns = species) |> 
+  gtsave('basic_table.png')
+knitr::include_graphics('basic_table.png')
+```
+
+
 In this table, we can see the minimum, maximum and mean values of the penguin weights for every species.
 Not the most exciting table, is it?
 So, we may want to add a nice visual element like a violin plot.
@@ -65,6 +86,7 @@ The resulting table could look something like this:
 ```{r}
 #| echo: false
 #| warning: false
+#| results: hide
 plot_violin_species <- function(my_species) {
   full_range <- palmerpenguins::penguins |>
     pull(body_mass_g) |>
@@ -95,6 +117,30 @@ penguin_weights |>
         ggplot_image(height = px(50), aspect_ratio = 3)
     }
   ) 
+```
+
+```{r}
+#| echo: false
+#| warning: false
+penguin_weights |>
+  mutate(Distribution = species) |>
+  gt() |>
+  tab_spanner(
+    label = 'Penguin\'s Weight',
+    columns = -species
+  ) |> 
+  cols_label_with(fn = str_to_title) |> 
+  fmt_number(decimals = 2) |> 
+  cols_align('left', columns = species) |> 
+  text_transform(
+    locations = cells_body(columns = 'Distribution'),
+    fn = function(column) {
+      map(column, plot_violin_species) |>
+        ggplot_image(height = px(50), aspect_ratio = 3)
+    }
+  )  |> 
+  gtsave('violin_added.png')
+knitr::include_graphics('violin_added.png')
 ```
 
 ## Spice up your table
@@ -152,6 +198,7 @@ At first, this column is only supposed to contain the data that `plot_violin_spe
 
 
 ```{r}
+#| results: hide
 penguin_weights |>
   mutate(Distribution = species) |>
   gt() |>
@@ -163,6 +210,24 @@ penguin_weights |>
   fmt_number(decimals = 2) |> 
   cols_align('left', columns = species)
 ```
+
+```{r}
+#| echo: false
+#| warning: false
+penguin_weights |>
+  mutate(Distribution = species) |>
+  gt() |>
+  tab_spanner(
+    label = 'Penguin\'s Weight',
+    columns = -species
+  ) |> 
+  cols_label_with(fn = str_to_title) |> 
+  fmt_number(decimals = 2) |> 
+  cols_align('left', columns = species) |> 
+  gtsave('text_col_added.png')
+knitr::include_graphics('text_col_added.png')
+```
+
 
 
 In this table you can see that each row of the `Distribution` column now contains a species name.
@@ -219,6 +284,7 @@ Now that we understand what's going on with this, let's see this in action.
 
 ```{r}
 #| warning: false
+#| results: hide
 penguin_weights |>
   mutate(Distribution = species) |>
   gt() |>
@@ -237,6 +303,31 @@ penguin_weights |>
     }
   ) 
 ```
+
+```{r}
+#| echo: false
+#| warning: false
+penguin_weights |>
+  mutate(Distribution = species) |>
+  gt() |>
+  tab_spanner(
+    label = 'Penguin\'s Weight',
+    columns = -species
+  ) |> 
+  cols_label_with(fn = str_to_title) |> 
+  fmt_number(decimals = 2) |> 
+  cols_align('left', columns = species) |> 
+  text_transform(
+    locations = cells_body(columns = 'Distribution'),
+    fn = function(column) {
+      map(column, plot_violin_species) |>
+        ggplot_image(height = px(50), aspect_ratio = 3)
+    }
+  )  |> 
+  gtsave('wrong_violins_added.png')
+knitr::include_graphics('wrong_violins_added.png')
+```
+
 
 Oh no.
 It looks like the weights are all very similarly distributed. 
@@ -271,6 +362,7 @@ Perfect, now we can rerun our code and our table should look great.
 
 ```{r}
 #| warning: false
+#| results: hide
 penguin_weights |>
   mutate(Distribution = species) |>
   gt() |>
@@ -288,6 +380,31 @@ penguin_weights |>
         ggplot_image(height = px(50), aspect_ratio = 3)
     }
   ) 
+```
+
+
+```{r}
+#| echo: false
+#| warning: false
+penguin_weights |>
+  mutate(Distribution = species) |>
+  gt() |>
+  tab_spanner(
+    label = 'Penguin\'s Weight',
+    columns = -species
+  ) |> 
+  cols_label_with(fn = str_to_title) |> 
+  fmt_number(decimals = 2) |> 
+  cols_align('left', columns = species) |> 
+  text_transform(
+    locations = cells_body(columns = 'Distribution'),
+    fn = function(column) {
+      map(column, plot_violin_species) |>
+        ggplot_image(height = px(50), aspect_ratio = 3)
+    }
+  )  |> 
+  gtsave('final_table.png')
+knitr::include_graphics('final_table.png')
 ```
 
 Excellent.
