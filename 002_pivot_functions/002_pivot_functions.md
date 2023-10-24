@@ -2,13 +2,13 @@
 Albert Rapp
 2023-11-08
 
-Common wisdom tells us that data wrangling is 90% of all data work. And it’s true. Often, you will have to get your data into the right format before you can get any “real” work done. In the tidyverse, there are two powerful functions to help you with that. What I’m talking about is `pivot_longer()` and `pivot_wider()`.
+Conventional wisdom tells us that data wrangling is 90% of all data work. And it’s true. Often, you will have to get your data into the right format before you can get any “real” work done. In the tidyverse, there are two powerful functions to help you with one of the most common data wrangling tasks: going from wide to long and lnog to wide. These functions are `pivot_longer()` and `pivot_wider()`.
 
-Here, we will cover the standard use case of `pivot_*()`. But these functions can do much more stuff that will help you with your data cleaning. That hat’s what we’ll do next week.
+Here, we will cover the standard use case of `pivot_*()` (we’ll cover more of what they can do next week).
 
 ## The standard use case
 
-Let’s have a look at a data set from the weekly [tidyTuesday challenge](https://github.com/rfordatascience/tidytuesday/blob/master/data/2023/2023-10-17/readme.md). The data of that week’s challenge is Taylor Swift albums. That’s always a fun topic. You can download it straight from GitHub like so.
+Let’s have a look at a data set from the weekly [tidyTuesday challenge](https://github.com/rfordatascience/tidytuesday/blob/master/data/2023/2023-10-17/readme.md). The data of that week’s challenge is Taylor Swift albums. That’s always a fun topic. You can download it straight from GitHub:
 
 ``` r
 library(tidyverse)
@@ -45,13 +45,13 @@ But neither of those columns exists in the data. What we have are the columns `m
 
 Hence, it seems that our data has all the information we need. But it’s just not in the right format. That’s unfortunate but an all too real scenario. When you’re working with data, this happens a lot.
 
-So let’s not despair and fix the data instead. Luckily, the tidyverse has tools for that. Here, the `pivot_longer()` function can rearrange our data. We just have to tell it
+So let’s not despair and fix the data instead. Luckily, the tidyverse has tools for that. Here, the `pivot_longer()` function can rearrange our data. We just have to tell it:
 
-- which columns should be rearranged,
-- what kind of information is in the column names and
+- which columns should be reshaped,
+- what kind of information is in the column names, and
 - what kind of information is in the values of each column that gets rearranged.
 
-Basically, that’s the stuff that we’ve talked about just a few paragraphs ago. Here’s how we would wrap that paragraph into actual code. I hope you will find this is pretty much how we phrased the text earlier.
+Here’s how we would turn these steps into code. I hope you will find this is pretty much how we phrased the text earlier.
 
 ``` r
 taylor_longer <- taylor_albums |> 
@@ -77,7 +77,7 @@ taylor_longer
 #> # ℹ 14 more rows
 ```
 
-Well, look at that. We have the data in exactly the format that `ggplot()` craves now. Check it out:
+Well, look at that. We have the data in exactly the format that `ggplot()` needs. Check it out:
 
 ``` r
 taylor_longer |> 
@@ -95,11 +95,11 @@ taylor_longer |>
 
 <img src="002_pivot_functions_files/figure-commonmark/unnamed-chunk-4-1.png" style="width:70.0%" />
 
-Finally, let us mention that the new data set `taylor_longer` has more rows than the initial `taylor_albums` data set. That’s why it’s usually refered to as being in a **long** format. Hence, the function that makes a data set longer is called `pivot_longer()`. Similarly, the initial data set `taylor_albums` is called **wide**.
+You’ll see that `taylor_longer` has more rows than the initial `taylor_albums` data set. That’s why it’s usually referred to as being in a **long** format. Hence, the function that makes a data set longer is called `pivot_longer()`. Similarly, the initial data set `taylor_albums` is called **wide**.
 
 ## Why the wide format then?
 
-Sometimes it can actually be convenient to have your data in a wide format. For example, check out this table created with `gt`.
+Sometimes it can actually be convenient to have your data in a wide format. Tables are a common scenario where want wide data. For example, check out this table created with `gt`.
 
 <img src="taylor_table.png" style="width:70.0%" />
 
@@ -114,34 +114,6 @@ taylor_albums |>
 <img src="basic_taylor_table.png" style="width:70.0%" />
 
 After applying styling you will get the first table that we saw earlier. Since the styling is not really part of this blog post, we’ll not cover it. But you can take a peak at the code here:
-
-<details>
-<summary>Code</summary>
-
-``` r
-library(gt)
-tbl <- taylor_albums |> 
-  select(album_name, album_release, metacritic_score, user_score) |> 
-  gt() |> 
-  cols_label(
-    album_name = 'Album',
-    album_release = 'Release',
-    metacritic_score = 'Metacritic',
-    user_score = 'User'
-  ) |> 
-  tab_spanner(
-    label = 'Score',
-    columns = 3:4
-  ) |> 
-  tab_header(
-    title = 'Taylor Swift Album Ratings',
-    subtitle = 'Data from TidyTuesday 2023 - Week 42'
-  ) |> 
-  gtExtras::gt_theme_538() 
-tbl
-```
-
-</details>
 
 ## But what if we only have long data?
 
