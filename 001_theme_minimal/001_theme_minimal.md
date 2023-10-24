@@ -18,13 +18,13 @@ plt
 
 <img src="001_theme_minimal_files/figure-commonmark/unnamed-chunk-1-1.png" style="width:90.0%" />
 
-## Active title
+## Use an active title
 
 Cool. We have a dataviz now. But do you know what this chart is supposed to tell you? You don’t? Well, I don’t know either. The chart is pretty ambiguous.
 
 That’s why it’s important to add proper labels to describe what’s on the axes. But even more important than axes labels is the title. It’s usually the first thing your reader sees (and reads). So you’d be wise to make that meaningful so that your reader immediately knows what’s up.
 
-In the dataviz trade, this is known as an **active title**. Instead of being some generic description of the variables in the data, an active title is filled with valuable insights. This communicates what you want to say immediately. Just like any label, we can add the title via the `labs()` function.
+In the dataviz trade, this is known as an **active title**. [Instead of being some generic description of the variables in the data, an active title is filled with valuable insights](https://www.storytellingwithdata.com/blog/2017/3/22/so-what). This communicates what you want to say immediately. Just like any label, we can add the title via the `labs()` function.
 
 Let’s use that function to
 
@@ -47,7 +47,7 @@ plt_with_labels
 
 Notice that I have also added a caption here too. It’s always a good practice to tell people where your data is coming from. Also, you can use the caption for other helpful additional information.
 
-## A different theme
+## Apply a unique theme
 
 Nice. Now that we know what the chart is about we can actually start to style the chart. Remember: Get your message in order first and cater the style towards that message second.
 
@@ -71,11 +71,11 @@ plt_with_labels +
 
 <img src="001_theme_minimal_files/figure-commonmark/unnamed-chunk-4-1.png" style="width:90.0%" />
 
-## Can you read all the things?
+## Make sure your text is large enough
 
 Remember that I told you that it’s good to have `theme_minimal()` around? I hope you do. I mentioned this like 5 seconds ago.
 
-In any case, let me reveal what `theme_minimal()` can do for you: It can make sure that you set an appropriate font and font size for your chart. Yeah yeah, I know. I can already hear you scream *“Boooooring!”* But I want you to think about this when you’re sitting in a huge room for a keynote speech and the presenter didn’t think about increasing the font size. If you can’t read a thing on the super important chart, this might turn into a truly boring keynote.
+In any case, let me reveal what `theme_minimal()` can do for you: It can make sure that you set an appropriate font and font size for your chart ([this is one of the first changes data journalists at the BBC made when designing their own custom theme](https://book.rwithoutstatistics.com/custom-theme-chapter)). Yeah yeah, I know. I can already hear you scream *“Boooooring!”* But I want you to think about this when you’re sitting in a huge room for a keynote speech and the presenter didn’t think about increasing the font size. If you can’t read a thing on the super important chart, this might turn into a truly boring keynote.
 
 Moving on from my little rant, let me show you that changing the font and the size couldn’t be easier. Just change the `base_size` and `base_family` argument in your `theme_minimal()` layer.
 
@@ -95,11 +95,11 @@ plt_with_labels +
 
 <img src="001_theme_minimal_files/figure-commonmark/unnamed-chunk-6-1.png" style="width:90.0%" />
 
-## Text formatting
+## Make your text grey rather than true black
 
 In general, you want to make sure that you don’t overwhelm your reader with your titles and labels. This can sometimes be something you have to watch out for with long active titles or captions that include a lot of extra information. A quick trick to help you with that is to change the text color from black to a more subtle grey.
 
-This can be done in the `theme()` layer. What you’ll need to know for that is that the `text` argument governs all text. Passing an `element_text()` with the right text properties to this argument will change the text properties in your chart (Suprising, I know.)
+This can be done in the `theme()` layer. What you’ll need to know for that is that the `text` argument governs all text. Passing an `element_text()` with the right text properties to this argument will change the text properties in your chart (surprising, I know.)
 
 ``` r
 plt_with_labels +
@@ -111,7 +111,7 @@ plt_with_labels +
 
 <img src="001_theme_minimal_files/figure-commonmark/unnamed-chunk-7-1.png" style="width:90.0%" />
 
-And while you’re at it in the `theme()` layer, you can give your title & caption a bit more room by aligning the text to the whole plot instead of aligning it to the grid panel. That’s done by setting `plot.title.position` and `caption.title.position` to `"plot"`.
+And while you’re at it in the `theme()` layer, you can give your title and caption a bit more room by aligning the text to the whole plot instead of aligning it to the grid panel. That’s done by setting `plot.title.position` and `caption.title.position` to `"plot"`.
 
 ``` r
 plt_with_labels +
@@ -125,7 +125,7 @@ plt_with_labels +
 
 <img src="001_theme_minimal_files/figure-commonmark/unnamed-chunk-8-1.png" style="width:90.0%" />
 
-## Use other colors
+## Use a unique color palette
 
 Another quick method to change the look of your chart is to move away from the default colors. For example, you could use your brand colors (if you have them) or get colors from a nice color palette. My go-to color palette is the colorblind-friendly Okabe-Ito color palette.
 

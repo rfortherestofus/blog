@@ -42,7 +42,7 @@ plt
 ```
 
 
-## Active title
+## Use an active title
 
 Cool.
 We have a dataviz now.
@@ -57,7 +57,7 @@ It's usually the first thing your reader sees (and reads).
 So you'd be wise to make that meaningful so that your reader immediately knows what's up.
 
 In the dataviz trade, this is known as an **active title**.
-Instead of being some generic description of the variables in the data, an active title is filled with valuable insights.
+[Instead of being some generic description of the variables in the data, an active title is filled with valuable insights](https://www.storytellingwithdata.com/blog/2017/3/22/so-what).
 This communicates what you want to say immediately.
 Just like any label, we can add the title via the `labs()` function.
 
@@ -83,7 +83,7 @@ Notice that I have also added a caption here too.
 It's always a good practice to tell people where your data is coming from.
 Also, you can use the caption for other helpful additional information.
 
-## A different theme
+## Apply a unique theme
 
 Nice.
 Now that we know what the chart is about we can actually start to style the chart.
@@ -114,14 +114,14 @@ plt_with_labels +
 ```
 
 
-## Can you read all the things?
+## Make sure your text is large enough
 
 Remember that I told you that it's good to have `theme_minimal()` around?
 I hope you do.
 I mentioned this like 5 seconds ago.
 
 In any case, let me reveal what `theme_minimal()` can do for you:
-It can make sure that you set an appropriate font and font size for your chart.
+It can make sure that you set an appropriate font and font size for your chart ([this is one of the first changes data journalists at the BBC made when designing their own custom theme](https://book.rwithoutstatistics.com/custom-theme-chapter)).
 Yeah yeah, I know. 
 I can already hear you scream *"Boooooring!"*
 But I want you to think about this when you're sitting in a huge room for a keynote speech and the presenter didn't think about increasing the font size.
@@ -144,7 +144,7 @@ plt_with_labels +
 ```
 
 
-## Text formatting
+## Make your text grey rather than true black
 
 In general, you want to make sure that you don't overwhelm your reader with your titles and labels.
 This can sometimes be something you have to watch out for with long active titles or captions that include a lot of extra information.
@@ -152,7 +152,7 @@ A quick trick to help you with that is to change the text color from black to a 
 
 This can be done in the `theme()` layer.
 What you'll need to know for that is that the `text` argument governs all text.
-Passing an `element_text()` with the right text properties to this argument will change the text properties in your chart (Suprising, I know.)
+Passing an `element_text()` with the right text properties to this argument will change the text properties in your chart (surprising, I know.)
 
 ```{r}
 plt_with_labels +
@@ -163,7 +163,7 @@ plt_with_labels +
 ```
 
 
-And while you're at it in the `theme()` layer, you can give your title & caption a bit more room by aligning the text to the whole plot instead of aligning it to the grid panel.
+And while you're at it in the `theme()` layer, you can give your title and caption a bit more room by aligning the text to the whole plot instead of aligning it to the grid panel.
 That's done by setting `plot.title.position` and `caption.title.position` to `"plot"`.
 
 ```{r}
@@ -177,7 +177,7 @@ plt_with_labels +
 ```
 
 
-## Use other colors
+## Use a unique color palette
 
 Another quick method to change the look of your chart is to move away from the default colors.
 For example, you could use your brand colors (if you have them) or get colors from a nice color palette.
