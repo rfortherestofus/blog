@@ -188,10 +188,10 @@ knitr::include_graphics('basic_taylor_table.png')
 
 After applying styling you will get the first table that we saw earlier.
 Since the styling is not really part of this blog post, we'll not cover it.
-But you can take a peak at the code here:
+But you can take a peek at the code here:
 
 ```{r}
-#| ref-label: taylor-gt-wide
+#| label: taylor-gt-wide
 #| echo: true
 #| results: hide
 #| code-fold: true

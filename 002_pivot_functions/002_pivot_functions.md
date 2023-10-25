@@ -113,7 +113,7 @@ taylor_albums |>
 
 <img src="basic_taylor_table.png" style="width:70.0%" />
 
-After applying styling you will get the first table that we saw earlier. Since the styling is not really part of this blog post, we’ll not cover it. But you can take a peak at the code here:
+After applying styling you will get the first table that we saw earlier. Since the styling is not really part of this blog post, we’ll not cover it. But you can take a peek at the code here:
 
 ## But what if we only have long data?
 
@@ -166,6 +166,8 @@ taylor_longer |>
 #> 12 Midnights                   FALSE 2022-10-21                  85        8.3
 ```
 
-Nice. This completes the basics on `pivot_longer()` and `pivot_wider()`. To round off this blog post, let me give you a gif that shows you these functions in action.
+Nice. Now, to round off this blog post, let me give you a gif that shows you these functions in action.
 
 ![](tidyr-pivoting.gif)
+
+This is one of the amazing visualizations that you can find in the [tidyexplain repository on GitHub](https://github.com/gadenbuie/tidyexplain). And with that, we have completed the basics on `pivot_longer()` and `pivot_wider()`. Stay tuned for the more advanced stuff next week. 👋
