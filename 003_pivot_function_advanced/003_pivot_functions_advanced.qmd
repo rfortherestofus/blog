@@ -1,0 +1,252 @@
+---
+title: "Advanced tricks to put your data into the right format with `pivot_longer()` and `pivot_wider()`"
+author: Albert Rapp
+date: Nov 15, 2023
+toc: false
+format: gfm
+wrap: none
+knitr:
+  opts_chunk:
+    out.width: 70%
+    collapse: true
+    comment: "#>"
+editor_options: 
+  chunk_output_type: console
+---
+
+Last week, we started to learn about `pivot_longer()` and `pivot_wider()`.
+These are two essential functions to speed up you data wrangling process.
+Check out [the video and blog post from last week](https://rfortherestofus.com/2023/11/pivot-functions) if you haven't seen that yet.
+
+As promised, this week we continue on this path and learn some of the advanced tricks that these two functions have to offer.
+This should help you clean your data even faster.
+Let's begin by revisiting what we did last week.
+
+## Taylor Swift again
+
+Last week, we have worked with a data set from [tidyTuesday](https://github.com/rfordatascience/tidytuesday/blob/master/data/2023/2023-10-17/readme.md).
+And not just any data set, we worked with this data set about Taylor Swift albums.
+
+```{r}
+#| message: false
+#| warning: false
+library(tidyverse)
+taylor_albums <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-10-17/taylor_albums.csv') |> 
+  filter(!ep)
+taylor_albums 
+```
+
+We figured out that we can rearrange the data from the columns `metacritic_score` and `user_score` so that we can pass this new data set to `ggplot()` for quick plotting. 
+
+```{r}
+taylor_longer <- taylor_albums |> 
+  pivot_longer(
+    cols = c(metacritic_score, user_score),
+    names_to = 'score_type',
+    values_to = 'score'
+  )
+taylor_longer
+
+taylor_longer |> 
+  ggplot(aes(x = album_release, y = score, color = score_type)) +
+  geom_line() +
+  geom_point() +
+  facet_wrap(vars(score_type), scales = 'free_y') +
+  theme_minimal(base_size = 14, base_family = 'Source Sans Pro') +
+  labs(
+    x = element_blank(),
+    y = 'Score',
+    color = 'Type'
+  )
+```
+
+## Nicer labels
+
+Notice that in our previous chart, the labels are a bit reduntant.
+We always write `metacritic_score` or `user_score`.
+Why not just `Metacritic` or `User` (spelled with a capital letter)?
+
+Well, we could manually make this look nicer.
+But this would require working with the text variables using functions like `str_remove_all()` or `str_to_title()`.
+
+```{r}
+taylor_longer |> 
+  mutate(
+    score_type = score_type |> str_remove_all('_score') |> str_to_title() 
+  )
+```
+
+See how the labels in the `score_type` column now say what we'd want to show in a ggplot?
+That's great.
+We could pass this to `ggplot()` now and everything would be fine.
+But all of this was an extra step we had to do.
+Can't we just let `pivot_longer()` handle that as it's rearranging the data?
+
+Well, we're in luck.
+It turns out `pivot_longer()` can do all of this for us.
+The trick here is to also specifiy the arguments `names_pattern` and `names_transform`.
+Here's what they do.
+
+- `names_pattern`: Describes a so-called *regular expression (regex)* that describes the pattern of the column names and by specifying groups with `()` we can tell `pivot_longer()` which parts we want to extract.
+
+- `names_transform`: Describes a function that transforms the labels in the end. In our case this could just be `str_to_title` (without paranthesis).
+
+```{r}
+taylor_albums |> 
+  pivot_longer(
+    cols = c(metacritic_score, user_score),
+    names_to = 'score_type',
+    values_to = 'score',
+    names_pattern = '(.+)_score',
+    names_transform = str_to_title
+  )
+```
+
+Neat, this worked out pretty nicely.
+But what´s that `(.+)` we used?
+Here, this is part of the regular expression we built.
+And without going into too much details about regex in general, let's go through what we did here one by one.
+
+- `.`: This is a placeholder that can mean any character (except for a new line)
+- `+`: This means that whatever preceded this symbol, it can show up once or multiple times (but at least once).
+- `.+`: Together this means that this will "catch" any text that consist out of anything but a line break
+- `.+_score`: This means that this catches all patterns that consists out of text without line breaks that are followed by the text `_score`. This means that our regex describes the exact pattern that our column names `metacritic_score` and `user_score` have.
+- `(.+)_score`: Adding the parantheses tells `pivot_longer()` which part of the pattern we are interested in. Here that's what comes before `_score`.
+
+
+Oof. 
+That was a lot to digest, I know.
+You may wonder why it's worth figuring this stuff out.
+This technique really shines with more complex data sets that you may find in the wild.
+Let's have a look.
+
+
+## A more complex example
+
+Here's another data set from TidyTuesday.
+It's about the wages of nurses in different states of the US.
+
+```{r}
+nurses <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2021/2021-10-05/nurses.csv') |>  
+  janitor::clean_names()
+nurses
+```
+
+
+As you can see, this data set has a loooot of columns.
+It's pretty wide, you might say.
+Let's check out how wide by just considering the column names.
+
+```{r}
+colnames(nurses)
+```
+
+Let's narrow this down a little bit.
+We have a lot of columns about average, median and [percentiles](https://en.wikipedia.org/wiki/Percentile) of hourly and annual salary.
+We can select only those columns by using the tidyselect helper `matches()`.
+In there, we have to specify that we are looking for columns with the word 'hourly' or 'annual' in them.
+That's done with the `|` operator (another regex by the way).
+
+```{r}
+nurses |> 
+  select(state, year, matches('hourly|annual')) |> 
+  colnames()
+```
+
+Now look at those names.
+Do you see a pattern?
+Apart from the column `state` and `year`, we always have the following pattern
+
+- hourly or annual,
+- an underscore `_` and
+- one of the following words:
+    - "wage_avg", 
+    - "wage_median", 
+    - "salary_avg", 
+    - "salary_median", 
+    - some number followed by "th_percentile"
+
+
+This means that from each column we can actually extract two information:
+
+- Do we talk about hourly or annual salary?
+- What kind of quantity of that salary do we mean? Average, median or some other percentile?
+
+Luckily we can catch all of this with one regex that contains **two** groups (indicated by `()`).
+Here's how that could look in `pivot_longer()`.
+
+```{r}
+nurses |> 
+  select(state, year, matches('hourly|annual')) |> 
+  pivot_longer(
+    cols = -c(state, year),
+    names_pattern = '(.+)_(.+)',
+    names_to = c('timeframe', 'type'),
+    values_to = 'wage'
+  )
+```
+
+Oh no.
+It seems like the `timeframe` column contains more than just "hourly" or "annual".
+That's because our regex `(.+)_(.+)` was a bit ambiguous.
+Since the `.` operator catches all things including underscores `_` it is not clear weather `pivot_longer()` should split at the first or second underscore.
+
+But we can fix that.
+Instead of using `.` in the first group, we can use `[a-z]`.
+This means what we only want to "catch" things that contain lower letters a-z.
+As the percentiles also contain numbers (as in `25th_percentile`) we get an unambiguous split.
+
+```{r}
+nurses_longer <- nurses |> 
+  select(state, year, matches('hourly|annual')) |> 
+  pivot_longer(
+    cols = -c(state, year),
+    names_pattern = '([a-z]+)_(.+)',
+    names_to = c('timeframe', 'type'),
+    values_to = 'wage'
+  )
+nurses_longer
+```
+
+And with that data set we could now take a look at a specific state in a chart.
+
+```{r}
+#| fig-width: 12
+#| fig-height: 10
+#| out-width: 100%
+nurses_longer |> 
+  filter(state == 'Alabama') |> 
+  ggplot(aes(x = year, y = wage, group = type)) +
+  geom_line() +
+  geom_text(
+    data = nurses_longer |> filter(state == 'Alabama', year == 2020),
+    aes(label = type),
+    hjust = 0,
+    nudge_x = 0.5,
+    size = 6,
+    family = 'Source Sans Pro'
+  ) +
+  facet_wrap(vars(timeframe), scales = 'free_y') +
+  theme_minimal(base_size = 24, base_family = 'Source Sans Pro') +
+  coord_cartesian(xlim = c(1998, 2030)) +
+  labs(
+    x = element_blank(),
+    y = 'Salary',
+    title = 'Salary of Nurses in Alabama'
+  )
+```
+
+# Conclusion
+
+Of course, there's lots more to do to polish our nurses chart.
+But the first step here was (once again) getting the data into the right format.
+In this blog post, we have seen that we can use pretty advanced tricks like regex to let `pivot_longer()` (and similarly `pivot_wider()`) rearrange the data.
+
+Clearly, these advanced steps require a bit getting used to.
+So don't worry if you don't get it immediately.
+And with that said, I'll give you a little bit of time to think these things through and then I'll see you next week 👋
+
+
+
+
+
