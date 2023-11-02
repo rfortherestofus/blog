@@ -1,0 +1,62 @@
+
+
+```{r}
+library(tidyverse)
+taylor_albums <- readr::read_csv(
+  'https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-10-17/taylor_albums.csv'
+  ) |> 
+  filter(!ep)
+taylor_albums 
+```
+
+```{r}
+taylor_rearranged <- taylor_albums |> 
+  pivot_longer(
+    cols = c(metacritic_score, user_score),
+    names_to = 'score_type',
+    values_to = 'score'
+  )
+```
+
+
+
+```{r}
+taylor_rearranged |> 
+  ggplot(aes(x = album_release, y = score, col = score_type)) +
+  geom_line() +
+  facet_wrap(vars(score_type), scales = 'free_y')
+```
+
+
+```{r}
+taylor_rearranged |> 
+  pivot_wider(
+    names_from = score_type,
+    values_from = score
+  )
+```
+
+
+```{r}
+taylor_albums |> 
+  select(-ep) |> 
+  gt::gt() 
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

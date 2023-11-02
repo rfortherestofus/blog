@@ -115,6 +115,34 @@ taylor_albums |>
 
 After applying styling you will get the first table that we saw earlier. Since the styling is not really part of this blog post, we’ll not cover it. But you can take a peek at the code here:
 
+<details>
+<summary>Code</summary>
+
+``` r
+library(gt)
+tbl <- taylor_albums |> 
+  select(album_name, album_release, metacritic_score, user_score) |> 
+  gt() |> 
+  cols_label(
+    album_name = 'Album',
+    album_release = 'Release',
+    metacritic_score = 'Metacritic',
+    user_score = 'User'
+  ) |> 
+  tab_spanner(
+    label = 'Score',
+    columns = 3:4
+  ) |> 
+  tab_header(
+    title = 'Taylor Swift Album Ratings',
+    subtitle = 'Data from TidyTuesday 2023 - Week 42'
+  ) |> 
+  gtExtras::gt_theme_538() 
+tbl
+```
+
+</details>
+
 ## But what if we only have long data?
 
 Now imagine for a second that we only have the data set `taylor_longer`. In case you forgot, here’s how it looks.

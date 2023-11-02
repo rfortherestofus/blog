@@ -1,4 +1,4 @@
-# Four Steps to Improve Your Chart Quickly
+# Five Steps to Improve Your Chart Quickly
 Albert Rapp
 2023-11-01
 
@@ -146,4 +146,4 @@ plt_with_labels +
 
 ## Conclusion
 
-Those were our four quick changes that you can insert into any chart that you create. Chances are that you won’t win any awards for most beautiful dataviz with this. But these little changes (and in particular the active title) will at least give your chart a fighting chance to communicate your insight to an audience.
+Those were our five quick changes that you can insert into any chart that you create. Chances are that you won’t win any awards for most beautiful dataviz with this. But these little changes (and in particular the active title) will at least give your chart a fighting chance to communicate your insight to an audience.
