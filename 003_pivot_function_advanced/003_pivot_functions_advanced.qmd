@@ -18,13 +18,13 @@ Last week, we started to learn about `pivot_longer()` and `pivot_wider()`.
 These are two essential functions to speed up you data wrangling process.
 Check out [the video and blog post from last week](https://rfortherestofus.com/2023/11/pivot-functions) if you haven't seen that yet.
 
-As promised, this week we continue on this path and learn some of the advanced tricks that these two functions have to offer.
+As promised, this week we'll continue on this path and learn some of the advanced tricks that these two functions have to offer.
 This should help you clean your data even faster.
 Let's begin by revisiting what we did last week.
 
 ## Taylor Swift again
 
-Last week, we have worked with a data set from [tidyTuesday](https://github.com/rfordatascience/tidytuesday/blob/master/data/2023/2023-10-17/readme.md).
+Last week, we worked with a data set from [tidyTuesday](https://github.com/rfordatascience/tidytuesday/blob/master/data/2023/2023-10-17/readme.md).
 And not just any data set, we worked with this data set about Taylor Swift albums.
 
 ```{r}
@@ -62,7 +62,7 @@ taylor_longer |>
 
 ## Nicer labels
 
-Notice that in our previous chart, the labels are a bit reduntant.
+Notice that in our previous chart, the labels are a bit redundant.
 We always write `metacritic_score` or `user_score`.
 Why not just `Metacritic` or `User` (spelled with a capital letter)?
 
@@ -84,10 +84,10 @@ Can't we just let `pivot_longer()` handle that as it's rearranging the data?
 
 Well, we're in luck.
 It turns out `pivot_longer()` can do all of this for us.
-The trick here is to also specifiy the arguments `names_pattern` and `names_transform`.
+The trick here is to also specify the arguments `names_pattern` and `names_transform`.
 Here's what they do.
 
-- `names_pattern`: Describes a so-called *regular expression (regex)* that describes the pattern of the column names and by specifying groups with `()` we can tell `pivot_longer()` which parts we want to extract.
+- `names_pattern`: Describes a so-called *regular expression (regex)* that describes the pattern of the column names and by specifying groups with `()` we can tell `pivot_longer()` which parts we want to extract. 
 
 - `names_transform`: Describes a function that transforms the labels in the end. In our case this could just be `str_to_title` (without paranthesis).
 
@@ -104,14 +104,16 @@ taylor_albums |>
 
 Neat, this worked out pretty nicely.
 But what´s that `(.+)` we used?
-Here, this is part of the regular expression we built.
-And without going into too much details about regex in general, let's go through what we did here one by one.
+Here, this is part of the regular expression we built. 
+If you're not familiar, regular expressions are a way to describe complex text patterns. 
+They use an unusual syntax (described below), but are very powerful once you learn to use them (they are covered extensively in our [Data Cleaning with R course](https://rfortherestofus.com/courses/data-cleaning/)).
+So, without going into too much details about regex in general, let's go through what we did here one by one.
 
 - `.`: This is a placeholder that can mean any character (except for a new line)
 - `+`: This means that whatever preceded this symbol, it can show up once or multiple times (but at least once).
 - `.+`: Together this means that this will "catch" any text that consist out of anything but a line break
 - `.+_score`: This means that this catches all patterns that consists out of text without line breaks that are followed by the text `_score`. This means that our regex describes the exact pattern that our column names `metacritic_score` and `user_score` have.
-- `(.+)_score`: Adding the parantheses tells `pivot_longer()` which part of the pattern we are interested in. Here that's what comes before `_score`.
+- `(.+)_score`: Adding the parentheses tells `pivot_longer()` which part of the pattern we are interested in. Here that's what comes before `_score`.
 
 
 Oof. 
@@ -169,10 +171,10 @@ Apart from the column `state` and `year`, we always have the following pattern
 
 This means that from each column we can actually extract two information:
 
-- Do we talk about hourly or annual salary?
-- What kind of quantity of that salary do we mean? Average, median or some other percentile?
+- Are we talking about hourly or annual salary?
+- What kind of quantity of that salary do we mean: average, median or some other percentile?
 
-Luckily we can catch all of this with one regex that contains **two** groups (indicated by `()`).
+Luckily, we can catch all of this with one regex that contains **two** groups (indicated by `()`).
 Here's how that could look in `pivot_longer()`.
 
 ```{r}

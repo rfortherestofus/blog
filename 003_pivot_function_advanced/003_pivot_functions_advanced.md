@@ -4,11 +4,11 @@ Albert Rapp
 
 Last week, we started to learn about `pivot_longer()` and `pivot_wider()`. These are two essential functions to speed up you data wrangling process. Check out [the video and blog post from last week](https://rfortherestofus.com/2023/11/pivot-functions) if you haven’t seen that yet.
 
-As promised, this week we continue on this path and learn some of the advanced tricks that these two functions have to offer. This should help you clean your data even faster. Let’s begin by revisiting what we did last week.
+As promised, this week we’ll continue on this path and learn some of the advanced tricks that these two functions have to offer. This should help you clean your data even faster. Let’s begin by revisiting what we did last week.
 
 ## Taylor Swift again
 
-Last week, we have worked with a data set from [tidyTuesday](https://github.com/rfordatascience/tidytuesday/blob/master/data/2023/2023-10-17/readme.md). And not just any data set, we worked with this data set about Taylor Swift albums.
+Last week, we worked with a data set from [tidyTuesday](https://github.com/rfordatascience/tidytuesday/blob/master/data/2023/2023-10-17/readme.md). And not just any data set, we worked with this data set about Taylor Swift albums.
 
 ``` r
 library(tidyverse)
