@@ -361,14 +361,6 @@ penguins |>
 
 Now we have a gorgeous filled density plot with no legend and clearly labeled lines.
 
-# Resources and Further Reading
+# Documentation
 
-I hope you're excited to try using `{geomtextpath}` on your next plot! Here are some links to help you on your plotting journey:
-
--   [GitHub Page for {geomtextplot}](https://allancameron.github.io/geomtextpath/)
-
-    -   Includes articles and reference guides!
-
--   [CRAN project page](https://cran.r-project.org/web/packages/geomtextpath/vignettes/geomtextpath.html)
-
-Happy plotting!
+I hope you're excited to try using `{geomtextpath}` on your next plot! I really recommend reading through the [GitHub Pages documentation](https://allancameron.github.io/geomtextpath/) to learn even more, especially all of the pages in the Articles section. Happy plotting!
