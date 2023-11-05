@@ -29,7 +29,7 @@ avg_hwy <- vehicles |>
 
 ```
 
-Have you ever created a great line graph only to feel frustrated that it requires a legend? What if you could label the lines directly? Even the curvy ones? And have the text follow the curvature of the lines!
+Have you ever created a great line graph only to feel frustrated that it requires a messy, hard to read legend? What if you could label the lines directly? Even the curvy ones? And have the text follow the curvature of the lines!  
 
 ```{r debut line graph}
 #| message: false
@@ -53,7 +53,7 @@ avg_hwy |>
   theme(legend.position = "none")
 ```
 
-With the `{geomtextpath}` package, you can annotate your `ggplot` visualizations with clean labels and customized text annotations that can follow the shapes in your data, and it's so much easier to get started than you'd imagine.
+With the `{geomtextpath}` package, you can annotate your `ggplot2` visualizations with clean labels and customized text annotations that can follow the shapes in your data, and it's so much easier to get started than you'd imagine.
 
 # The Basics
 
@@ -116,11 +116,11 @@ avg_hwy |>
   theme(legend.position = "none") 
 ```
 
-That's cleaner already! And notice that the same `linewidth =` argument we used inside `geom_line()` works inside `geom_textline()` as well. We also needed to add the `label =` argument inside our plot's `aes()` call to let `geom_textline()` know what to use as a label value.
+That's cleaner already! And notice that the same `linewidth` argument we used inside `geom_line()` works inside `geom_textline()` as well. We also needed to add the `label` argument inside our plot's `aes()` call to let `geom_textline()` know what to use as a label value.
 
-Now, let's move our text up to float just above our lines by adding an argument for `vjust =`, increase the font size using `size =`, and smooth out the shape of the text using `text_smoothing =`, which accepts values between 0 and 100.  
+Now, let's move our text up to float just above our lines by adding an argument for `vjust`, increase the font size using `size`, and smooth out the shape of the text using `text_smoothing`, which accepts values between 0 and 100.  
 
-If you wanted to move the label back and forth horizontally along your line, you could also use `hjust =`. You can think of the `hjust` number as a value from 0 to 1 where 0 is the left-most point on the line and 1 is the right-most point. The default value is 0.5, which is the half-way point (50%) of the line. We'll stick with the default for our plot.
+If you wanted to move the label back and forth horizontally along your line, you could also use `hjust`. You can think of the `hjust` number as a value from 0 to 1 where 0 is the left-most point on the line and 1 is the right-most point. The default value is 0.5, which is the half-way point (50%) of the line. We'll stick with the default for our plot.
 
 ```{r line graph with labels above line}
 #| message: false
@@ -225,7 +225,7 @@ tibble(
 
 Since a Break Even Analysis is used to show how many units we need to sell to cover our fixed costs and start earning a profit, it would be useful to add lines showing what our fixed costs are and how many units we need to sell to break even. We can add horizontal and vertical annotation lines using {geomtextpath} with `geom_texthline()` and `geom_textvline()`. These replace `geom_abline()`.
 
-We don't want our annotations to dominate the plot, so we can use dotted lines for them. Just like in `geom_line()`, we can specify line type with the `linetype =` argument. We can also get a little fancy by parameterizing our labels using `paste0()` so that they will always be correct, even if the data changes.
+We don't want our annotations to dominate the plot, so we can use dotted lines for them. Just like in `geom_line()`, we can specify line type with the `linetype` argument. We can also get a little fancy by parameterizing our labels using `paste0()` so that they will always be correct, even if the data changes.
 
 ```{r break even plot: with ab lines}
 #| message: false
