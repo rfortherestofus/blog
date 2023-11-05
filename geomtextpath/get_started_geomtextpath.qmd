@@ -6,6 +6,9 @@ execute:
   warning: false
 editor_options: 
   chunk_output_type: console
+knitr: 
+  opts_chunk:
+    fig.align: center
 ---
 
 ```{r invisible set up}
@@ -103,19 +106,19 @@ avg_hwy |>
   ggplot(aes(x = year, 
              y = mean_hwy, 
              color = drive,
-             label = drive)) +      # Add label argument to aes() to match color
-  geom_textline(linewidth = 0.75) + # Replace geom_line() with geom_textline()
+             label = drive)) +      
+  geom_textline(linewidth = 0.75) + 
   labs(title = "Average Highway Gas Mileage",
        x = NULL,
        y = NULL) +
   lims( y = c(18, 22)) +
   theme_minimal(base_size = 16) +
-  theme(legend.position = "none")   # Remove legend
+  theme(legend.position = "none") 
 ```
 
 That's cleaner already! And notice that the same `linewidth =` argument we used inside `geom_line()` works inside `geom_textline()` as well. We also needed to add the `label =` argument inside our plot's `aes()` call to let `geom_textline()` know what to use as a label value.
 
-Now, let's move our text up to float just above our lines by adding an argument for `vjust =`, increase the font size using `size =`, and smooth out the shape of the text using `text_smoothing =`.
+Now, let's move our text up to float just above our lines by adding an argument for `vjust =`, increase the font size using `size =`, and smooth out the shape of the text using `text_smoothing =`, which accepts values between 0 and 100.  
 
 If you wanted to move the label back and forth horizontally along your line, you could also use `hjust =`. You can think of the `hjust` number as a value from 0 to 1 where 0 is the left-most point on the line and 1 is the right-most point. The default value is 0.5, which is the half-way point (50%) of the line. We'll stick with the default for our plot.
 
@@ -129,9 +132,9 @@ avg_hwy |>
              color = drive,
              label = drive)) +
   geom_textline(linewidth = 0.75,
-                text_smoothing = 40, # text_smoothing default = 0, max is 100
-                vjust = -0.25,  # vjust is a vertical adjustment
-                size = 5) + # default is 3.88, let's increase to 5
+                text_smoothing = 40, 
+                vjust = -0.25, 
+                size = 5) + 
   labs(title = "Average Highway Gas Mileage",
        x = NULL,
        y = NULL) +
@@ -202,24 +205,23 @@ break_even |>
 
 This plot is clean and readable. Notice that we used `hjust = 0.7` to move the labels over from the default half-way point of the lines (`hjust = 0.5`) to the 70% point of the lines using `hjust = 0.7`.
 
-```{r number line plot}
+```{r number line plot, fig.format='png', fig.width=6, fig.height=1.25, fig.align="center"}
 #| message: false
 #| warning: false
-#| eval: false
 #| echo: false
 
 tibble(
-  x = seq(0, 100, 10), 
+  x = seq(0, 1, 0.1), 
   y = 0
 ) |> 
-  ggplot(aes(x = seq(0, 100, 10), y = 0, label = x)) +
+  ggplot(aes(x = x, y = y, label = x)) +
   geom_line(color = "grey", linetype = "dotted", linewidth = .75) +
   geom_text(size = 6) +
-  lims(x = c(0, 100), y = c(0, 0)) +
+  lims(x = c(0, 1), y = c(0, 0)) +
   theme_void()
 ```
 
-![](images/number-line.png){fig-align="center"}
+
 
 Since a Break Even Analysis is used to show how many units we need to sell to cover our fixed costs and start earning a profit, it would be useful to add lines showing what our fixed costs are and how many units we need to sell to break even. We can add horizontal and vertical annotation lines using {geomtextpath} with `geom_texthline()` and `geom_textvline()`. These replace `geom_abline()`.
 
@@ -280,7 +282,7 @@ penguins <- palmerpenguins::penguins |>
   na.omit()
 ```
 
-We could create a density plot using the `geom_textdensity()` function from `{geomtextpath}`, like this.
+We **could** create a density plot using the `geom_textdensity()` function from `{geomtextpath}`, like this.
 
 ```{r penguins text density}
 #| message: false
@@ -293,7 +295,8 @@ penguins |>
              label = island)) +
   geom_textdensity(linewidth = 1, 
                    size = 4) +
-  labs(title = "Do Adelie penguins from different islands have different bill lengths?",
+  labs(title = "Adelie Penguins from Different Islands",
+       subtitle = "Do they have different bill lengths?",
        x = "Bill Length (mm)",
        y = "Density") +
   theme_minimal(base_size = 16) +
@@ -315,7 +318,8 @@ penguins |>
   geom_density(alpha = .5) +
   scale_color_manual(values = c("#CEA804", "#EA5F94", "#0000FF")) +
   scale_fill_manual(values = c("#FFD700", "#EA5F94", "#0000FF")) +
-  labs(title = "Do Adelie penguins from different islands have different bill lengths?",
+  labs(title = "Adelie Penguins from Different Islands",
+       subtitle = "Do they have different bill lengths?",
        x = "Bill Length (mm)",
        y = "Density",
        fill = "Island", 
@@ -341,14 +345,16 @@ penguins |>
   geom_textdensity(text_only = TRUE,
                    text_smoothing = 25,
                    hjust = "ymax", 
-                   vjust = -0.4, 
+                   vjust = -0.35, 
                    spacing = 50, 
                    size = 5) +
   scale_color_manual(values = c("#CEA804", "#EA5F94", "#0000FF")) +
   scale_fill_manual(values = c("#FFD700", "#EA5F94", "#0000FF")) +
-  labs(title = "Do Adelie penguins from different islands have different bill lengths?",
+  labs(title = "Adelie Penguins from Different Islands",
+       subtitle = "Do they have different bill lengths?",
        x = "Bill Length (mm)",
        y = "Density") +
+  ylim(c(0, .16)) +
   theme_minimal(base_size = 16) +
   theme(legend.position = "none")
 ```
