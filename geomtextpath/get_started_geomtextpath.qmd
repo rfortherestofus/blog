@@ -1,7 +1,7 @@
 ---
 title: "Getting Started with {geomtextpath}"
 author: "Libby Heeren"
-format: html
+format: gfm
 execute: 
   warning: false
 editor_options: 
@@ -379,7 +379,7 @@ You can do that, too! Let's create a beautiful overlapping density plot to demon
 #| warning: false
 
 penguins <- palmerpenguins::penguins |> 
-  na.omit()
+  drop_na()
 ```
 
 We **could** create a plain density plot using the `geom_textdensity()` function from `{geomtextpath}`.
@@ -479,6 +479,6 @@ penguins |>
 
 Now we have a gorgeous filled density plot with no legend and clearly labeled lines.
 
-# Documentation
+# Learn more about `{geomtextpath}`
 
-I hope you're excited to try using `{geomtextpath}` on your next plot. I really recommend reading through the [GitHub Pages documentation](https://allancameron.github.io/geomtextpath/) to learn even more, especially all of the pages in the Articles section and the table of `geom` equivalents on the main page, because this tutorial is just the tip of the iceberg. Happy plotting!
+I hope you're excited to try using `{geomtextpath}` on your next plot. I really recommend reading through the [package documentation](https://allancameron.github.io/geomtextpath/) to learn even more, especially all of the pages in the Articles section and the table of `geom` equivalents on the main page, because this tutorial is just the tip of the iceberg. Happy plotting!
