@@ -2,7 +2,11 @@
 Albert Rapp
 2023-11-29
 
-In our consulting work, we often think about what could be a better visualization for our clients. And sometimes it’s really small tweaks. For example, it can be a good idea to stack bar charts to show that your data is part of a whole. To illustrate this, check out this bar chart that represents the results of some absolutely fictitious survey.
+In our [consulting work](https://rfortherestofus.com/consulting), we often think about what could be a better visualization for our clients. And sometimes it’s really small tweaks. One example of this is adding a gray background behind bar charts to show percentages as a part of the whole. We did this, for example, in [reports about Connecticut housing](https://rfortherestofus.test/success-stories/pschousing).
+
+![](psc-gray-bg-chart.png)
+
+To show how to make this in R, let’s start with a bar chart that represents the results of some absolutely fictitious survey.
 
 <img src="005_part_of_a_whole_bars_files/figure-commonmark/unnamed-chunk-1-1.png" style="width:100.0%" />
 
