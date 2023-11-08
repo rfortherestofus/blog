@@ -106,17 +106,13 @@ Now, let’s make a few more adjustments in order to:
 - increase the font size to 5 using `size`, which has a default value of
   3.88
 
-- smooth out the shape of the text using `text_smoothing`, which accepts
-  values between 0 and 100
-
 ``` r
 avg_hwy |> 
   ggplot(aes(x = year, 
              y = mean_hwy, 
              color = drive,
              label = drive)) +
-  geom_textline(linewidth = 0.75,
-                text_smoothing = 40, 
+  geom_textline(linewidth = 0.75, 
                 vjust = -0.25, 
                 size = 5) + 
   labs(title = "Average Highway Gas Mileage",
@@ -128,15 +124,98 @@ avg_hwy |>
 ```
 
 <img
-src="get_started_geomtextpath_files/figure-commonmark/line%20graph%20with%20labels%20above%20line-1.png"
+src="get_started_geomtextpath_files/figure-commonmark/line%20graph%20with%20labels%20above%20line,%20no%20smoothing-1.png"
 data-fig-align="center" />
 
-That looks perfect! And it wasn’t too complicated. If you’re wondering
-what all the default aesthetic values are for `geom_textline` are, you
-can find them the same way you’d find them for a `geom` in `{ggplot2}`:
+This is looking pretty good, but the text could look better if we
+smoothed it out a bit. We can use the `text_smoothing` argument, which
+accepts values between 0 and 100. Let’s see what a couple of different
+values look like.
 
 ``` r
-geomtextpath::GeomTextline$default_aes
+avg_hwy |> 
+  ggplot(aes(x = year, 
+             y = mean_hwy, 
+             color = drive,
+             label = drive)) +
+  geom_textline(linewidth = 0.75, 
+                vjust = -0.25, 
+                size = 5,
+                text_smoothing = 75) + 
+  labs(title = "Average Highway Gas Mileage",
+       x = NULL,
+       y = NULL) +
+  lims( y = c(18, 22)) +
+  theme_minimal(base_size = 16) +
+  theme(legend.position = "none")
+```
+
+<img
+src="get_started_geomtextpath_files/figure-commonmark/line%20graph%20with%20labels%20above%20line,%2075%20smoothing-1.png"
+data-fig-align="center" />
+
+Above, we tried `text_smoothing = 75` and that’s smoothed it out to
+almost be a flat line! Let’s try a little bit less.
+
+``` r
+avg_hwy |> 
+  ggplot(aes(x = year, 
+             y = mean_hwy, 
+             color = drive,
+             label = drive)) +
+  geom_textline(linewidth = 0.75, 
+                vjust = -0.25, 
+                size = 5,
+                text_smoothing = 25) + 
+  labs(title = "Average Highway Gas Mileage",
+       x = NULL,
+       y = NULL) +
+  lims( y = c(18, 22)) +
+  theme_minimal(base_size = 16) +
+  theme(legend.position = "none")
+```
+
+<img
+src="get_started_geomtextpath_files/figure-commonmark/line%20graph%20with%20labels%20above%20line,%2025%20smoothing-1.png"
+data-fig-align="center" />
+
+`text_smoothing = 25` is better, but I think somewhere in between will
+work best. Let’s try `text_smoothing = 40`.
+
+``` r
+avg_hwy |> 
+  ggplot(aes(x = year, 
+             y = mean_hwy, 
+             color = drive,
+             label = drive)) +
+  geom_textline(linewidth = 0.75, 
+                vjust = -0.25, 
+                size = 5,
+                text_smoothing = 40) + 
+  labs(title = "Average Highway Gas Mileage",
+       x = NULL,
+       y = NULL) +
+  lims( y = c(18, 22)) +
+  theme_minimal(base_size = 16) +
+  theme(legend.position = "none")
+```
+
+<img
+src="get_started_geomtextpath_files/figure-commonmark/line%20graph%20with%20labels%20above%20line,%2040%20smoothing-1.png"
+data-fig-align="center" />
+
+That looks perfect! And it wasn’t too complicated.
+
+If you’re wondering what all the default aesthetic values are for
+`geom_textline`, you can find them by typing in the `geom` name in camel
+case into the console (so, starting with a capital G). For instance, if
+I have the `{geomtextpath}` package loaded already and I type in
+`GeomTextLine`, I can then access the default aesthetic values by adding
+`$default_aes`. This also works for any `ggplot` `geom` functions you
+might be interested in.
+
+``` r
+GeomTextline$default_aes
 ```
 
     Aesthetic mapping: 
@@ -158,9 +237,8 @@ geomtextpath::GeomTextline$default_aes
 ### What about `geom_label`?
 
 Glad you asked. So far, we’ve replaced `geom_text` type functions, but
-there are label versions of all the `{geomtextpath}` functions, too! Try
-running this code that uses `geom_labelline()` on your own to see what
-happens.
+there are label versions of all the `{geomtextpath}` functions, too!
+Like this code that uses `geom_labelline()` instead.
 
 ``` r
 avg_hwy |> 
@@ -178,6 +256,10 @@ avg_hwy |>
   theme_minimal(base_size = 16) +
   theme(legend.position = "none")
 ```
+
+<img
+src="get_started_geomtextpath_files/figure-commonmark/line%20graph%20with%20geom_labelline%20instead-1.png"
+data-fig-align="center" />
 
 # Basic Plot Annotation
 
@@ -199,11 +281,6 @@ break_even <-
   break_even_units = fixed_cost / (price - variable_cost)
 )
 ```
-
-Imagine you’re a business that sell a physical product. Regardless of
-how many products you sell each month, you’ve always got fixed costs
-that have to be paid. The goal is to sell enough units that you cover
-your fixed costs and start making a profit.
 
 Using `geom_textline()`, we’ll plot the **total cost in red** and the
 **total revenue in green**.
@@ -258,14 +335,10 @@ the lines using `hjust = 0.7`. Think of it like a number line.
 src="get_started_geomtextpath_files/figure-commonmark/number%20line%20plot-1.png"
 data-fig-align="center" />
 
-Yes, that cool curved annotation **was** made with the help of
-`geomtextpath::geom_textcurve()` 👀  
 $~$
 
-Since a Break Even Analysis is used to show how many units we need to
-sell to cover our fixed costs and start earning a profit, it would be
-useful to add lines showing what our fixed costs are and how many units
-we need to sell to break even.
+It would be useful to add lines showing what our fixed costs are and how
+many units we need to sell to break even.
 
 $~$
 
