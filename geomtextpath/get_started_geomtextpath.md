@@ -89,14 +89,11 @@ That’s cleaner already! Here’s what we did:
 
 - removed the legend
 
-$~$
-
 You’ll notice that the same `linewidth = 0.75` argument we used inside
 `geom_line()` works inside `geom_textline()` as well. That’s because
 `geom_textline()` [shares some
 aesthetics](https://allancameron.github.io/geomtextpath/articles/aesthetics.html#aesthetics)
-with both `geom_line()` and `geom_text()` from `{ggplot2}`.  
-$~$
+with both `geom_line()` and `geom_text()` from `{ggplot2}`.
 
 Now, let’s make a few more adjustments in order to:
 
@@ -179,8 +176,8 @@ avg_hwy |>
 src="get_started_geomtextpath_files/figure-commonmark/line%20graph%20with%20labels%20above%20line,%2025%20smoothing-1.png"
 data-fig-align="center" />
 
-`text_smoothing = 25` is better, but I think somewhere in between will
-work best. Let’s try `text_smoothing = 40`.
+Using `text_smoothing = 25` is better, but I think somewhere in between
+will work best. Let’s try `text_smoothing = 40` next.
 
 ``` r
 avg_hwy |> 
@@ -212,7 +209,8 @@ case into the console (so, starting with a capital G). For instance, if
 I have the `{geomtextpath}` package loaded already and I type in
 `GeomTextLine`, I can then access the default aesthetic values by adding
 `$default_aes`. This also works for any `ggplot` `geom` functions you
-might be interested in.
+might be interested in. RStudio’s auto-complete will help you out once
+you start typing.
 
 ``` r
 GeomTextline$default_aes
@@ -314,8 +312,7 @@ src="get_started_geomtextpath_files/figure-commonmark/break%20even%20plot-%20no%
 data-fig-align="center" />
 
 This plot is clean and readable, but we’re going to make it easier to
-understand.  
-$~$
+understand.
 
 Here’s what we’ve done so far:
 
@@ -327,33 +324,19 @@ Here’s what we’ve done so far:
 
 - removed the legend
 
-$~$ This time, we used `hjust = 0.7` to move the text over from the
-default half-way points of the lines (`hjust = 0.5`) to the 70% mark of
-the lines using `hjust = 0.7`. Think of it like a number line.
-
-<img
-src="get_started_geomtextpath_files/figure-commonmark/number%20line%20plot-1.png"
-data-fig-align="center" />
-
-$~$
-
-It would be useful to add lines showing what our fixed costs are and how
-many units we need to sell to break even.
-
-$~$
+It would also be useful to add lines showing what our fixed costs are
+and how many units we need to sell to break even.
 
 We can add horizontal and vertical annotation lines using {geomtextpath}
 by calling:
 
 - `geom_texthline()`, which needs the `yintercept` and `label` arguments
-  in the `aes()`
+  in the `aes()` to create a horizontal line
 
 - `geom_textvline()`, which needs the `xintercept` and `label` arguments
-  in the `aes()`
+  in the `aes()` to create a vertical line
 
 These functions replace `geom_abline()` in `{ggplot2}`.
-
-$~$
 
 We don’t want our annotations to dominate the plot, so we can use
 `"dotted"` line types for them. Just like in `geom_line()`, we can
@@ -404,8 +387,7 @@ src="get_started_geomtextpath_files/figure-commonmark/break%20even%20plot-%20wit
 data-fig-align="center" />
 
 There we go. Our plot shows all the important information and we avoided
-using a cluttered legend.  
-$~$
+using a cluttered legend.
 
 For these new dotted lines, here are the arguments we used:
 
@@ -420,6 +402,11 @@ For these new dotted lines, here are the arguments we used:
 
 - `size = 4.5` to increase the text size, but keep it smaller than text
   on the main lines
+
+It’s worth noting that `hjust` moves the text label along the line
+whether it’s a horizontal line (moving it left or right), or a vertical
+line (moving it down or up). In the same manner, `vjust` moves the label
+above and below the line, whether the line is vertical or horizontal.
 
 # What if I just want the text?
 
@@ -458,8 +445,6 @@ penguins |>
 src="get_started_geomtextpath_files/figure-commonmark/penguins%20text%20density-1.png"
 data-fig-align="center" />
 
-$~$
-
 But, what if we want to create a beautifully transparent filled density
 plot with custom colors, like this?
 
@@ -496,8 +481,6 @@ take note: *we have to add it **after**`geom_density()` if we want the
 labels to show up on top of the plots!* Plots are like onions. They have
 layers 🧅
 
-$~$
-
 We’ll use all the adjustment arguments we’ve learned so far, plus a few
 new ones:
 
@@ -505,8 +488,7 @@ new ones:
   plots (where the y-values are highest)
 
 - `spacing = 50` to space out our letters so they’re not too squished
-  together over those curves  
-  $~$
+  together over those curves
 
 We’ll also add `ylim(c(0, .16))` to our plot this time to add just the
 tiniest bit of height to our y-axis limit so that our floating text
