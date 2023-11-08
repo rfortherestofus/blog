@@ -8,7 +8,7 @@ As promised, this week we’ll continue on this path and learn some of the advan
 
 ## Taylor Swift again
 
-Last week, we worked with a data set from [tidyTuesday](https://github.com/rfordatascience/tidytuesday/blob/master/data/2023/2023-10-17/readme.md). And not just any data set, we worked with this data set about Taylor Swift albums.
+Last week, we worked with a data set from [TidyTuesday](https://github.com/rfordatascience/tidytuesday/blob/master/data/2023/2023-10-17/readme.md). And not just any data set, we worked with this data set about Taylor Swift albums.
 
 ``` r
 library(tidyverse)
@@ -74,7 +74,7 @@ taylor_longer |>
 
 ## Nicer labels
 
-Notice that in our previous chart, the labels are a bit reduntant. We always write `metacritic_score` or `user_score`. Why not just `Metacritic` or `User` (spelled with a capital letter)?
+Notice that in our previous chart, the labels are a bit redundant. We always write `metacritic_score` or `user_score`. Why not just `Metacritic` or `User` (spelled with a capital letter)?
 
 Well, we could manually make this look nicer. But this would require working with the text variables using functions like `str_remove_all()` or `str_to_title()`.
 
@@ -101,7 +101,7 @@ taylor_longer |>
 
 See how the labels in the `score_type` column now say what we’d want to show in a ggplot? That’s great. We could pass this to `ggplot()` now and everything would be fine. But all of this was an extra step we had to do. Can’t we just let `pivot_longer()` handle that as it’s rearranging the data?
 
-Well, we’re in luck. It turns out `pivot_longer()` can do all of this for us. The trick here is to also specifiy the arguments `names_pattern` and `names_transform`. Here’s what they do.
+Well, we’re in luck. It turns out `pivot_longer()` can do all of this for us. The trick here is to also specify the arguments `names_pattern` and `names_transform`. Here’s what they do.
 
 - `names_pattern`: Describes a so-called *regular expression (regex)* that describes the pattern of the column names and by specifying groups with `()` we can tell `pivot_longer()` which parts we want to extract.
 
@@ -132,19 +132,19 @@ taylor_albums |>
 #> # ℹ 14 more rows
 ```
 
-Neat, this worked out pretty nicely. But what´s that `(.+)` we used? Here, this is part of the regular expression we built. And without going into too much details about regex in general, let’s go through what we did here one by one.
+Neat, this worked out pretty nicely. But what´s that `(.+)` we used? Here, this is part of the regular expression we built. If you’re not familiar, regular expressions are a way to describe complex text patterns. They use an unusual syntax (described below), but are very powerful once you learn to use them (they are covered extensively in our [Data Cleaning with R course](https://rfortherestofus.com/courses/data-cleaning/)). So, without going into too much details about regex in general, let’s go through what we did here one by one.
 
 - `.`: This is a placeholder that can mean any character (except for a new line)
 - `+`: This means that whatever preceded this symbol, it can show up once or multiple times (but at least once).
 - `.+`: Together this means that this will “catch” any text that consist out of anything but a line break
 - `.+_score`: This means that this catches all patterns that consists out of text without line breaks that are followed by the text `_score`. This means that our regex describes the exact pattern that our column names `metacritic_score` and `user_score` have.
-- `(.+)_score`: Adding the parantheses tells `pivot_longer()` which part of the pattern we are interested in. Here that’s what comes before `_score`.
+- `(.+)_score`: Adding the parentheses tells `pivot_longer()` which part of the pattern we are interested in. Here that’s what comes before `_score`.
 
 Oof. That was a lot to digest, I know. You may wonder why it’s worth figuring this stuff out. This technique really shines with more complex data sets that you may find in the wild. Let’s have a look.
 
 ## A more complex example
 
-Here’s another data set from TidyTuesday. It’s about the wages of nurses in different states of the US.
+Here’s another data set from [TidyTuesday](https://github.com/rfordatascience/tidytuesday/blob/master/data/2021/2021-10-05/readme.md). It’s about the wages of nurses in different states of the US.
 
 ``` r
 nurses <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2021/2021-10-05/nurses.csv') |>  
@@ -234,10 +234,10 @@ Now look at those names. Do you see a pattern? Apart from the column `state` and
 
 This means that from each column we can actually extract two information:
 
-- Do we talk about hourly or annual salary?
-- What kind of quantity of that salary do we mean? Average, median or some other percentile?
+- Are we talking about hourly or annual salary?
+- What kind of quantity of that salary do we mean: average, median or some other percentile?
 
-Luckily we can catch all of this with one regex that contains **two** groups (indicated by `()`). Here’s how that could look in `pivot_longer()`.
+Luckily, we can catch all of this with one regex that contains **two** groups (indicated by `()`). Here’s how that could look in `pivot_longer()`.
 
 ``` r
 nurses |> 

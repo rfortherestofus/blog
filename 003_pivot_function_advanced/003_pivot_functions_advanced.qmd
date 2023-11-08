@@ -24,7 +24,7 @@ Let's begin by revisiting what we did last week.
 
 ## Taylor Swift again
 
-Last week, we worked with a data set from [tidyTuesday](https://github.com/rfordatascience/tidytuesday/blob/master/data/2023/2023-10-17/readme.md).
+Last week, we worked with a data set from [TidyTuesday](https://github.com/rfordatascience/tidytuesday/blob/master/data/2023/2023-10-17/readme.md).
 And not just any data set, we worked with this data set about Taylor Swift albums.
 
 ```{r}
@@ -125,7 +125,7 @@ Let's have a look.
 
 ## A more complex example
 
-Here's another data set from TidyTuesday.
+Here's another data set from [TidyTuesday](https://github.com/rfordatascience/tidytuesday/blob/master/data/2021/2021-10-05/readme.md).
 It's about the wages of nurses in different states of the US.
 
 ```{r}

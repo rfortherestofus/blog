@@ -1,0 +1,59 @@
+
+
+
+```{r}
+palmerpenguins::penguins |> 
+  mutate(
+    new_col = paste(
+      'A lot of nested columns here',
+      str_to_title(
+        species |> factor(levels = c('Adelie', 'Chinstrap', 'Gentoo'))
+      )
+    )
+  )
+```
+
+
+
+```{r}
+palmerpenguins::penguins |> 
+  mutate(
+    new_name_moveup = 90809,
+    new_name_moveup2 = 9808,
+    new_name_calc1 = 23423,
+    new_name_calc2 = 234231,
+    new_name_calc3 = 234234
+  )
+```
+
+```{r}
+c(
+  "Bob",
+  "Alice",
+  "John",
+  "Jacob",
+  "Jingleheimer",
+  "Schmidt"
+)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

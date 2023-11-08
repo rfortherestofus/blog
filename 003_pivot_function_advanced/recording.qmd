@@ -1,0 +1,91 @@
+
+
+
+```{r}
+library(tidyverse)
+taylor_albums <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-10-17/taylor_albums.csv') |> 
+  filter(!ep)
+taylor_albums |> 
+  pivot_longer(
+    cols = c('metacritic_score', 'user_score'),
+    names_to = 'score_type',
+    values_to = 'score'
+  ) |> 
+  mutate(
+    score_type = score_type |> 
+      str_remove_all('_score') |> 
+      str_to_title() 
+  )
+```
+
+
+```{r}
+taylor_albums |> 
+  pivot_longer(
+    cols = c('metacritic_score', 'user_score'),
+    names_to = 'score_type',
+    names_pattern = '(.+)_score',
+    names_transform = str_to_title,
+    values_to = 'score'
+  )
+```
+
+
+```{r}
+nurses <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2021/2021-10-05/nurses.csv') |>  
+  janitor::clean_names()
+nurses |> 
+  select(state, year, matches('hourly|annual')) |> 
+  colnames()
+```
+
+
+```{r}
+nurses_longer <- nurses |> 
+  select(state, year, matches('hourly|annual')) |> 
+  pivot_longer(
+    cols = -c("state", "year"),
+    names_pattern = '([a-z]+)_(.+)',
+    names_to = c('timeframe', 'type'),
+    values_to = 'wage'
+  )
+```
+
+```{r}
+nurses_longer |> 
+  filter(state == 'Alabama') |> 
+  ggplot(aes(x = year, y = wage, group = type)) +
+  geom_line() +
+  geom_text(
+    data = nurses_longer |> filter(state == 'Alabama', year == 2020),
+    aes(label = type),
+    hjust = 0,
+    nudge_x = 0.5,
+    size = 6,
+    family = 'Source Sans Pro'
+  ) +
+  facet_wrap(vars(timeframe), scales = 'free_y') +
+  theme_minimal(base_size = 24, base_family = 'Source Sans Pro') +
+  coord_cartesian(xlim = c(1998, 2030)) +
+  labs(
+    x = element_blank(),
+    y = 'Salary',
+    title = 'Salary of Nurses in Alabama'
+  )
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
