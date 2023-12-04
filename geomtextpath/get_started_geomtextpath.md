@@ -303,16 +303,21 @@ break_even |>
   labs(title = "Break Even Analysis",
        x = "Units",
        y = "Total Cost and Revenue ($)") +
-  theme_minimal(base_size = 16) +
-  theme(legend.position = "none")
+  theme_minimal(base_size = 16)
 ```
 
 <img
 src="get_started_geomtextpath_files/figure-commonmark/break%20even%20plot-%20no%20ab%20lines-1.png"
 data-fig-align="center" />
 
+Notice we did not need to remove a legend using the `theme()` function.
+That’s because the lines are not two different groups from within the
+same variable. They’re two separate lines constructed from two different
+y-variables, so `ggplot2` will not create a legend for us. Good thing we
+have `geomtextpath` to help us tell them apart!
+
 This plot is clean and readable, but we’re going to make it easier to
-understand.
+interpret.
 
 Here’s what we’ve done so far:
 
@@ -322,10 +327,9 @@ Here’s what we’ve done so far:
 - customized the `linewidth`, `color`, `hjust`, and `size` (text size)
   for each line
 
-- removed the legend
-
-It would also be useful to add lines showing what our fixed costs are
-and how many units we need to sell to break even.
+It would also be useful to annotate the point where our lines cross by
+adding lines showing what our fixed costs are and how many units we need
+to sell to break even.
 
 We can add horizontal and vertical annotation lines using {geomtextpath}
 by calling:
@@ -336,7 +340,9 @@ by calling:
 - `geom_textvline()`, which needs the `xintercept` and `label` arguments
   in the `aes()` to create a vertical line
 
-These functions replace `geom_abline()` in `{ggplot2}`.
+These functions replace `geom_hline()` and `geom_vline()` in
+`{ggplot2}`, and if you’re familiar with `geom_abline()`, you can
+replace it with `geom_textabline()`.
 
 We don’t want our annotations to dominate the plot, so we can use
 `"dotted"` line types for them. Just like in `geom_line()`, we can
@@ -378,8 +384,7 @@ break_even |>
   labs(title = "Break Even Analysis",
        x = "Units",
        y = "Total Cost and Revenue ($)") +
-  theme_minimal(base_size = 16) +
-  theme(legend.position = "none")
+  theme_minimal(base_size = 16)
 ```
 
 <img
