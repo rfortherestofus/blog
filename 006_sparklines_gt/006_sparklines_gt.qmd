@@ -1,0 +1,327 @@
+---
+title: "How to add sparklines to a {gt} table"
+author: Albert Rapp
+date: TBA
+toc: false
+format: gfm
+wrap: none
+knitr:
+  opts_chunk:
+    out.width: 70%
+    collapse: true
+    comment: "#>"
+editor_options: 
+  chunk_output_type: console
+---
+
+
+Any table can be spiced up by adding small visual elements to it.
+Ideally, this makes the table more engaging *and* informative.
+One popular visual element that can get both jobs done is  a **sparkline**.
+
+These are little line charts in a table cell that can give you a miniature overview of a time series evolution over time.
+Sounds complicated?
+It probably becomes clear when you see it in action.
+Here, have a look:
+
+![](final_sparklines.png){width=60%}
+
+See those little lines.
+They show you exactly how the open price of the stock prices evolved over time.
+Seeing this can give you more information on the volatility of a stock.
+And in `gt` it's pretty easy to create such a line chart.
+Let me show you how.
+
+## Grab the data
+
+Let's first grab the data that was used in the above table.
+In this case, the data comes from a [TidyTuesday challenge](https://github.com/rfordatascience/tidytuesday/blob/master/data/2023/2023-02-07/readme.md).
+This means we can download the data by executing this code chunk:
+
+```{r}
+#| message: false
+#| warning: false
+library(tidyverse)
+big_tech_stock_prices <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-02-07/big_tech_stock_prices.csv')
+
+big_tech_stock_prices
+```
+
+## Get company names
+
+Unless you're into stocks, you probably won't know which companies the abbreviations in the `stock_symbol` represent.
+Thankfully, TidyTuesday also offers a dictionary for that.
+We can download it from GitHub as well.
+
+```{r}
+#| message: false
+big_tech_companies <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-02-07/big_tech_companies.csv')
+big_tech_companies
+```
+
+Now, we can combine those two data sets so that we have everything in one place.
+
+```{r}
+big_tech_stock_prices |> 
+  left_join(big_tech_companies, by = 'stock_symbol')
+```
+
+Actually, we don't need all of that data.
+Let's just focus on the company names, the dates and the open prices.
+
+```{r}
+open_prices_over_time <- big_tech_stock_prices |> 
+  left_join(big_tech_companies, by = 'stock_symbol') |> 
+  select(company, date, open)
+open_prices_over_time
+```
+
+
+## Summarize the data
+
+Currently, the data set has ~45,000 rows.
+That's hardly a good size for a table.
+So let's summarize that.
+Maybe we could just look how much each stock price increased from the earliest to the latest record in the data set.
+That could be interesting.
+
+```{r}
+rel_changes <- open_prices_over_time |> 
+  arrange(date) |> 
+  summarize(
+    rel_change = open[length(open)] / open[1] - 1,
+    .by = company
+  ) |> 
+  arrange(rel_change)
+rel_changes
+```
+
+Oh wow.
+Some stock prices increased by up to 6900%.
+That's wild.
+Let's put this into a table.
+
+## Get data into a `gt` table
+
+With `gt` it is pretty straight-forward to create a table.
+Just load the package and then pass your data set to the `gt()` function.
+
+```{r}
+#| results: hide
+library(gt)
+
+rel_changes |> 
+  gt()
+```
+
+```{r}
+#| echo: false
+#| out-width: 60%
+img_name <- 'basic_table.png'
+rel_changes |> 
+  gt() |> 
+  gtsave(img_name)
+knitr::include_graphics(img_name)
+```
+
+
+Right now, the column labels do not look that nice.
+Let's change those to something more meaningful.
+
+```{r}
+#| results: hide
+rel_changes |> 
+  gt() |> 
+  cols_label(
+    company = 'Company',
+    rel_change = 'Change'
+  )
+```
+
+```{r}
+#| echo: false
+#| out-width: 60%
+img_name <- 'changed_labels.png'
+rel_changes |> 
+  gt() |> 
+  cols_label(
+    company = 'Company',
+    rel_change = 'Change'
+  ) |> 
+  gtsave(img_name)
+knitr::include_graphics(img_name)
+```
+
+This looks a bit better.
+But to make sure that people understand that the second column means relative change, we might want to use percent labels in that column.
+No problem.
+The `fmt_percent()` function will do that for us.
+
+
+```{r}
+#| results: hide
+rel_changes |> 
+  gt() |> 
+  cols_label(
+    company = 'Company',
+    rel_change = 'Change'
+  ) |> 
+  fmt_percent(columns = rel_change)
+```
+
+```{r}
+#| echo: false
+#| out-width: 60%
+img_name <- 'percent_formatted.png'
+rel_changes |> 
+  gt() |> 
+  cols_label(
+    company = 'Company',
+    rel_change = 'Change'
+  ) |> 
+  fmt_percent(columns = rel_change) |> 
+  gtsave(img_name)
+knitr::include_graphics(img_name)
+```
+
+Cool!
+Much better.
+Of course, there's still lots more to be done to [make this table great](https://rfortherestofus.com/courses/tables).
+But let's leave that aside and focus on the sparklines.
+
+## Get more information into the data set
+
+To create the sparklines, we first need to get the data for that into the tibble that is passed to `gt()`.
+After all, how else is `gt()` supposed to know how the sparklines should look.
+So let's modify the `rel_changes` data set to incorporate another column.
+
+```{r}
+rel_changes <- open_prices_over_time |> 
+  arrange(date) |> 
+  summarize(
+    rel_change = open[length(open)] / open[1] - 1,
+    open_prices = list(open), # Add this line
+    .by = company
+  ) |> 
+  arrange(rel_change)
+rel_changes
+```
+
+Notice how we were able to get all of the open prices into one cell via the `list()` function in `summarize()`.
+Pretty cool, isn't it?
+Now, we could pass this to data set to `gt()` like before.
+
+```{r}
+#| eval: false
+rel_changes |> 
+  gt() |> 
+  cols_label(
+    company = 'Company',
+    rel_change = 'Change'
+  ) |> 
+  fmt_percent(columns = rel_change)
+```
+
+
+But if we did that, then all of the numbers would just be thrown into the table.
+That would be pretty terrible.
+Here's how the first few rows of the new table would look.
+
+![](data_in_table_inserted.png){width=70%}
+
+## Lines instead of numbers
+
+To overcome this, let's just tell `gt()` to make a line out of those numbers.
+Thankfully, another package, namely `gtExtras`, makes that pretty easy for us.
+All we need is the function `gt_plt_sparkline()` from that package.
+
+```{r}
+#| results: hide
+rel_changes |> 
+  gt() |> 
+  cols_label(
+    company = 'Company',
+    rel_change = 'Change'
+  ) |> 
+  fmt_percent(columns = rel_change) |> 
+  gtExtras::gt_plt_sparkline(column = open_prices)
+```
+
+```{r}
+#| echo: false
+#| out-width: 60%
+img_name <- 'flat_sparklines.png'
+rel_changes |> 
+  gt() |> 
+  cols_label(
+    company = 'Company',
+    rel_change = 'Change'
+  ) |> 
+  fmt_percent(columns = rel_change) |> 
+  gtExtras::gt_plt_sparkline(column = open_prices)|> 
+  gtsave(img_name)
+knitr::include_graphics(img_name)
+```
+
+That looks a little bit flat.
+We can make out that much.
+With the `fig_dim` argument, we can make the line charts a little bit larger.
+
+```{r}
+#| results: hide
+rel_changes |> 
+  gt() |> 
+  cols_label(
+    company = 'Company',
+    rel_change = 'Change'
+  ) |> 
+  fmt_percent(columns = rel_change) |> 
+  gtExtras::gt_plt_sparkline(
+    column = open_prices,
+    fig_dim = c(20, 40)
+  )
+```
+
+
+```{r}
+#| echo: false
+#| out-width: 60%
+img_name <- 'final_sparklines.png'
+rel_changes |> 
+  gt() |> 
+  cols_label(
+    company = 'Company',
+    rel_change = 'Change'
+  ) |> 
+  fmt_percent(columns = rel_change) |> 
+  gtExtras::gt_plt_sparkline(
+    column = open_prices,
+    fig_dim = c(20, 40)
+  )|> 
+  gtsave(img_name)
+knitr::include_graphics(img_name)
+```
+
+Ah that's better.
+We can now see that some of these stocks had really huge jumps.
+
+## Conclusion
+
+Nice, we have learned a quick way to add spark lines to our tables. 🥳
+Clearly, one could customize this chart further.
+But that would bring us into realm where we have to combine `ggplot2` and `gt` to add custom charts to the table.
+That would be a bit much to do here as well.
+But you can check out our [other blog post](https://rfortherestofus.com/2023/10/ggplots-in-gt-tables) that teaches you just that if you're curious.
+Enjoy the rest of your day and see you next time 👋.
+
+
+
+
+
+
+
+
+
+
+
+

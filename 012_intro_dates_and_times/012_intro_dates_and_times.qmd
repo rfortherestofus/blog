@@ -1,0 +1,350 @@
+---
+title: "How to work with times and dates"
+author: Albert Rapp
+date: TBA
+toc: false
+format: gfm
+wrap: none
+knitr:
+  opts_chunk:
+    out.width: 70%
+    collapse: true
+    comment: "#>"
+editor_options: 
+  chunk_output_type: console
+---
+
+Time series data is everywhere.
+<!-- We could insert an example consulting project here -->
+But time- and date-related data is notoriously hard to work with.
+But as always, the tidyverse has a nice package that makes our life just a little bit easier.
+In this case, it is the `lubridate` package that helps us.
+But just like time data itself, it requires a bit of effort to get used to working with `lubridate`. 
+In this blog post, we go through a couple of things you might struggle with when you want to work with time data.
+This should help you get started with `lubridate` much faster.
+
+
+## Getting data
+
+Let's get started by grabbing a suitable data set.
+Here, we're going to look at flights data from New York City in 2013.
+That data is conveniently available in the package `nycflights13`.
+
+```{r}
+# If you don't have `nycflights13` installed, run:
+# install.packages('nycflights13')
+flights <- nycflights13::flights
+flights
+```
+
+
+That's a large data set.
+It has a whooping 336,776 rows and 19 columns.
+Let's work only with the first 5 columns and the first 3 columns from each month.
+It's not like the calculations would take super long with this data set.
+But it's much nicer to learn the package when the output displays different values in the `month` and `day` column.
+
+```{r}
+#| message: false
+#| warning: false
+library(tidyverse)
+flights_subset <- flights |>
+  select(year:sched_dep_time) |>
+  slice(1:3, .by = month) |>
+  arrange(month)
+flights_subset
+```
+
+
+## Computing the day of the year
+
+Let's try to add a new column `day_of_year`.
+For each row of the data set, this new column should show us which day of the year the flight happened on.
+So, January 01 is 1, January 2 is 2 and so on.
+To do that we first have to actually get a date.
+Right now, we have the date information spread out over three columns `year`, `month` and `day`.
+That's no way to make a nice calculation.
+So let's create the dates using the `make_date()` function.
+
+```{r}
+flights_subset |>
+  mutate(
+    date = make_date(year = year, month = month, day = day)
+  )
+```
+
+Nice, we have dates.
+`make_date()` made that almost effortless.
+All we had to do was plug in the columns `year`, `month` and `day` into the respective arguments from `make_date()`.
+
+Also, this new column actually "knows" that it's a date and will behave accordingly in the all functions that need such a format (which is mostly all functions related to time data.)
+You can actually see that in the output via the little `<date>` indicator below the column name.
+And because this column knows that it's a date, we can apply the `yday()` function to compute the day of the year.
+
+```{r}
+flights_subset |>
+  mutate(
+    date = make_date(year = year, month = month, day = day),
+    day_of_year = yday(date)
+  )
+```
+
+Similarly, we could just as easily compute the day of the week or the day of the month of a given date.
+Or we could also compute the week of the year. 
+
+```{r}
+flights_subset |>
+  mutate(
+    date = make_date(year = year, month = month, day = day),
+    day_of_year = yday(date),
+    day_of_month = mday(date),
+    day_of_week = wday(date),
+    week_of_year = week(date)
+  ) |>
+  select(date:week_of_year) # just so that you can see all new columns
+```
+
+
+## Visualize time data
+
+A very nice thing you could do with these kind of functions is to visualize patterns.
+For example, you could count the flights by week and day of the week and create a calender plot that way.
+Here's how:
+
+```{r}
+#| fig-width: 8
+#| fig-height: 3
+#| out-width: 100%
+# First count the full data
+counts <- flights |>
+  mutate(
+    date = make_date(year = year, month = month, day = day),
+    day_of_week = wday(date),
+    week_of_year = week(date)
+  ) |>
+  count(day_of_week, week_of_year)
+
+# Then pass to ggplot and map fill to the counts
+counts |>
+  ggplot(aes(x = week_of_year, y = day_of_week, fill = n)) +
+  geom_tile(col = "white") +
+  theme_minimal(base_size = 16, base_family = "Source Sans Pro") +
+  coord_equal() +
+  scale_fill_gradient(high = "#404E6B", low = "white") +
+  labs(
+    y = element_blank(),
+    x = "Week",
+    fill = "Flights",
+    title = "Number of flights in NYC in 2013"
+  )
+```
+
+
+Aha!
+There's less people traveling on one day of the week.
+But which day is it?
+It seems that `day_of_week` are only numbers and not actual labels like Monday, Tuesday, etc.
+We could look into the documentation what the number outputs mean.
+But why don't we try to compute that instead?
+
+## Get time labels
+
+Let's take a look at our smaller data set again and focus only on the day of the week.
+It turns out that the `wday()` function has arguments called `label` and `abbr`.
+Here's what they do:
+
+
+```{r}
+flights_subset |>
+  mutate(
+    date = make_date(year = year, month = month, day = day),
+    day_of_week = wday(date),
+    day_of_week_label = wday(date, label = TRUE),
+    day_of_week_full_label = wday(date, label = TRUE, abbr = FALSE),
+  ) |>
+  select(date, day_of_week:day_of_week_full_label)
+```
+
+
+Cool, this gives us labels.
+But just in case you're wondering:
+These are not the English labels that you might expect.
+The reason for that is that my computer system is set to German and R detects that.
+So that is why R uses the German **"locale"**.
+
+To get control over the locale, the locale-dependent time functions (like those that assign labels) have an argument that we can set to a different locale.
+Here's how that looks:
+
+```{r}
+flights_subset |>
+  mutate(
+    date = make_date(year = year, month = month, day = day),
+    day_of_week = wday(
+      date,
+      locale = "en_US.UTF-8"
+    ),
+    day_of_week_label = wday(
+      date,
+      label = TRUE,
+      locale = "en_US.UTF-8"
+    ),
+    day_of_week_full_label = wday(
+      date,
+      label = TRUE,
+      abbr = FALSE,
+      locale = "en_US.UTF-8"
+    )
+  ) |>
+  select(date, day_of_week:day_of_week_full_label)
+```
+
+
+How did I find this ominous `"en_US.UTF-8"`?
+Well, the thing is that the `wday()` function shows you in its docs that it by default uses `Sys.getlocale("LC_TIME")`.
+And if I run this, then I get:
+
+```{r}
+Sys.getlocale("LC_TIME")
+```
+
+So getting the correct English locale was only about changing the `de_DE` part which I know is the code for German spoken in Germany (there's also Swiss and Austrian German).
+Thus, if you're unsure how your locale on your system might look (and that's something that can happen depending on your OS), then run this function and make the changes as necessary.
+
+So coming back to our chart from before, it seems like the number 7 stands for Saturday.
+Thus, there are much less travelers on Saturday (which might be due to less people traveling for work on Saturday).
+
+## Time calculations
+
+Next, let us do some calculations with times instead of dates.
+Notice that our small data set has two columns `dep_time` and `sched_dep_time` in it.
+
+```{r}
+flights_subset
+```
+
+As you can probably guess, both columns contain the departure times in a 24h format.
+So, simply taking the difference between the two columns to find out how much departure delay there was will not cut it.
+For example, let's consider one illustrative row:
+
+```{r}
+flights_subset |>
+  mutate(
+    departure_delay = dep_time - sched_dep_time
+  ) |>
+  slice(4)
+```
+
+Our computed column says that the flight left 44 minutes early.
+That would be A LOT.
+But if you look at the numbers and convert that to the times 4:56 and 5:00, you realize that it's actually only 4 minutes.
+The problem is that the regular calculation assumes that after 4:59 there should be 4:60 and then 4:61, etc. all the way to 5:00.
+Clearly, that's not how time works.
+
+So instead, let us convert both columns to time formats and then redo the calculation.
+It's easy to think that *"To convert things in R to something else, there's always a function like `as.numeric()` or `as_vector()`. So maybe there's something similar here.*
+And indeed there is something called `as_datetime()`.
+But it doesn't lead to the correct results.
+
+```{r}
+flights_subset |>
+  mutate(
+    dep_time = as_datetime(dep_time),
+    sched_dep_time = as_datetime(sched_dep_time),
+    departure_delay = dep_time - sched_dep_time
+  ) |>
+  slice(4)
+```
+
+
+Here, the result says that the flight left 44 seconds early.
+That's not quite right either.
+The problem with that can be seen in the `dep_time` and `sched_dep_time` columns.
+The `as_datetime()` function computed datetimes that come 456 and 500 seconds after 1970-01-01 00:00.
+But that's not what we want.
+
+Instead, we have to construct a datetime ourselves using the `make_datetime()` function.
+It works exactly the same as `make_date()` but has additional arguments for `hour` and `min`.
+And then we can compute the difference
+
+```{r}
+converted_times <- flights_subset |>
+  mutate(
+    dep_time = make_datetime(
+      year, month, day,
+      hour = dep_time %/% 100, # integer division
+      min = dep_time %% 100 # get remainder
+    ),
+    sched_dep_time = make_datetime(
+      year, month, day,
+      hour = sched_dep_time %/% 100,
+      min = sched_dep_time %% 100
+    )
+  )
+
+converted_times |>
+  slice(4)
+```
+
+Aha, this looks much better.
+The computed datetimes look correct now.
+
+## Compute time difference
+
+All that is left to do is to compute the difference in time.
+We could try subtracting the two columns again and that would actually give us a result.
+But in `lubridate`, there's an approach for that involving **intervals** (this approach may feel complicated at first but will help you in the long run.)
+
+
+First, you create an interval and then when you want to know the time span, say, in minutes, then you divide that interval by a one-minute interval.
+Conveniently, for typical time intervals like minutes there are helper functions to create those intervals.
+Here's how that looks:
+
+```{r}
+converted_times |>
+  mutate(
+    departure_interval = interval(start = sched_dep_time, end = dep_time),
+    delay_in_mins = departure_interval / minutes(1)
+  ) |>
+  select(departure_interval, delay_in_mins) |>
+  slice(4)
+```
+
+Hooray!
+This worked perfectly now.
+Similarly, you can compute the delay in any time frame that you want.
+
+
+```{r}
+converted_times |>
+  mutate(
+    departure_interval = interval(start = sched_dep_time, end = dep_time),
+    delay_in_mins = departure_interval / minutes(1),
+    delay_in_hrs = departure_interval / hours(1),
+    delay_in_10min_blocks = departure_interval / minutes(10),
+    delay_in_1.5min_blocks = departure_interval / (minutes(1) + seconds(30))
+  ) |>
+  select(delay_in_mins:delay_in_1.5min_blocks) |>
+  slice(4)
+```
+
+
+## Conclusion
+
+Hooray 🎉
+We made it through the date-and-time calculations.
+Hopefully, this blog post arms you with more tools to work with time data.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
