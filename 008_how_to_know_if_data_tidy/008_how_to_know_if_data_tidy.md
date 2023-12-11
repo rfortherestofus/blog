@@ -2,7 +2,7 @@
 Albert Rapp
 Invalid Date
 
-One of the most frequent questions we get when we teach R is *“How do I know if my data is in a tidy format?”* Rightfully so. Tidy data is a powerful concept and I remember asking myself the exact same questions when I first learned about tidy data. So to help you answer this question, let me give you **an** answer to this question that eventually helped me and made my life easier. But beware: You might find the answer a little bit unintuitive at first.
+One of the most frequent questions we get when we teach R is *“How do I know if my data is in a tidy format?”* Rightfully so. [Tidy data](https://tidyr.tidyverse.org/articles/tidy-data.html) is a powerful concept and I remember asking myself the exact same questions when I first learned about tidy data. So to help you answer this question, let me give you **an** answer to this question that eventually helped me and made my life easier. But beware: You might find the answer a little bit unintuitive at first.
 
 ## Forget about tidy data
 
