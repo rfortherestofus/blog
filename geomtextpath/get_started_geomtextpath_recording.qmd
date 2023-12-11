@@ -1,0 +1,379 @@
+
+Load packages:
+```{r}
+library(tidyverse)
+library(geomtextpath)
+```
+
+
+
+Load vehicles data:
+```{r}
+#| message: false
+
+vehicles <- fueleconomy::vehicles
+
+avg_hwy <- vehicles |> 
+  filter(year %in% c(1985:1990),
+         drive %in% c("Rear-Wheel Drive", 
+                      "4-Wheel or All-Wheel Drive")) |> 
+  group_by(year, drive) |> 
+  summarise(mean_hwy = mean(hwy))
+```
+
+
+
+Create a plot with a legend:
+```{r}
+avg_hwy |> 
+  ggplot(aes(x = year, 
+           y = mean_hwy, 
+           color = drive)) +
+  geom_line(linewidth = 0.75) +
+  labs(title = "Average Highway Gas Mileage",
+       x = NULL,
+       y = NULL,
+       color = "Year") +
+  lims( y = c(18, 22)) +
+  theme_minimal(base_size = 15)
+```
+Yikes! That's a huge legend!
+
+
+
+Remove legend and add text line:
+```{r}
+avg_hwy |> 
+  ggplot(aes(x = year, 
+             y = mean_hwy, 
+             color = drive,
+             label = drive)) +              # added    
+  geom_textline(linewidth = 0.75) +         # changed
+  labs(title = "Average Highway Gas Mileage",
+       x = NULL,
+       y = NULL) +
+  lims( y = c(18, 22)) +
+  theme_minimal(base_size = 15) +
+  theme(legend.position = "none")           # added
+```
+
+
+
+Move text above line and increase font size:
+```{r}
+avg_hwy |> 
+  ggplot(aes(x = year, 
+             y = mean_hwy, 
+             color = drive,
+             label = drive)) +
+  geom_textline(linewidth = 0.75, 
+                vjust = -.25,               # added
+                size = 5) +                 # added
+  labs(title = "Average Highway Gas Mileage",
+       x = NULL,
+       y = NULL) +
+  lims( y = c(18, 22)) +
+  theme_minimal(base_size = 15) +
+  theme(legend.position = "none")
+```
+
+
+
+Smooth out text! 
+Try some values between 0 & 100:
+```{r}
+avg_hwy |> 
+  ggplot(aes(x = year, 
+             y = mean_hwy, 
+             color = drive,
+             label = drive)) +
+  geom_textline(linewidth = 0.75, 
+                vjust = -0.25, 
+                size = 5,
+                text_smoothing = 40) +        # added
+  labs(title = "Average Highway Gas Mileage",
+       x = NULL,
+       y = NULL) +
+  lims( y = c(18, 22)) +
+  theme_minimal(base_size = 15) +
+  theme(legend.position = "none")
+```
+
+
+
+What are the defaults for `geom_textline()`?
+```{r}
+GeomTextline$default_aes
+```
+
+
+
+So far, we've added annotations that look like `geom_text()` - what about `geom_label()`?
+```{r}
+avg_hwy |> 
+  ggplot(aes(x = year, 
+             y = mean_hwy, 
+             color = drive,
+             label = drive)) +
+  geom_labelline(linewidth = 0.75,          # changed
+                text_smoothing = 40, 
+                size = 5) + 
+  labs(title = "Average Highway Gas Mileage",
+       x = NULL,
+       y = NULL) +
+  lims( y = c(18, 22)) +
+  theme_minimal(base_size = 15) +
+  theme(legend.position = "none")
+```
+
+Next up, annotation lines!
+
+
+
+
+
+
+
+
+
+
+
+
+Create fake data to play with annotation lines:
+```{r}
+break_even <- 
+  tibble(
+  units = seq(0, 100, 1),
+  price = 50,
+  fixed_cost = 750,
+  variable_cost = 25,
+  total_cost = fixed_cost + (variable_cost * units),
+  total_revenue = price * units,
+  break_even_units = fixed_cost / (price - variable_cost)
+)
+```
+
+
+
+Plot two separate lines, revenue and cost:
+```{r}
+break_even |> 
+  ggplot() +
+  geom_line(aes(x = units, 
+                y = total_cost),
+            linewidth = 1,
+            color = "red4",
+            hjust = 0.7,
+            size = 5) +
+  geom_line(aes(x = units, 
+                y = total_revenue),
+            linewidth = 1,
+            color = "green3",
+            hjust = 0.7, 
+            size = 5) +
+  labs(title = "Break Even Analysis",
+       x = "Units",
+       y = "Total Cost and Revenue ($)") +
+  theme_minimal(base_size = 15)
+```
+Notice there is no legend by default 🤔
+
+
+
+Plot them using `geom_textline()` instead:
+```{r}
+break_even |> 
+  ggplot() +
+  geom_textline(aes(x = units, 
+                y = total_cost,
+                label = "Cost"),
+            linewidth = 1,
+            color = "red4",
+            hjust = 0.7,
+            size = 5) +
+  geom_textline(aes(x = units, 
+                y = total_revenue,
+                label = "Revenue"),
+            linewidth = 1,
+            color = "green3",
+            hjust = 0.7, 
+            size = 5) +
+  labs(title = "Break Even Analysis",
+       x = "Units",
+       y = "Total Cost and Revenue ($)") +
+  theme_minimal(base_size = 15)
+```
+
+
+
+Add lines showing: 
+- what our fixed costs are
+- how many units we need to sell to break even
+```{r}
+break_even |> 
+  ggplot() +
+  geom_textline(aes(x = units, 
+                y = total_cost,
+                label = "Cost"),
+            linewidth = 1,
+            color = "red4",
+            hjust = 0.7,
+            size = 5) +
+  geom_textline(aes(x = units, 
+                y = total_revenue,
+                label = "Revenue"),
+            linewidth = 1,
+            color = "green3",
+            hjust = 0.7, 
+            size = 5) +
+  geom_texthline(aes(yintercept = fixed_cost, 
+                     label = paste0("Fixed Cost = $", fixed_cost)),
+                 color = "steelblue4",
+                 linetype = "dotted",
+                 linewidth = .75,
+                 hjust = 0.6,
+                 size = 4.5) +
+  geom_textvline(aes(xintercept = break_even_units, 
+                     label = paste0(break_even_units, " units")),
+                 color = "steelblue4",
+                 linetype = "dotted",
+                 linewidth = .75,
+                 hjust = 0.6,
+                 size = 4.5) +
+  labs(title = "Break Even Analysis",
+       x = "Units",
+       y = "Total Cost and Revenue ($)") +
+  theme_minimal(base_size = 15)
+```
+Next up, just using the text without the line!
+
+
+
+
+
+
+
+
+
+
+
+
+Load penguins data:
+```{r}
+penguins <- palmerpenguins::penguins |> 
+  drop_na()
+```
+
+
+
+Density plot with `geom_textdensity()`:
+```{r}
+penguins |> 
+  filter(species == "Adelie") |> 
+  ggplot(aes(x = bill_length_mm, 
+             color = island, 
+             label = island)) +
+  geom_textdensity(linewidth = 1, 
+                   size = 4, 
+                   hjust = .49,
+                   spacing = 40) +
+  labs(title = "Adelie Penguins from Different Islands",
+       subtitle = "Do they have different bill lengths?",
+       x = "Bill Length (mm)",
+       y = "Density") +
+  theme_minimal(base_size = 15) +
+  theme(legend.position = "none",
+        plot.subtitle = element_text(size = 14))
+```
+But I want a FILLED density plot!
+
+
+
+Filled density plot with transparent colors:
+```{r}
+penguins |> 
+  filter(species == "Adelie") |> 
+  ggplot(aes(x = bill_length_mm, 
+             fill = island,
+             color = island,
+             label = island)) +
+  geom_density(alpha = .5) +
+  scale_color_manual(values = c("#CEA804", "#EA5F94", "#0000FF")) +
+  scale_fill_manual(values = c("#FFD700", "#EA5F94", "#0000FF")) +
+  labs(title = "Adelie Penguins from Different Islands",
+       subtitle = "Do they have different bill lengths?",
+       x = "Bill Length (mm)",
+       y = "Density",
+       fill = "Island", 
+       color = "Island") +
+  theme_minimal(base_size = 15) +
+  theme(plot.subtitle = element_text(size = 14))
+```
+That legend has to go.
+
+
+
+Add floating annotations with `text_only = TRUE`:
+```{r}
+#| warning: false
+
+penguins |> 
+  filter(species == "Adelie") |> 
+  ggplot(aes(x = bill_length_mm, 
+             fill = island,
+             color = island,
+             label = island)) +
+  geom_density(alpha = .5) +
+  geom_textdensity(text_only = TRUE,
+                   text_smoothing = 25,
+                   hjust = "ymax",               # new!
+                   vjust = -0.30, 
+                   spacing = 75,                 # new!
+                   size = 3.5) +
+  scale_color_manual(values = c("#CEA804", "#EA5F94", "#0000FF")) +
+  scale_fill_manual(values = c("#FFD700", "#EA5F94", "#0000FF")) +
+  labs(title = "Adelie Penguins from Different Islands",
+       subtitle = "Do they have different bill lengths?",
+       x = "Bill Length (mm)",
+       y = "Density") +
+  ylim(c(0, .16)) +
+  theme_minimal(base_size = 15) +
+  theme(legend.position = "none",
+        plot.subtitle = element_text(size = 14))
+```
+Happy plotting!
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
