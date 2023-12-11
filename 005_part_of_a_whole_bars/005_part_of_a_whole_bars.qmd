@@ -226,7 +226,7 @@ For now, you can just enjoy the rest of this blog post here.
 
 With our newly computed data set, we can basically reuse our `ggplot` code from before.
 We only have to make two adjustments:
-
+  
 - Map `x` to the new `percentage` column
 - Map `fill` to the new `answer column
 
@@ -330,7 +330,6 @@ Neat how everything falls together when you nail the basics, isn't it?
 In any case, don't worry if some parts bamboozled you.
 Feel free to read up on all the tricky parts using the linked blog posts.
 Have a nice day and see you next week. 👋
-
 
 
 
