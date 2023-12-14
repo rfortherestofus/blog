@@ -5,6 +5,8 @@ date: TBA
 toc: false
 format: gfm
 wrap: none
+execute: 
+  warning: false
 knitr:
   opts_chunk:
     out.width: 70%
@@ -22,7 +24,7 @@ Still, [in our R courses](https://rfortherestofus.com/courses) we try to adhere 
 Now, even as seasoned tidyverse users, we sometimes mess up our code structure.
 This is just a normal thing that happenes to everyone.
 So to save some time trying to fix the mistakes, it's best to use some tools.
-One such tool is the `styler` package.
+One such tool is the [`styler` package](https://styler.r-lib.org/).
 Let's have a look how it works.
 
 # A formatted example first
@@ -54,7 +56,7 @@ But the point of this blog post is more about how the code is structured.
 Notice a couple of things in this particular code chunk:
 
 - There's a line break after the pipe ` |> `, `mutate()`, `across()` and `), `
-- Each argument (`.cols` and `.fns`) in `across()` gets it's own line.
+- Each argument (`.cols` and `.fns`) in `across()` gets its own line.
 - There are spaces after commas
 - There are spaces before and after operators such as `=` and `/`
 
@@ -74,7 +76,7 @@ palmerpenguins::penguins |>
 
 It starts to look more like a block of text, right?
 That's not very legible code.
-In general, my guideline is to make code skimmable.
+In general, you want to make code skimmable.
 You rarely want to read code like a book where you read lines from left to right one after the other.
 Instead, you usually want to jump into the parts of the code that are of interest to you.
 

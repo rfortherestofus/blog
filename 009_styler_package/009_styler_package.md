@@ -4,7 +4,7 @@ Invalid Date
 
 The [tidyverse style guide](https://style.tidyverse.org/) offers many helpful suggestions for how to write your code. Of course, the style guide is very opinionated as all style guides usually are. Still, [in our R courses](https://rfortherestofus.com/courses) we try to adhere to the tidyverse style guide as much as possible because we believe that this makes for pretty legible code.
 
-Now, even as seasoned tidyverse users, we sometimes mess up our code structure. This is just a normal thing that happenes to everyone. So to save some time trying to fix the mistakes, it’s best to use some tools. One such tool is the `styler` package. Let’s have a look how it works.
+Now, even as seasoned tidyverse users, we sometimes mess up our code structure. This is just a normal thing that happenes to everyone. So to save some time trying to fix the mistakes, it’s best to use some tools. One such tool is the [`styler` package](https://styler.r-lib.org/). Let’s have a look how it works.
 
 # A formatted example first
 
@@ -42,7 +42,7 @@ Basically, this transforms the two columns `flipper_length_mm` and `bill_length_
 Clearly, these aren’t very exciting calculations. But the point of this blog post is more about how the code is structured. Notice a couple of things in this particular code chunk:
 
 - There’s a line break after the pipe `|>`, `mutate()`, `across()` and `),`
-- Each argument (`.cols` and `.fns`) in `across()` gets it’s own line.
+- Each argument (`.cols` and `.fns`) in `across()` gets its own line.
 - There are spaces after commas
 - There are spaces before and after operators such as `=` and `/`
 
@@ -72,7 +72,7 @@ palmerpenguins::penguins |>
 #> # ℹ 334 more rows
 ```
 
-It starts to look more like a block of text, right? That’s not very legible code. In general, my guideline is to make code skimmable. You rarely want to read code like a book where you read lines from left to right one after the other. Instead, you usually want to jump into the parts of the code that are of interest to you.
+It starts to look more like a block of text, right? That’s not very legible code. In general, you want to make code skimmable. You rarely want to read code like a book where you read lines from left to right one after the other. Instead, you usually want to jump into the parts of the code that are of interest to you.
 
 Hence, a block structure makes sense for a book but not for code. Instead, try to stretch out bits and pieces with extra spaces and over multiple lines. And at an absolute bare minimum do a line break after pipe steps. (We didn’t even show you the terrible version that does not include line breaks after `|>`. We don’t want you to get any bad ideas.)
 
