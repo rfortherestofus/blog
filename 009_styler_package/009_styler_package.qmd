@@ -195,7 +195,7 @@ Now that we know how `styler` works, we want to incorporate it nicely into our w
 Copying and pasting code into `styler::style_text()` is just too much effort.
 But the cool thing is that you can apply code formatting in RStudio without touching your initial code.
 The way to do that is to execute the *"Style active file"* command.
-The easiest way to do that is to press `ctrl` + `shift` + `P` and then type in "style".
+The easiest way to do that is to press `ctrl/cmd` + `shift` + `P` and then type in "style".
 From there, you can select the correct command from a dropdown menu.
 
 ![](command_palette.png)
