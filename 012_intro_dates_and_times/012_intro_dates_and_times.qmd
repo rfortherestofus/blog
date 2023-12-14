@@ -141,7 +141,7 @@ counts |>
 
 
 Aha!
-There's less people traveling on one day of the week.
+We can see fewer people traveling on one day of the week.
 But which day is it?
 It seems that `day_of_week` are only numbers and not actual labels like Monday, Tuesday, etc.
 We could look into the documentation what the number outputs mean.

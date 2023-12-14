@@ -185,16 +185,16 @@ flights_subset |>
 #> # A tibble: 36 × 4
 #>    date       day_of_week day_of_week_label day_of_week_full_label
 #>    <date>           <dbl> <ord>             <ord>                 
-#>  1 2013-01-01           3 Di                Dienstag              
-#>  2 2013-01-01           3 Di                Dienstag              
-#>  3 2013-01-01           3 Di                Dienstag              
-#>  4 2013-02-01           6 Fr                Freitag               
-#>  5 2013-02-01           6 Fr                Freitag               
-#>  6 2013-02-01           6 Fr                Freitag               
-#>  7 2013-03-01           6 Fr                Freitag               
-#>  8 2013-03-01           6 Fr                Freitag               
-#>  9 2013-03-01           6 Fr                Freitag               
-#> 10 2013-04-01           2 Mo                Montag                
+#>  1 2013-01-01           3 Tue               Tuesday               
+#>  2 2013-01-01           3 Tue               Tuesday               
+#>  3 2013-01-01           3 Tue               Tuesday               
+#>  4 2013-02-01           6 Fri               Friday                
+#>  5 2013-02-01           6 Fri               Friday                
+#>  6 2013-02-01           6 Fri               Friday                
+#>  7 2013-03-01           6 Fri               Friday                
+#>  8 2013-03-01           6 Fri               Friday                
+#>  9 2013-03-01           6 Fri               Friday                
+#> 10 2013-04-01           2 Mon               Monday                
 #> # ℹ 26 more rows
 ```
 
@@ -243,7 +243,7 @@ How did I find this ominous `"en_US.UTF-8"`? Well, the thing is that the `wday()
 
 ``` r
 Sys.getlocale("LC_TIME")
-#> [1] "de_DE.UTF-8"
+#> [1] "en_US.UTF-8"
 ```
 
 So getting the correct English locale was only about changing the `de_DE` part which I know is the code for German spoken in Germany (there’s also Swiss and Austrian German). Thus, if you’re unsure how your locale on your system might look (and that’s something that can happen depending on your OS), then run this function and make the changes as necessary.
