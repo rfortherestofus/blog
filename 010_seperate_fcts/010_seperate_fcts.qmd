@@ -42,7 +42,7 @@ board_games
 
 Notice how the column of `boardgamecategory` contains a lot of labels.
 These labels represent all of the different categories a board game can fall into.
-Now, if we wanted to visualize the most popular board game categories, this could look like this:
+Now, if we wanted to visualize the most popular board game categories, we might make a chart like this:
 
 ```{r}
 #| echo: false
