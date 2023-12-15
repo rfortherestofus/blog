@@ -12,7 +12,7 @@ See that black outline around the text? That’s the work of an extra package ca
 
 <img src="013_shadowtext_ggplot_files/figure-commonmark/unnamed-chunk-2-1.png" style="width:70.0%" />
 
-As another example, you can also check out [this map from Axios](https://www.axios.com/local/portland/2023/11/21/plant-hardiness-map-portland-oregon?stream=top). It’s another good example for making sure that labels stand out with stroke outlines.
+As another example, you can also check out [this map from Axios](https://www.axios.com/local/portland/2023/11/21/plant-hardiness-map-portland-oregon?stream=top). Look at the city names to see another good example for making sure that labels stand out with stroke outlines.
 
 ![](axios-map.png)
 
