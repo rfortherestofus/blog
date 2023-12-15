@@ -14,6 +14,8 @@ See that black outline around the text? That’s the work of an extra package ca
 
 As another example, you can also check out [this map from Axios](https://www.axios.com/local/portland/2023/11/21/plant-hardiness-map-portland-oregon?stream=top). It’s another good example for making sure that labels stand out with stroke outlines.
 
+![](axios-map.png)
+
 **Highlights:** In a chain of text categories, you could give one label a little bit of extra weight. This way, it becomes even more clear that this is the important one.
 
 <img src="013_shadowtext_ggplot_files/figure-commonmark/unnamed-chunk-3-1.png" style="width:70.0%" />
