@@ -16,7 +16,7 @@ editor_options:
 
 Ever wanted to create a map of the US with ggplot?
 We know that we have.
-For example, for our [Oregon Voices consulting project](https://orvoices.org/your-county/), it was invaluable to have a great package that allows to create nice charts of the US.
+For example, for our [Oregon Voices project](https://orvoices.org/your-county/), it was invaluable to have a great package that allows to create nice charts of the US.
 
 ![](oregon_voices.png){width=60%}
 
@@ -90,6 +90,7 @@ plot_usmap(
 
 This map isn't particularly informative since basically everything uses the same color.
 We can change that by using a different color scale.
+The `usmap` package allows us to use functions that we're familiar with from `ggplot2` in order to change the appearance of our maps.
 Here, it's probably best to use a logarithmic color scales because there are very densely and very sparsely populated counties.
 But since `plot_usmap()` creates a ggplot, we can use the same layers from ggplot to modify the scale.
 In this case, we have to use `scale_fill_gradient()`.
@@ -113,7 +114,7 @@ plot_usmap(
 Ah already better.
 But we can do more.
 For example, let's move the color bar to the top.
-While we're working on the legend we might as well change it's title.
+While we're working on the legend we might as well change its title.
 
 ```{r}
 plot_usmap(
