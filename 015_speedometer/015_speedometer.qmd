@@ -147,7 +147,7 @@ fake_dat
 
 Nice.
 We have all the data we need.
-Time to send this to ggplot
+Time to send this to ggplot.
 Let me just show you the code and then I'll explain.
 
 ```{r}
@@ -214,7 +214,6 @@ gauge_plot
 ```
 
 ## Add a label
-
 
 Excellent!
 We have our speedometer.
