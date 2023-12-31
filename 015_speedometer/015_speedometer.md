@@ -1,6 +1,6 @@
 # How to create a gauge plot/speedometers in ggplot
 Albert Rapp
-Invalid Date
+2024-01-17
 
 Gauge plots are a nice way to visualize progress or parts-of-a-whole in general. Due to their round shape, they are sometimes also called speedometer plots. Here’s an example chart. It shows you how much of your goal you have already achieved.
 
@@ -85,7 +85,7 @@ fake_dat
 
 ## Creating curved bars
 
-Nice. We have all the data we need. Time to send this to ggplot Let me just show you the code and then I’ll explain.
+Nice. We have all the data we need. Time to send this to ggplot. Let me just show you the code and then I’ll explain.
 
 ``` r
 library(ggforce)

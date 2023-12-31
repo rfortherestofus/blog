@@ -1,6 +1,6 @@
 # Let the {styler} package help you reformat your code
 Albert Rapp
-Invalid Date
+2024-03-27
 
 The [tidyverse style guide](https://style.tidyverse.org/) offers many helpful suggestions for how to write your code. Of course, the style guide is very opinionated as all style guides usually are. Still, [in our R courses](https://rfortherestofus.com/courses) we try to adhere to the tidyverse style guide as much as possible because we believe that this makes for pretty legible code.
 
@@ -90,15 +90,14 @@ palmerpenguins::penguins |>
     sex=if_else(is.na(sex),'unknown',sex)
   )"
 )
+#> library(tidyverse)
+#> palmerpenguins::penguins |>
+#>   select(flipper_length_mm, bill_length_mm, sex) |>
+#>   mutate(
+#>     across(.cols = c("flipper_length_mm", "bill_length_mm"), .fns = function(x) x / 10),
+#>     sex = if_else(is.na(sex), "unknown", sex)
+#>   )
 ```
-
-    library(tidyverse)
-    palmerpenguins::penguins |>
-      select(flipper_length_mm, bill_length_mm, sex) |>
-      mutate(
-        across(.cols = c("flipper_length_mm", "bill_length_mm"), .fns = function(x) x / 10),
-        sex = if_else(is.na(sex), "unknown", sex)
-      )
 
 Nice. This inserted the white spaces for us. Unfortunately, this didn’t help us to add line breaks for the arguments in `across()`. That’s too bad. But the nice thing is that inserting line breaks is super easy. What’s time consuming is to reindent everything and match closing parantheses to their openings. Have a look how this looks with a line break manually inserted.
 
@@ -126,18 +125,17 @@ palmerpenguins::penguins |>
     sex = if_else(is.na(sex), 'unknown', sex)
   )"
 )
+#> library(tidyverse)
+#> palmerpenguins::penguins |>
+#>   select(flipper_length_mm, bill_length_mm, sex) |>
+#>   mutate(
+#>     across(
+#>       .cols = c("flipper_length_mm", "bill_length_mm"),
+#>       .fns = function(x) x / 10
+#>     ),
+#>     sex = if_else(is.na(sex), "unknown", sex)
+#>   )
 ```
-
-    library(tidyverse)
-    palmerpenguins::penguins |>
-      select(flipper_length_mm, bill_length_mm, sex) |>
-      mutate(
-        across(
-          .cols = c("flipper_length_mm", "bill_length_mm"),
-          .fns = function(x) x / 10
-        ),
-        sex = if_else(is.na(sex), "unknown", sex)
-      )
 
 Very nice! This does the rest for us. Personally, I run into situations like these all the time. I have code like this that’s already neat and then I change stuff. For example, I could add more conditions to the `if_else()` function.
 
@@ -170,26 +168,25 @@ is.na(sex) & (body_mass_g > 3000) & (flipper_length_mm <= 30),
 sex)
   )"
 )
+#> library(tidyverse)
+#> palmerpenguins::penguins |>
+#>   select(flipper_length_mm, bill_length_mm, sex) |>
+#>   mutate(
+#>     across(
+#>       .cols = c("flipper_length_mm", "bill_length_mm"),
+#>       .fns = function(x) x / 10
+#>     ),
+#>     sex = if_else(
+#>       is.na(sex) & (body_mass_g > 3000) & (flipper_length_mm <= 30),
+#>       "unknown",
+#>       sex
+#>     )
+#>   )
 ```
-
-    library(tidyverse)
-    palmerpenguins::penguins |>
-      select(flipper_length_mm, bill_length_mm, sex) |>
-      mutate(
-        across(
-          .cols = c("flipper_length_mm", "bill_length_mm"),
-          .fns = function(x) x / 10
-        ),
-        sex = if_else(
-          is.na(sex) & (body_mass_g > 3000) & (flipper_length_mm <= 30),
-          "unknown",
-          sex
-        )
-      )
 
 ## How to use `styler` in RStudio
 
-Now that we know how `styler` works, we want to incorporate it nicely into our workflow. Copying and pasting code into `styler::style_text()` is just too much effort. But the cool thing is that you can apply code formatting in RStudio without touching your initial code. The way to do that is to execute the *“Style active file”* command. The easiest way to do that is to press `ctrl` + `shift` + `P` and then type in “style”. From there, you can select the correct command from a dropdown menu.
+Now that we know how `styler` works, we want to incorporate it nicely into our workflow. Copying and pasting code into `styler::style_text()` is just too much effort. But the cool thing is that you can apply code formatting in RStudio without touching your initial code. The way to do that is to execute the *“Style active file”* command. The easiest way to do that is to press `ctrl/cmd` + `shift` + `P` and then type in “style”. From there, you can select the correct command from a dropdown menu.
 
 ![](command_palette.png)
 

@@ -1,6 +1,6 @@
 # How to separate a single column into multiple ones
 Albert Rapp
-Invalid Date
+2024-04-10
 
 <!-- Reference to an R4ROU project -->
 
@@ -29,7 +29,7 @@ board_games
 #> # ℹ 21,621 more rows
 ```
 
-Notice how the column of `boardgamecategory` contains a lot of labels. These labels represent all of the different categories a board game can fall into. Now, if we wanted to visualize the most popular board game categories, this could look like this:
+Notice how the column of `boardgamecategory` contains a lot of labels. These labels represent all of the different categories a board game can fall into. Now, if we wanted to visualize the most popular board game categories, we might make a chart like this:
 
 <img src="010_seperate_fcts_files/figure-commonmark/unnamed-chunk-3-1.png" style="width:70.0%" />
 

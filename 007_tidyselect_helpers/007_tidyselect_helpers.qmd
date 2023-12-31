@@ -1,7 +1,7 @@
 ---
 title: "Use tidyselect helpers to grab the right data"
 author: Albert Rapp
-date: TBA
+date: 2/28/2024
 toc: false
 format: gfm
 wrap: none

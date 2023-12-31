@@ -1,0 +1,57 @@
+
+
+```{r}
+library(tidyverse)
+continent_mean_life_exps <- gapminder::gapminder |> 
+  summarize(mean_life_exp = mean(lifeExp), .by = c(year, continent)) |> 
+  pivot_wider(
+    names_from = year, 
+    values_from = mean_life_exp,
+    names_prefix = 'year_'
+  )
+```
+
+```{r}
+#| echo: false
+continent_mean_life_exps |> 
+  pivot_longer(
+    cols = -continent,
+    names_to = 'year', 
+    names_prefix = 'year_',
+    names_transform = as.numeric
+  ) |> 
+  ggplot(aes(year, value, color = continent)) +
+  geom_line(linewidth = 1) +
+  geom_point() +
+  theme_minimal(base_size = 16, base_family = 'Source Sans Pro') +
+  labs(
+    x = element_blank(),
+    y = element_blank(),
+    color = 'Continent',
+    title = 'Mean life expectancies over time'
+  )
+```
+
+
+```{r}
+library(tidyverse)
+continent_mean_life_exps |> 
+  pivot_longer(
+    cols = -continent,
+    names_to = 'year', 
+    names_prefix = 'year_',
+    names_transform = as.numeric,
+    values_to = 'mean_life_exp'
+  ) |> 
+  ggplot(aes(year, mean_life_exp, color = continent)) +
+  geom_line(linewidth = 1) +
+  geom_point() +
+  theme_minimal(base_size = 16, base_family = 'Source Sans Pro') +
+  labs(
+    x = element_blank(),
+    y = element_blank(),
+    color = 'Continent',
+    title = 'Mean life expectancies over time'
+  )
+```
+

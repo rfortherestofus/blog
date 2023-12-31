@@ -1,7 +1,7 @@
 ---
 title: "Let the {styler} package help you reformat your code"
 author: Albert Rapp
-date: TBA
+date: 3/27/2024
 toc: false
 format: gfm
 wrap: none
@@ -93,8 +93,6 @@ To do so, install the `styler` package with `install.packages('styler')`.
 Once, you've done that, we can apply the `style_text()` function from that package on our bad code.
 
 ```{r}
-#| collapse: false
-#| comment: ''
 styler::style_text(
   "library(tidyverse)
 palmerpenguins::penguins |>
@@ -133,8 +131,6 @@ But the inconsistent indentations will drive me crazy.
 Thankfully, at this stage `styler` can do the rest for us.
 
 ```{r}
-#| collapse: false
-#| comment: ''
 styler::style_text(
   "library(tidyverse)
 palmerpenguins::penguins |>
@@ -171,8 +167,6 @@ Now the condition is fairly long.
 So it's probably best to add line breaks manually and let `styler` do the rest.
 
 ```{r}
-#| collapse: false
-#| comment: ''
 styler::style_text(
   "library(tidyverse)
 palmerpenguins::penguins |>

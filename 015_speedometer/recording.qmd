@@ -1,0 +1,58 @@
+
+
+```{r}
+library(tidyverse)
+library(ggforce)
+percentage_done <- 0.95
+fake_dat <- tibble(
+  part = c("Complete", "Incomplete"),
+  percentage = c(percentage_done, 1 - percentage_done),
+  start = lag(percentage, default = 0)  * pi,
+  end = start + percentage * pi
+)
+```
+
+```{r}
+fake_dat |>
+  ggplot() +
+  geom_arc_bar(
+    aes(
+      x0 = 1, 
+      y0 = 1, 
+      fill = part, 
+      start = start - pi / 2,
+      end = end - pi / 2, 
+      r0 = 0.75, 
+      r = 1 
+    )
+  ) +
+  coord_fixed()  +
+  annotate(
+    "text",
+    x = 1,
+    y = 1,
+    label = glue::glue("{percentage_done * 100}% complete"),
+    size = 16,
+    family = "Source Sans Pro",
+    fontface = "bold",
+    color = "#009E73",
+    vjust = 0
+  ) +
+  labs(
+    title = "This is a gauge plot",
+    subtitle = "It was created in ggplot and shows you how much of your goal\nyou have already achieved."
+  )  +
+  theme_void() +
+  theme(
+    legend.position = "none",
+    plot.title = element_text(
+      family = "Source Sans Pro", size = 28, face = "bold"
+    ),
+    plot.subtitle = element_text(family = "Source Sans Pro", size = 18)
+  ) +
+  scale_fill_manual(
+    values = c("Complete" = "#009E73", "Incomplete" = "grey80")
+  )
+```
+
+

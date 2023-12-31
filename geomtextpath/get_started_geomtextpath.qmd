@@ -1,7 +1,9 @@
 ---
 title: "Getting Started with {geomtextpath}"
 author: "Libby Heeren"
+date: 1/3/2024
 format: gfm
+wrap: none
 execute: 
   warning: false
 editor_options: 
@@ -11,7 +13,7 @@ knitr:
     fig.align: center
 ---
 
-```{r invisible set up}
+```{r}
 #| message: false
 #| warning: false
 #| echo: false
@@ -31,7 +33,7 @@ avg_hwy <- vehicles |>
 
 Have you ever created a great line graph only to feel frustrated that it requires a messy, hard to read legend? What if you could label the lines directly? Even the curvy ones? And have the text follow the curvature of the lines!
 
-```{r debut line graph}
+```{r}
 #| message: false
 #| warning: false
 #| echo: false
@@ -59,7 +61,7 @@ With the `{geomtextpath}` package, you can annotate your `ggplot2` visualization
 
 First, let's load our packages and pull our data. We'll be using a subset of the `vehicles` data from the `{fueleconomy}` package.
 
-```{r visible set up}
+```{r}
 #| message: false
 #| warning: false
 #| eval: false
@@ -79,7 +81,7 @@ avg_hwy <- vehicles |>
 
 We'll start by recreating the graph above using `{ggplot2}`, but without the labels.
 
-```{r line graph with legend}
+```{r}
 #| message: false
 #| warning: false
 
@@ -98,7 +100,7 @@ avg_hwy |>
 
 The legend on this plot takes up nearly half the space! Sure, we could move the legend inside the plot, but that would still look cluttered. Instead, by replacing `geom_line()` with `geom_textline()` from the `{geomtextpath}` package, we will get the same line, but with a label floating inside it. And with that handy label added, we can remove the legend.
 
-```{r line graph with labels inside line}
+```{r}
 #| message: false
 #| warning: false
 
@@ -137,7 +139,7 @@ Now, let's make a few more adjustments in order to:
 
 
 
-```{r line graph with labels above line, no smoothing}
+```{r}
 #| message: false
 #| warning: false
 
@@ -160,7 +162,7 @@ avg_hwy |>
 
 This is looking pretty good, but the text could look better if we smoothed it out a bit. We can use the `text_smoothing` argument, which accepts values between 0 and 100. Let's see what a couple of different values look like.
 
-```{r line graph with labels above line, 75 smoothing}
+```{r}
 #| message: false
 #| warning: false
 
@@ -183,7 +185,7 @@ avg_hwy |>
 
 Above, we tried `text_smoothing = 75` and that's smoothed it out to almost be a flat line! Let's try a little bit less.
 
-```{r line graph with labels above line, 25 smoothing}
+```{r}
 #| message: false
 #| warning: false
 
@@ -206,7 +208,7 @@ avg_hwy |>
 
 Using `text_smoothing = 25` is better, but I think somewhere in between will work best. Let's try `text_smoothing = 40` next.
 
-```{r line graph with labels above line, 40 smoothing}
+```{r}
 #| message: false
 #| warning: false
 
@@ -232,9 +234,10 @@ That looks perfect! And it wasn't too complicated.
 
 If you're wondering what all the default aesthetic values are for `geom_textline`, you can find them by typing in the `geom` name in camel case into the console (so, starting with a capital G). For instance, if I have the `{geomtextpath}` package loaded already and I type in `GeomTextLine`, I can then access the default aesthetic values by adding `$default_aes`. This also works for any `ggplot` `geom` functions you might be interested in. RStudio's auto-complete will help you out once you start typing.  
 
-```{r default geom_textline aes values}
+```{r}
 #| message: false
 #| warning: false
+#| collapse: true
 
 GeomTextline$default_aes
 ```
@@ -243,7 +246,7 @@ GeomTextline$default_aes
 
 Glad you asked. So far, we've replaced `geom_text` type functions, but there are label versions of all the `{geomtextpath}` functions, too! Like this code that uses `geom_labelline()` instead.
 
-```{r line graph with geom_labelline instead}
+```{r}
 #| message: false
 #| warning: false
 
@@ -289,7 +292,7 @@ break_even <-
 
 Using `geom_textline()`, we'll plot the **total cost in red** and the **total revenue in green**.
 
-```{r break even plot: no ab lines}
+```{r}
 #| message: false
 #| warning: false
 
@@ -342,7 +345,7 @@ These functions replace `geom_hline()` and `geom_vline()` in `{ggplot2}`, and if
 
 We don't want our annotations to dominate the plot, so we can use `"dotted"` line types for them. Just like in `geom_line()`, we can specify this with the `linetype` argument. We can also get a little fancy by parameterizing our labels using `paste0()` so that they will always be correct, even if the data changes.
 
-```{r break even plot: with ab lines}
+```{r}
 #| message: false
 #| warning: false
 
@@ -403,7 +406,7 @@ It's worth noting that `hjust` moves the text label along the line whether it's 
 
 You can do that, too! Let's create a beautiful overlapping density plot to demonstrate. We will, of course, use everyone's favorite penguins for our data set!
 
-```{r pull penguins}
+```{r}
 #| message: false
 #| warning: false
 
@@ -413,7 +416,7 @@ penguins <- palmerpenguins::penguins |>
 
 We **could** create a plain density plot using the `geom_textdensity()` function from `{geomtextpath}`.
 
-```{r penguins text density}
+```{r}
 #| message: false
 #| warning: false
 
@@ -439,7 +442,7 @@ penguins |>
 
 But, what if we want to create a beautifully transparent filled density plot with custom colors, like this?
 
-```{r penguins filled density}
+```{r}
 #| message: false
 #| warning: false
 
@@ -477,7 +480,7 @@ We'll use all the adjustment arguments we've learned so far, plus a few new ones
 
 We'll also add `ylim(c(0, .16))` to our plot this time to add just the tiniest bit of height to our y-axis limit so that our floating text won't get cut off by our subtitle. Try removing it to see what I mean!
 
-```{r penguins filled density + labels}
+```{r}
 #| message: false
 #| warning: false
 

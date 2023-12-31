@@ -1,7 +1,7 @@
 ---
 title: "How to add sparklines to a {gt} table"
 author: Albert Rapp
-date: TBA
+date: 2/14/2024
 toc: false
 format: gfm
 wrap: none

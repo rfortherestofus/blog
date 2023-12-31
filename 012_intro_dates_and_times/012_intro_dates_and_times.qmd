@@ -1,7 +1,7 @@
 ---
 title: "How to work with times and dates"
 author: Albert Rapp
-date: TBA
+date: 1/31/2024
 toc: false
 format: gfm
 wrap: none
@@ -15,7 +15,6 @@ editor_options:
 ---
 
 Time series data is everywhere.
-<!-- We could insert an example consulting project here -->
 But time- and date-related data is notoriously hard to work with.
 But as always, the tidyverse has a nice package that makes our life just a little bit easier.
 In this case, it is the `lubridate` package that helps us.

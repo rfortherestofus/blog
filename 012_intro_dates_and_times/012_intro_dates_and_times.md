@@ -1,8 +1,8 @@
 # How to work with times and dates
 Albert Rapp
-Invalid Date
+2024-01-31
 
-Time series data is everywhere. <!-- We could insert an example consulting project here --> But time- and date-related data is notoriously hard to work with. But as always, the tidyverse has a nice package that makes our life just a little bit easier. In this case, it is the `lubridate` package that helps us. But just like time data itself, it requires a bit of effort to get used to working with `lubridate`. In this blog post, we go through a couple of things you might struggle with when you want to work with time data. This should help you get started with `lubridate` much faster.
+Time series data is everywhere. But time- and date-related data is notoriously hard to work with. But as always, the tidyverse has a nice package that makes our life just a little bit easier. In this case, it is the `lubridate` package that helps us. But just like time data itself, it requires a bit of effort to get used to working with `lubridate`. In this blog post, we go through a couple of things you might struggle with when you want to work with time data. This should help you get started with `lubridate` much faster.
 
 ## Getting data
 
@@ -167,7 +167,7 @@ counts |>
 
 <img src="012_intro_dates_and_times_files/figure-commonmark/unnamed-chunk-6-1.png" style="width:100.0%" />
 
-Aha! There’s less people traveling on one day of the week. But which day is it? It seems that `day_of_week` are only numbers and not actual labels like Monday, Tuesday, etc. We could look into the documentation what the number outputs mean. But why don’t we try to compute that instead?
+Aha! We can see fewer people traveling on one day of the week. But which day is it? It seems that `day_of_week` are only numbers and not actual labels like Monday, Tuesday, etc. We could look into the documentation what the number outputs mean. But why don’t we try to compute that instead?
 
 ## Get time labels
 
@@ -185,20 +185,20 @@ flights_subset |>
 #> # A tibble: 36 × 4
 #>    date       day_of_week day_of_week_label day_of_week_full_label
 #>    <date>           <dbl> <ord>             <ord>                 
-#>  1 2013-01-01           3 Tue               Tuesday               
-#>  2 2013-01-01           3 Tue               Tuesday               
-#>  3 2013-01-01           3 Tue               Tuesday               
-#>  4 2013-02-01           6 Fri               Friday                
-#>  5 2013-02-01           6 Fri               Friday                
-#>  6 2013-02-01           6 Fri               Friday                
-#>  7 2013-03-01           6 Fri               Friday                
-#>  8 2013-03-01           6 Fri               Friday                
-#>  9 2013-03-01           6 Fri               Friday                
-#> 10 2013-04-01           2 Mon               Monday                
+#>  1 2013-01-01           3 Di                Dienstag              
+#>  2 2013-01-01           3 Di                Dienstag              
+#>  3 2013-01-01           3 Di                Dienstag              
+#>  4 2013-02-01           6 Fr                Freitag               
+#>  5 2013-02-01           6 Fr                Freitag               
+#>  6 2013-02-01           6 Fr                Freitag               
+#>  7 2013-03-01           6 Fr                Freitag               
+#>  8 2013-03-01           6 Fr                Freitag               
+#>  9 2013-03-01           6 Fr                Freitag               
+#> 10 2013-04-01           2 Mo                Montag                
 #> # ℹ 26 more rows
 ```
 
-Cool, this gives us labels. But just in case you’re wondering: These are not the English labels that you might expect. The reason for that is that my computer system is set to German and R detects that. So that is why R uses the German **“locale”**.
+Cool, this gives us labels. But just in case you’re wondering: These are not the English labels that you might expect. The reason for that is that my computer system is set to German and R detects that. So that is why R uses the German **locale**.
 
 To get control over the locale, the locale-dependent time functions (like those that assign labels) have an argument that we can set to a different locale. Here’s how that looks:
 
@@ -239,11 +239,11 @@ flights_subset |>
 #> # ℹ 26 more rows
 ```
 
-How did I find this ominous `"en_US.UTF-8"`? Well, the thing is that the `wday()` function shows you in its docs that it by default uses `Sys.getlocale("LC_TIME")`. And if I run this, then I get:
+How did I find this ominous `en_US.UTF-8`? Well, the thing is that the `wday()` function shows you in its docs that it by default uses `Sys.getlocale("LC_TIME")`. And if I run this, then I get:
 
 ``` r
 Sys.getlocale("LC_TIME")
-#> [1] "en_US.UTF-8"
+#> [1] "de_DE.UTF-8"
 ```
 
 So getting the correct English locale was only about changing the `de_DE` part which I know is the code for German spoken in Germany (there’s also Swiss and Austrian German). Thus, if you’re unsure how your locale on your system might look (and that’s something that can happen depending on your OS), then run this function and make the changes as necessary.

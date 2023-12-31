@@ -1,0 +1,65 @@
+
+
+```{r}
+library(tidyverse)
+details <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-01-25/details.csv")
+
+board_games <- details |>
+  select(id, name = primary, boardgamecategory)
+board_games
+```
+
+
+```{r}
+counts <- board_games |> 
+  separate_longer_delim(cols = boardgamecategory, delim = ', ') |> 
+  mutate(
+    boardgamecategory = str_replace_all(
+      boardgamecategory,
+       c(
+        `[` = "",
+        `]` = "",
+        `"` = "",
+        `'` = ""
+      ) |> coll()
+    )
+  ) |> 
+  count(boardgamecategory, sort = TRUE) |> 
+  slice(1:10)
+```
+
+```{r}
+counts |>
+  ggplot(aes(x = n, y = fct_reorder(boardgamecategory, n))) +
+  geom_col(fill = "dodgerblue4") +
+  theme_minimal(base_size = 16, base_family = "Source Sans Pro") +
+  labs(
+    x = "Number of board games",
+    y = element_blank(),
+    title = "Most popular board game categories",
+    caption = "Data: TidyTuesday 2022, Week 04"
+  )
+
+```
+
+
+
+
+```{r}
+dat <- tibble(
+  flavor_price = c("vanilla,1.30", "chocolate,1.50", "strawberry,1.00")
+)
+dat |>
+  separate_wider_delim(
+    cols = flavor_price, 
+    delim = ",", 
+    names = c("ice_cream_flavor", "scoop_price")
+  )
+```
+
+
+
+
+
+
+

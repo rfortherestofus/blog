@@ -1,6 +1,6 @@
 # How to add sparklines to a {gt} table
 Albert Rapp
-Invalid Date
+2024-02-14
 
 Any table can be spiced up by adding small visual elements to it. Ideally, this makes the table more engaging *and* informative. One popular visual element that can get both jobs done is a **sparkline**.
 
@@ -107,7 +107,7 @@ open_prices_over_time
 
 ## Summarize the data
 
-Currently, the data set has ~45,000 rows. That’s hardly a good size for a table. So let’s summarize that. Maybe we could just look how much each stock price increased from the earliest to the latest record in the data set. That could be interesting.
+Currently, the data set has ~45,000 rows. That’s way too big for a table. So let’s summarize that. Maybe we could just look how much each stock price increased from the earliest to the latest record in the data set. That could be interesting.
 
 ``` r
 rel_changes <- open_prices_over_time |> 

@@ -1,6 +1,6 @@
 # Use snippets in RStudio to repeat common patterns
 Albert Rapp
-Invalid Date
+2024-04-24
 
 <!-- Not sure how to connect this to consulting work -->
 

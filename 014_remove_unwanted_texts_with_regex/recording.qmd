@@ -1,0 +1,53 @@
+
+
+```{r}
+library(tidyverse)
+library(gt)
+big_tech_companies <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-02-07/big_tech_companies.csv')
+big_tech_companies
+
+big_tech_companies |>
+  gt() |> 
+  tab_header(
+    title = "Big tech companies",
+    subtitle = "This table shows you the symbols of the big tech companies."
+  ) |> 
+  gt::cols_label(
+    stock_symbol = "Stock symbol",
+    company = "Company"
+  )
+```
+
+```{r}
+big_tech_companies |>
+  mutate(
+    company = str_remove_all(company, "Inc\\.|Corporation"),
+    company = str_remove_all(company, "(\\.com|Systems|Platforms)?,"),
+    company = str_trim(company)
+  ) 
+```
+
+```{r}
+big_tech_companies |>
+  mutate(
+    company = str_remove_all(company, "Inc\\.|Corporation"),
+    company = str_remove_all(company, "(\\.com|Systems|Platforms)?,"),
+    company = str_trim(company),
+    company = str_replace_all(
+      company, 
+      "International Business Machines", 
+      "IBM"
+    ),
+  ) |>
+  gt() |> 
+  tab_header(
+    title = "Big tech companies",
+    subtitle = "This table shows you the symbols of the big tech companies."
+  ) |> 
+  gt::cols_label(
+    stock_symbol = "Stock symbol",
+    company = "Company"
+  )
+```
+
+

@@ -1,0 +1,66 @@
+
+
+```{r}
+library(tidyverse)
+penguins <- palmerpenguins::penguins
+penguins |>
+  mutate(
+    bill_length_cm = bill_length_mm / 10,
+    bill_depth_cm = bill_depth_mm / 10,
+    flipper_length_cm = flipper_length_mm / 10
+  ) |>
+  select(
+    -c(
+      bill_length_mm, 
+      bill_depth_mm,
+      flipper_length_mm
+    )
+  )
+```
+
+
+```{r}
+penguins |> 
+  select(2:4)
+
+penguins |> 
+  select(sex:bill_depth_mm, island)
+
+penguins |> 
+  select(where(is.factor))
+
+penguins |> 
+  select(ends_with('mm'))
+
+penguins |> 
+  select(starts_with('bill'))
+
+```
+
+
+```{r}
+penguins |>
+  mutate(
+    bill_length_cm = bill_length_mm / 10,
+    bill_depth_cm = bill_depth_mm / 10,
+    flipper_length_cm = flipper_length_mm / 10
+  ) |>
+  select(-ends_with('mm'))
+```
+
+```{r}
+divide_by_ten <- function(x) {
+  x / 10
+}
+penguins |>
+  mutate(
+    across(
+      .cols = ends_with('mm'),
+      .fns = divide_by_ten,
+      .names = '{str_remove(.col, "_mm")}_cm'
+    )
+  ) |>
+  select(-ends_with('mm'))
+```
+
+

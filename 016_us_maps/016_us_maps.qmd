@@ -1,7 +1,7 @@
 ---
 title: "How to create maps of the US with ggplot"
 author: Albert Rapp
-date: TBA
+date: 6/5/2024
 toc: false
 format: gfm
 wrap: none

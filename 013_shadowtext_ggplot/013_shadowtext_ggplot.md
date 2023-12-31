@@ -1,6 +1,6 @@
-# Use geomtextpath to add outlines to your texts
+# Use shadowtext to add outlines to your texts
 Albert Rapp
-Invalid Date
+2024-05-08
 
 As probably most of you know, the premier package to create charts in the tidyverse is `ggplot2`. On its own, this package is already **incredibly** powerful. It really cannot be stressed enough that you can create impressive charts with just this one package. Still, there are some things that ggplot cannot do on its own. And one such thing is adding outline strokes to texts like this:
 

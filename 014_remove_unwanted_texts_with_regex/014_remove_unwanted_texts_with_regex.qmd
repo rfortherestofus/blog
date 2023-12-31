@@ -1,7 +1,7 @@
 ---
 title: "How to remove unwanted texts in your data"
 author: Albert Rapp
-date: TBA
+date: 5/22/2024
 toc: false
 format: gfm
 wrap: none
@@ -27,7 +27,7 @@ big_tech_stock_prices <- readr::read_csv('https://raw.githubusercontent.com/rfor
 big_tech_stock_prices
 ```
 
-Maybe you want to work only with this financal data set.
+Maybe you want to work only with this financial data set.
 But at some point you will probably have to communicate your findings to someone else.
 And if these people are anything like me, then they probably don't immediately know which company is meant by a symbol like "AAPL".
 Luckily, there's another data set `big_tech_companies`.
@@ -104,7 +104,7 @@ So, it's probably best if we clean up our text labels to make our table nicer.
 And that's exactly where text cleaning techniques comes into play.
 Let's dive into this week's blog post and I'll show you how that works.
 
-## Remove unwated text
+## Remove unwanted text
 
 The `stringr` package has excellent functions to make our labels a little bit nicer.
 First let's remove all the `Inc.` and `Corporation` stuff.

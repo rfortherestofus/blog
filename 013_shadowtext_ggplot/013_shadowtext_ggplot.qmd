@@ -1,7 +1,7 @@
 ---
-title: "Use geomtextpath to add outlines to your texts"
+title: "Use shadowtext to add outlines to your texts"
 author: Albert Rapp
-date: TBA
+date: 5/8/2024
 toc: false
 format: gfm
 wrap: none

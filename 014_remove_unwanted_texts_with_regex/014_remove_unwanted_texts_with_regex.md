@@ -1,8 +1,8 @@
 # How to remove unwanted texts in your data
 Albert Rapp
-Invalid Date
+2024-05-22
 
-Text cleaning is a common part of data analysis. You may not really want to do it but it’s necessary all the time. For example, have a look at this data set from tidyTuesday. It shows you the stock prices of some big tech companies.
+Text cleaning is a common part of data analysis. You may not really want to do it but it’s often necessary. For example, have a look at this data set from tidyTuesday. It shows you the stock prices of some big tech companies.
 
 ``` r
 big_tech_stock_prices <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-02-07/big_tech_stock_prices.csv')
@@ -23,7 +23,7 @@ big_tech_stock_prices
 #> # ℹ 45,078 more rows
 ```
 
-Maybe you want work only with this financal data set. But at some point you will probably have to communicate your findings to someone. And if these people are anything like me, then they probably don’t immediately know which company is meant by a symbol like “AAPL”. Luckily, there’s another data set `big_tech_companies`. It gives us the translations we need.
+Maybe you want to work only with this financial data set. But at some point you will probably have to communicate your findings to someone else. And if these people are anything like me, then they probably don’t immediately know which company is meant by a symbol like “AAPL”. Luckily, there’s another data set `big_tech_companies`. It gives us the translations we need.
 
 ``` r
 big_tech_companies <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-02-07/big_tech_companies.csv')
@@ -70,7 +70,7 @@ This might do for communicating the abbrevations to somebody. Personally, I find
 
 So, it’s probably best if we clean up our text labels to make our table nicer. And that’s exactly where text cleaning techniques comes into play. Let’s dive into this week’s blog post and I’ll show you how that works.
 
-## Remove texts
+## Remove unwanted text
 
 The `stringr` package has excellent functions to make our labels a little bit nicer. First let’s remove all the `Inc.` and `Corporation` stuff. The premier functions from `stringr` to remove texts are `str_remove()` and `str_remove_all()`. The latter removes all occurences of a given text whereas the former only removes the first occurence. Thus, most of the time it’s best to use `str_remove_all()`.
 
@@ -109,7 +109,7 @@ str_remove_all("Apple Incorporation", "Inc.|Corporation")
 #> [1] "Apple rporation"
 ```
 
-Argh. This doesn’t look right. The function removed “Inco” and now we’re left with “Apple rporation”. Not exactly nice, is it? The reason for this is that `str_remove_all()` uses **regex** (like I’ve mentioned before.) You can think of regex as its own powerful language. And in this language the dot `.` is not just a dot. It’s actually a symbol meaning “any character”.
+Argh. This doesn’t look right. The function removed “Inco” and now we’re left with “Apple rporation”. Not exactly nice, is it? The reason for this is that `str_remove_all()` uses **regex** (short for [regular expressions](https://en.wikipedia.org/wiki/Regular_expression)) You can think of regex as its own powerful language. And in this language the dot `.` is not just a dot. It’s actually a symbol meaning “any character”.
 
 So what we’ve told `str_remove_all()` is the following: *“Please remove any texts that correspond to one of the following patterns:*
 
@@ -160,7 +160,7 @@ big_tech_companies |>
 
 ## Remove whitespaces
 
-Now that we’ve removed the `Inc.` and `Corporation` stuff, we can move on to the next thing. We want to remove all the whitespaces. You know, the spaces after some of the words. (Notice the white space followed by a quotation mark after “Apple” and “Adobe”.)
+Now that we’ve removed `Inc.` and `Corporation`, we can move on to the next thing. We want to remove all the whitespaces. You know, the spaces after some of the words. (Notice the white space followed by a quotation mark after “Apple” and “Adobe”.)
 
 ``` r
 big_tech_companies |>
@@ -186,7 +186,7 @@ big_tech_companies |>
 #> 14 TSLA         "Tesla, "
 ```
 
-That’s excess baggage. Less remove that. We could actually include that white space in our regular expression from before.
+That’s excess baggage. Let’s remove it. We could actually include that white space in our regular expression from before.
 
 ``` r
 big_tech_companies |>
@@ -268,7 +268,7 @@ big_tech_companies |>
 #> 14 TSLA         Tesla
 ```
 
-This gives us nice results. We have removed “.com”, “Systems”, “Platforms”, and all the “,”. But it required doing a complicated thing. Let’s go through it step by step. First, let’s just put “.com” (don’t forget to escape the point), “Systems”, “Platforms” into the pattern with `|` in between.
+This gives us nice results. We have removed “.com”, “Systems”, “Platforms”, and all the “,”. But it required doing a complicated thing. Let’s go through it step by step. First, let’s just put “.com” (don’t forget to escape the period), “Systems”, “Platforms” into the pattern with `|` in between.
 
 ``` r
 big_tech_companies |>
@@ -435,4 +435,4 @@ cleaned_big_tech_companies |>
 
 <img src="cleaned_tab.png" style="width:40.0%" />
 
-Great job! This is a nicer table. And whoever you show this too will probably have a much easier time understanding the abbreviations. That’s it for this week’s blog post. I hope this helps you with your data cleaning tasks. Enjoy the rest of your day and see you next time 👋
+Great job! This is a nicer table. And whoever you show this too will probably have a much easier time understanding the abbreviations. That’s it for this week’s blog post. I hope this helps you with your data cleaning tasks. If you’re interested in learning more about data cleaning, check out the course [Data Cleaning with R](https://rfortherestofus.com/courses/data-cleaning).

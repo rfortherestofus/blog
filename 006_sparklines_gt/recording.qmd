@@ -1,0 +1,56 @@
+
+
+```{r}
+library(tidyverse)
+big_tech_stock_prices <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-02-07/big_tech_stock_prices.csv')
+big_tech_companies <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-02-07/big_tech_companies.csv')
+
+big_tech_stock_prices
+big_tech_companies
+open_prices_over_time <- big_tech_stock_prices |> 
+  left_join(big_tech_companies, by = 'stock_symbol') |> 
+  select(company, date, open)
+```
+
+```{r}
+rel_changes <- open_prices_over_time |> 
+  arrange(date) |> 
+  summarize(
+    rel_change = open[length(open)] / open[1] - 1,
+    open_prices = list(open),
+    .by = company
+  ) |> 
+  arrange(rel_change)
+```
+
+```{r}
+library(gt)
+
+rel_changes |> 
+  gt() |> 
+  cols_label(
+    company = 'Company',
+    rel_change = 'Change'
+  ) |> 
+  fmt_percent(columns = rel_change) |> 
+  gtExtras::gt_plt_sparkline(
+    column = open_prices,
+    fig_dim = c(20, 60)
+  )
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

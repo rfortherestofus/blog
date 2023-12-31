@@ -1,8 +1,8 @@
 # How to create maps of the US with ggplot
 Albert Rapp
-Invalid Date
+2024-06-05
 
-Ever wanted to create a map of the US with ggplot? We know that we have. For example, for our [Oregon Voices consulting project](https://orvoices.org/your-county/), it was invaluable to have a great package that allows to create nice charts of the US.
+Ever wanted to create a map of the US with ggplot? We know that we have. For example, for our [Oregon Voices project](https://orvoices.org/your-county/), it was invaluable to have a great package that allows to create nice charts of the US.
 
 <img src="oregon_voices.png" style="width:60.0%" />
 
@@ -75,7 +75,7 @@ plot_usmap(
 
 ## Modifying scales
 
-This map isn’t particularly informative since basically everything uses the same color. We can change that by using a different color scale. Here, it’s probably best to use a logarithmic color scales because there are very densely and very sparsely populated counties. But since `plot_usmap()` creates a ggplot, we can use the same layers from ggplot to modify the scale. In this case, we have to use `scale_fill_gradient()`.
+This map isn’t particularly informative since basically everything uses the same color. We can change that by using a different color scale. The `usmap` package allows us to use functions that we’re familiar with from `ggplot2` in order to change the appearance of our maps. Here, it’s probably best to use a logarithmic color scales because there are very densely and very sparsely populated counties. But since `plot_usmap()` creates a ggplot, we can use the same layers from ggplot to modify the scale. In this case, we have to use `scale_fill_gradient()`.
 
 ``` r
 plot_usmap(
@@ -94,7 +94,7 @@ plot_usmap(
 
 <img src="016_us_maps_files/figure-commonmark/unnamed-chunk-6-1.png" style="width:80.0%" />
 
-Ah already better. But we can do more. For example, let’s move the color bar to the top. While we’re working on the legend we might as well change it’s title.
+Ah already better. But we can do more. For example, let’s move the color bar to the top. While we’re working on the legend we might as well change its title.
 
 ``` r
 plot_usmap(
