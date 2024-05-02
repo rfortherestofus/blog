@@ -1,0 +1,1052 @@
+---
+title: "How to make a population pyramid in ggplot"
+format: 
+  html:
+    fig-height: 4
+    fig-width: 3
+    dpi: 300
+execute: 
+  echo: true
+  warning: false
+  message: false
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+library(tidyverse)
+library(scales)
+library(patchwork)
+library(here)
+```
+
+How do you make a population pyramid in ggplot2? To make a simple population pyramid, the answer is quite straightforward, but, as you'll see in this blog post, you can go deep to make something polished and elegant. This is exactly what I've done for the last few years as [I've produced many population pyramids](https://rfortherestofus.com/2023/01/multiple-plots) for the annual [Oregon by the Numbers report](https://www.tfff.org/obtn). I tried out a new technique this year, making separate plots for women, men, and the age categories and combining them using the [{patchwork} package](https://patchwork.data-imaginist.com/). When the report comes out in September, you'll see population pyramids that look like this:
+
+![](2024-population-pyramid-benton.png)
+
+## Make a basic population pyramid
+
+To make a basic population pyramid, I've brought in some data from Oregon by the Numbers. I've saved the data as an object
+
+
+## Read in data
+
+```{r}
+oregon_population_pyramid_data <-
+  read_csv(here("population-pyramid/oregon_population_pyramid_data.csv")) |>
+  mutate(percent = if_else(gender == "Men", percent, -percent)) |>
+  mutate(age = fct_inorder(age))
+```
+
+## Make population pyramid with one ggplot
+
+### Basic plot
+
+```{r}
+oregon_population_pyramid_data |>
+  filter(county == "Benton") |>
+  ggplot(aes(
+    x = percent,
+    y = age,
+    fill = gender
+  )) +
+  geom_col()
+```
+
+### Add text in middle
+
+```{r}
+oregon_population_pyramid_data |>
+  filter(county == "Benton") |>
+  ggplot(aes(
+    x = percent,
+    y = age,
+    fill = gender
+  )) +
+  geom_col() +
+  geom_label(
+    aes(
+      x = 0,
+      label = age
+    ),
+    fill = "white",
+    label.size = 0
+  )
+```
+
+#### This can cover up data
+
+- Show plots at different sizes
+
+### Problems to deal with:
+
+1. Have age labels not cover things up
+1. Absolute values of percents
+1. Consistent limits on x axis
+1. Small tweaks: improve theme, col width 0.7, etc
+1. Add gender labels
+
+## Make good population pyramid
+
+### Divide into pieces
+
+### Women plot
+
+```{r}
+population_pyramid_women <-
+  oregon_population_pyramid_data |>
+  filter(county == "Benton") |>
+  filter(gender == "Women") |>
+  ggplot(aes(
+    x = percent,
+    y = age
+  )) +
+  geom_col()
+```
+
+### Men plot
+
+```{r}
+population_pyramid_men <-
+  oregon_population_pyramid_data |>
+  filter(county == "Benton") |>
+  filter(gender == "Men") |>
+  ggplot(aes(
+    x = percent,
+    y = age
+  )) +
+  geom_col()
+```
+
+### Stich it together
+
+```{r}
+population_pyramid_women +
+  population_pyramid_men
+```
+
+
+### Age order plot
+
+#### Without factor
+
+```{r}
+age_order <- tibble(
+  age = c(
+    "0-4",
+    "5-9",
+    "10-14",
+    "15-19",
+    "20-24",
+    "25-29",
+    "30-34",
+    "35-39",
+    "40-44",
+    "45-49",
+    "50-54",
+    "55-59",
+    "60-64",
+    "65-69",
+    "70-74",
+    "75-79",
+    "80-84",
+    "85+"
+  )
+)
+
+age_order |>
+  ggplot(
+    aes(
+      x = 1,
+      y = age,
+      label = age
+    )
+  ) +
+  geom_text() +
+  theme_void()
+```
+
+#### With factor
+
+```{r}
+age_order <- tibble(
+  age = c(
+    "0-4",
+    "5-9",
+    "10-14",
+    "15-19",
+    "20-24",
+    "25-29",
+    "30-34",
+    "35-39",
+    "40-44",
+    "45-49",
+    "50-54",
+    "55-59",
+    "60-64",
+    "65-69",
+    "70-74",
+    "75-79",
+    "80-84",
+    "85+"
+  )
+) |>
+  mutate(
+    age = fct_inorder(age)
+  )
+
+age_order |>
+  ggplot(
+    aes(
+      x = 1,
+      y = age,
+      label = age
+    )
+  ) +
+  geom_text() +
+  theme_void()
+```
+
+
+#### Save it
+
+```{r}
+age_order_plot <-
+  age_order |>
+  ggplot(
+    aes(
+      x = 1,
+      y = age,
+      label = age
+    )
+  ) +
+  geom_text() +
+  theme_void()
+```
+
+### Add them together
+
+#### Basic
+
+```{r}
+population_pyramid_women + age_order_plot + population_pyramid_men
+```
+
+#### Add widths
+
+```{r}
+population_pyramid_women +
+  age_order_plot +
+  population_pyramid_men +
+  plot_layout(
+    widths = c(3.5, 1, 3.5)
+  )
+```
+
+### Small tweaks
+
+```{r}
+population_pyramid_women <-
+  oregon_population_pyramid_data |>
+  filter(county == "Benton") |>
+  filter(gender == "Women") |>
+  ggplot(aes(
+    x = percent,
+    y = age
+  )) +
+  geom_col(fill = "#A9C27F") +
+  theme_void() +
+  theme(
+    axis.text.x = element_text(),
+    panel.grid.major.x = element_line(color = "grey90")
+  )
+```
+
+```{r}
+population_pyramid_men <-
+  oregon_population_pyramid_data |>
+  filter(county == "Benton") |>
+  filter(gender == "Men") |>
+  ggplot(aes(
+    x = percent,
+    y = age
+  )) +
+  geom_col(fill = "#004f39") +
+  theme_void() +
+  theme(
+    axis.text.x = element_text(),
+    panel.grid.major.x = element_line(color = "grey90")
+  )
+```
+
+```{r}
+population_pyramid_women + age_order_plot + population_pyramid_men +
+  plot_layout(
+    widths = c(3.5, 1, 3.5)
+  )
+```
+
+### Add gender labels
+
+```{r}
+population_pyramid_women <-
+  oregon_population_pyramid_data |>
+  filter(county == "Benton") |>
+  filter(gender == "Women") |>
+  ggplot(aes(
+    x = percent,
+    y = age
+  )) +
+  geom_col(fill = "#A9C27F") +
+  annotate(
+    geom = "label",
+    x = -0.05,
+    y = 17,
+    label = "Women",
+    fill = "#A9C27F",
+    color = "grey30",
+    label.size = 0,
+    label.padding = unit(0.3, "lines")
+  ) +
+  theme_void() +
+  theme(
+    axis.text.x = element_text(),
+    panel.grid.major.x = element_line(color = "grey90")
+  )
+```
+
+```{r}
+population_pyramid_men <-
+  oregon_population_pyramid_data |>
+  filter(county == "Benton") |>
+  filter(gender == "Men") |>
+  ggplot(aes(
+    x = percent,
+    y = age
+  )) +
+  geom_col(fill = "#004f39") +
+  annotate(
+    geom = "label",
+    x = 0.05,
+    y = 17,
+    label = "Men",
+    fill = "#004f39",
+    color = "white",
+    label.size = 0,
+    label.padding = unit(0.3, "lines")
+  ) +
+  theme_void() +
+  theme(
+    axis.text.x = element_text(),
+    panel.grid.major.x = element_line(color = "grey90")
+  )
+```
+
+```{r}
+population_pyramid_women + age_order_plot + population_pyramid_men +
+  plot_layout(
+    widths = c(3.5, 1, 3.5)
+  )
+```
+
+### Improve percents
+
+
+#### label_percent()
+
+```{r}
+population_pyramid_women <-
+  oregon_population_pyramid_data |>
+  filter(county == "Benton") |>
+  filter(gender == "Women") |>
+  ggplot(aes(
+    x = percent,
+    y = age
+  )) +
+  geom_col(fill = "#A9C27F") +
+  annotate(
+    geom = "label",
+    x = -0.05,
+    y = 17,
+    label = "Women",
+    fill = "#A9C27F",
+    color = "grey30",
+    label.size = 0,
+    label.padding = unit(0.3, "lines")
+  ) +
+  scale_x_continuous(
+    labels = label_percent()
+  ) +
+  theme_void() +
+  theme(
+    axis.text.x = element_text(),
+    panel.grid.major.x = element_line(color = "grey90")
+  )
+```
+
+```{r}
+population_pyramid_men <-
+  oregon_population_pyramid_data |>
+  filter(county == "Benton") |>
+  filter(gender == "Men") |>
+  ggplot(aes(
+    x = percent,
+    y = age
+  )) +
+  geom_col(fill = "#004f39") +
+  annotate(
+    geom = "label",
+    x = 0.05,
+    y = 17,
+    label = "Men",
+    fill = "#004f39",
+    color = "white",
+    label.size = 0,
+    label.padding = unit(0.3, "lines")
+  ) +
+  scale_x_continuous(
+    labels = label_percent()
+  ) +
+  theme_void() +
+  theme(
+    axis.text.x = element_text(),
+    panel.grid.major.x = element_line(color = "grey90")
+  )
+```
+
+```{r}
+population_pyramid_women + age_order_plot + population_pyramid_men +
+  plot_layout(
+    widths = c(3.5, 1, 3.5)
+  )
+```
+
+### pretty_breaks()
+
+```{r}
+population_pyramid_women <-
+  oregon_population_pyramid_data |>
+  filter(county == "Benton") |>
+  filter(gender == "Women") |>
+  ggplot(aes(
+    x = percent,
+    y = age
+  )) +
+  geom_col(fill = "#A9C27F") +
+  annotate(
+    geom = "label",
+    x = -0.05,
+    y = 17,
+    label = "Women",
+    fill = "#A9C27F",
+    color = "grey30",
+    label.size = 0,
+    label.padding = unit(0.3, "lines")
+  ) +
+  scale_x_continuous(
+    labels = label_percent(),
+    breaks = pretty_breaks()
+  ) +
+  theme_void() +
+  theme(
+    axis.text.x = element_text(),
+    panel.grid.major.x = element_line(color = "grey90")
+  )
+```
+
+```{r}
+population_pyramid_men <-
+  oregon_population_pyramid_data |>
+  filter(county == "Benton") |>
+  filter(gender == "Men") |>
+  ggplot(aes(
+    x = percent,
+    y = age
+  )) +
+  geom_col(fill = "#004f39") +
+  annotate(
+    geom = "label",
+    x = 0.05,
+    y = 17,
+    label = "Men",
+    fill = "#004f39",
+    color = "white",
+    label.size = 0,
+    label.padding = unit(0.3, "lines")
+  ) +
+  scale_x_continuous(
+    labels = label_percent(),
+    breaks = pretty_breaks()
+  ) +
+  theme_void() +
+  theme(
+    axis.text.x = element_text(),
+    panel.grid.major.x = element_line(color = "grey90")
+  )
+```
+
+```{r}
+population_pyramid_women + age_order_plot + population_pyramid_men +
+  plot_layout(
+    widths = c(3.5, 1, 3.5)
+  )
+```
+
+#### Absolute values of percents
+
+```{r}
+population_pyramid_women <-
+  oregon_population_pyramid_data |>
+  filter(county == "Benton") |>
+  filter(gender == "Women") |>
+  ggplot(aes(
+    x = percent,
+    y = age
+  )) +
+  geom_col(fill = "#A9C27F") +
+  annotate(
+    geom = "label",
+    x = -0.05,
+    y = 17,
+    label = "Women",
+    fill = "#A9C27F",
+    color = "grey30",
+    label.size = 0,
+    label.padding = unit(0.3, "lines")
+  ) +
+  scale_x_continuous(
+    labels = function(x) label_percent(accuracy = 1)(abs(x)),
+    breaks = pretty_breaks()
+  ) +
+  theme_void() +
+  theme(
+    axis.text.x = element_text(),
+    panel.grid.major.x = element_line(color = "grey90")
+  )
+```
+
+```{r}
+population_pyramid_men <-
+  oregon_population_pyramid_data |>
+  filter(county == "Benton") |>
+  filter(gender == "Men") |>
+  ggplot(aes(
+    x = percent,
+    y = age
+  )) +
+  geom_col(fill = "#004f39") +
+  annotate(
+    geom = "label",
+    x = 0.05,
+    y = 17,
+    label = "Men",
+    fill = "#004f39",
+    color = "white",
+    label.size = 0,
+    label.padding = unit(0.3, "lines")
+  ) +
+  scale_x_continuous(
+    labels = function(x) label_percent(accuracy = 1)(abs(x)),
+    breaks = pretty_breaks()
+  ) +
+  theme_void() +
+  theme(
+    axis.text.x = element_text(),
+    panel.grid.major.x = element_line(color = "grey90")
+  )
+```
+
+```{r}
+population_pyramid_women + age_order_plot + population_pyramid_men +
+  plot_layout(
+    widths = c(3.5, 1, 3.5)
+  )
+```
+
+### Consistent limits on x axis
+
+```{r}
+max_percent <-
+  oregon_population_pyramid_data |>
+  filter(county == "Benton") |>
+  slice_max(
+    order_by = percent,
+    n = 1
+  ) |>
+  pull(percent)
+```
+
+
+```{r}
+population_pyramid_women <-
+  oregon_population_pyramid_data |>
+  filter(county == "Benton") |>
+  filter(gender == "Women") |>
+  ggplot(aes(
+    x = percent,
+    y = age
+  )) +
+  geom_col(fill = "#A9C27F") +
+  annotate(
+    geom = "label",
+    x = -0.05,
+    y = 17,
+    label = "Women",
+    fill = "#A9C27F",
+    color = "grey30",
+    label.size = 0,
+    label.padding = unit(0.3, "lines")
+  ) +
+  scale_x_continuous(
+    labels = function(x) label_percent(accuracy = 1)(abs(x)),
+    breaks = pretty_breaks(),
+    limits = c(-max_percent, 0)
+  ) +
+  theme_void() +
+  theme(
+    axis.text.x = element_text(),
+    panel.grid.major.x = element_line(color = "grey90")
+  )
+```
+
+```{r}
+population_pyramid_men <-
+  oregon_population_pyramid_data |>
+  filter(county == "Benton") |>
+  filter(gender == "Men") |>
+  ggplot(aes(
+    x = percent,
+    y = age
+  )) +
+  geom_col(fill = "#004f39") +
+  annotate(
+    geom = "label",
+    x = 0.05,
+    y = 17,
+    label = "Men",
+    fill = "#004f39",
+    color = "white",
+    label.size = 0,
+    label.padding = unit(0.3, "lines")
+  ) +
+  scale_x_continuous(
+    labels = function(x) label_percent(accuracy = 1)(abs(x)),
+    breaks = pretty_breaks(),
+    limits = c(0, max_percent)
+  ) +
+  theme_void() +
+  theme(
+    axis.text.x = element_text(),
+    panel.grid.major.x = element_line(color = "grey90")
+  )
+```
+
+```{r}
+population_pyramid_women + age_order_plot + population_pyramid_men +
+  plot_layout(
+    widths = c(3.5, 1, 3.5)
+  )
+```
+
+### Make a function
+
+#### Filter by county and gender
+
+```{r}
+population_pyramid_single_gender_plot <-
+  function(
+  county_to_filter,
+  gender_to_filter
+  ) {
+    oregon_population_pyramid_data |>
+      filter(county == county_to_filter) |>
+      filter(gender == gender_to_filter) |>
+      ggplot(aes(
+        x = percent,
+        y = age
+      )) +
+      geom_col(fill = "#004f39") +
+      annotate(
+        geom = "label",
+        x = 0.05,
+        y = 17,
+        label = "Men",
+        fill = "#004f39",
+        color = "white",
+        label.size = 0,
+        label.padding = unit(0.3, "lines")
+      ) +
+      scale_x_continuous(
+        labels = function(x) label_percent(accuracy = 1)(abs(x)),
+        breaks = pretty_breaks(),
+        limits = c(0, max_percent)
+      ) +
+      theme_void() +
+      theme(
+        axis.text.x = element_text(),
+        panel.grid.major.x = element_line(color = "grey90")
+      )
+  }
+```
+
+This works for men
+
+```{r}
+population_pyramid_single_gender_plot(
+  county_to_filter = "Benton",
+  gender_to_filter = "Men"
+)
+```
+
+But not for women
+
+```{r}
+population_pyramid_single_gender_plot(
+  county_to_filter = "Benton",
+  gender_to_filter = "Women"
+)
+```
+
+Also, we calculated limits just for Benton.
+
+```{r}
+population_pyramid_single_gender_plot(
+  county_to_filter = "Multnomah",
+  gender_to_filter = "Men"
+)
+```
+
+#### Limits
+
+```{r}
+population_pyramid_single_gender_plot <-
+  function(
+  county_to_filter,
+  gender_to_filter
+  ) {
+    max_percent <-
+      oregon_population_pyramid_data |>
+      filter(county == county_to_filter) |>
+      slice_max(
+        order_by = percent,
+        n = 1
+      ) |>
+      pull(percent)
+
+    if (gender_to_filter == "Men") {
+      x_limits <- c(0, max_percent)
+    }
+
+    if (gender_to_filter == "Women") {
+      x_limits <- c(-max_percent, 0)
+    }
+
+    oregon_population_pyramid_data |>
+      filter(county == county_to_filter) |>
+      filter(gender == gender_to_filter) |>
+      ggplot(aes(
+        x = percent,
+        y = age
+      )) +
+      geom_col(fill = "#004f39") +
+      annotate(
+        geom = "label",
+        x = 0.05,
+        y = 17,
+        label = "Men",
+        fill = "#004f39",
+        color = "white",
+        label.size = 0,
+        label.padding = unit(0.3, "lines")
+      ) +
+      scale_x_continuous(
+        labels = function(x) label_percent(accuracy = 1)(abs(x)),
+        breaks = pretty_breaks(),
+        limits = x_limits
+      ) +
+      theme_void() +
+      theme(
+        axis.text.x = element_text(),
+        panel.grid.major.x = element_line(color = "grey90")
+      )
+  }
+```
+
+```{r}
+population_pyramid_single_gender_plot(
+  county_to_filter = "Benton",
+  gender_to_filter = "Men"
+)
+```
+
+```{r}
+population_pyramid_single_gender_plot(
+  county_to_filter = "Benton",
+  gender_to_filter = "Women"
+)
+```
+
+#### Gender label position and text
+
+```{r}
+population_pyramid_single_gender_plot <-
+  function(
+  county_to_filter,
+  gender_to_filter
+  ) {
+    max_percent <-
+      oregon_population_pyramid_data |>
+      filter(county == county_to_filter) |>
+      slice_max(
+        order_by = percent,
+        n = 1
+      ) |>
+      pull(percent)
+
+    if (gender_to_filter == "Men") {
+      x_limits <- c(0, max_percent)
+      gender_label_x_position <- 0.05
+    }
+
+    if (gender_to_filter == "Women") {
+      x_limits <- c(-max_percent, 0)
+      gender_label_x_position <- -0.05
+    }
+
+    oregon_population_pyramid_data |>
+      filter(county == county_to_filter) |>
+      filter(gender == gender_to_filter) |>
+      ggplot(aes(
+        x = percent,
+        y = age
+      )) +
+      geom_col(fill = "#004f39") +
+      annotate(
+        geom = "label",
+        x = gender_label_x_position,
+        y = 17,
+        label = "Men",
+        fill = "#004f39",
+        color = "white",
+        label.size = 0,
+        label.padding = unit(0.3, "lines")
+      ) +
+      scale_x_continuous(
+        labels = function(x) label_percent(accuracy = 1)(abs(x)),
+        breaks = pretty_breaks(),
+        limits = x_limits
+      ) +
+      theme_void() +
+      theme(
+        axis.text.x = element_text(),
+        panel.grid.major.x = element_line(color = "grey90")
+      )
+  }
+```
+
+```{r}
+population_pyramid_single_gender_plot(
+  county_to_filter = "Benton",
+  gender_to_filter = "Men"
+)
+```
+
+```{r}
+population_pyramid_single_gender_plot(
+  county_to_filter = "Benton",
+  gender_to_filter = "Women"
+)
+```
+
+This doesn't work for other counties.
+
+```{r}
+population_pyramid_single_gender_plot(
+  county_to_filter = "Multnomah",
+  gender_to_filter = "Women"
+)
+```
+
+```{r}
+population_pyramid_single_gender_plot <-
+  function(
+  county_to_filter,
+  gender_to_filter
+  ) {
+    max_percent <-
+      oregon_population_pyramid_data |>
+      filter(county == county_to_filter) |>
+      slice_max(
+        order_by = percent,
+        n = 1
+      ) |>
+      pull(percent)
+
+    if (gender_to_filter == "Men") {
+      x_limits <- c(0, max_percent)
+      gender_label_x_position <- 0.05 - 0.01
+    }
+
+    if (gender_to_filter == "Women") {
+      x_limits <- c(-max_percent, 0)
+      gender_label_x_position <- -0.05 + 0.01
+    }
+
+    oregon_population_pyramid_data |>
+      filter(county == county_to_filter) |>
+      filter(gender == gender_to_filter) |>
+      ggplot(aes(
+        x = percent,
+        y = age
+      )) +
+      geom_col(fill = "#004f39") +
+      annotate(
+        geom = "label",
+        x = gender_label_x_position,
+        y = 17,
+        label = gender_to_filter,
+        fill = "#004f39",
+        color = "white",
+        label.size = 0,
+        label.padding = unit(0.3, "lines")
+      ) +
+      scale_x_continuous(
+        labels = function(x) label_percent(accuracy = 1)(abs(x)),
+        breaks = pretty_breaks(),
+        limits = x_limits
+      ) +
+      theme_void() +
+      theme(
+        axis.text.x = element_text(),
+        panel.grid.major.x = element_line(color = "grey90")
+      )
+  }
+```
+
+
+```{r}
+population_pyramid_single_gender_plot(
+  county_to_filter = "Multnomah",
+  gender_to_filter = "Women"
+)
+```
+
+#### Colors
+
+```{r}
+population_pyramid_single_gender_plot <-
+  function(
+  county_to_filter,
+  gender_to_filter
+  ) {
+    max_percent <-
+      oregon_population_pyramid_data |>
+      filter(county == county_to_filter) |>
+      slice_max(
+        order_by = percent,
+        n = 1
+      ) |>
+      pull(percent)
+
+    if (gender_to_filter == "Men") {
+      x_limits <- c(0, max_percent)
+      gender_label_x_position <- 0.05 - 0.01
+      fill_color <- "#004f39"
+      gender_text_color <- "white"
+    }
+
+    if (gender_to_filter == "Women") {
+      x_limits <- c(-max_percent, 0)
+      gender_label_x_position <- -0.05 + 0.01
+      fill_color <- "#A9C27F"
+      gender_text_color <- "grey30"
+    }
+
+    oregon_population_pyramid_data |>
+      filter(county == county_to_filter) |>
+      filter(gender == gender_to_filter) |>
+      ggplot(aes(
+        x = percent,
+        y = age
+      )) +
+      geom_col(fill = fill_color) +
+      annotate(
+        geom = "label",
+        x = gender_label_x_position,
+        y = 17,
+        label = gender_to_filter,
+        fill = fill_color,
+        color = gender_text_color,
+        label.size = 0,
+        label.padding = unit(0.3, "lines")
+      ) +
+      scale_x_continuous(
+        labels = function(x) label_percent(accuracy = 1)(abs(x)),
+        breaks = pretty_breaks(),
+        limits = x_limits
+      ) +
+      theme_void() +
+      theme(
+        axis.text.x = element_text(),
+        panel.grid.major.x = element_line(color = "grey90")
+      )
+  }
+```
+
+```{r}
+population_pyramid_single_gender_plot(
+  county_to_filter = "Multnomah",
+  gender_to_filter = "Women"
+)
+```
+
+## Combine everything
+
+```{r}
+women_plot <-
+  population_pyramid_single_gender_plot(
+    county_to_filter = "Multnomah",
+    gender_to_filter = "Women"
+  )
+
+men_plot <-
+  population_pyramid_single_gender_plot(
+    county_to_filter = "Multnomah",
+    gender_to_filter = "Men"
+  )
+
+women_plot +
+  age_order_plot +
+  men_plot +
+  plot_layout(
+    widths = c(3.5, 1, 3.5)
+  )
+```
+
+```{r}
+population_pyramid_combined_plot <- function(county_to_filter) {
+  women_plot <-
+    population_pyramid_single_gender_plot(
+      county_to_filter = county_to_filter,
+      gender_to_filter = "Women"
+    )
+
+  men_plot <-
+    population_pyramid_single_gender_plot(
+      county_to_filter = county_to_filter,
+      gender_to_filter = "Men"
+    )
+
+  women_plot +
+    age_order_plot +
+    men_plot +
+    plot_layout(
+      widths = c(3.5, 1, 3.5)
+    )
+}
+```
+
+```{r}
+population_pyramid_combined_plot("Gilliam")
+```
+
