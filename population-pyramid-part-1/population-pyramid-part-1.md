@@ -1,21 +1,10 @@
 # How to make a population pyramid in ggplot
+David Keyes
+2024-01-17
 
+How do you make a population pyramid in `ggplot2`? These charts, which allow us to see the distribution of the population by gender and age, are common ways to examine demographics in a place. The ggplot code needed to make a population pyramid is quite straightforward, but, as you’ll see in this blog post, you can go way beyond straightforward to make something polished and elegant.
 
-How do you make a population pyramid in `ggplot2`? These charts, which
-allow us to see the distribution of the population by gender and age,
-are common ways to examine demographics in a place. The ggplot code
-needed to make a population pyramid is quite straightforward, but, as
-you’ll see in this blog post, you can go way beyond straightforward to
-make something polished and elegant.
-
-I’ve made hundreds of population pyramids for the last few years as
-[I’ve produced many population
-pyramids](https://rfortherestofus.com/2023/01/multiple-plots) as part of
-the annual [Oregon by the Numbers report](https://www.tfff.org/obtn). I
-tried out a new technique this year, making separate plots for women,
-men, and the age categories and combining them using the [{patchwork}
-package](https://patchwork.data-imaginist.com/). When the report comes
-out in September, you’ll see population pyramids that look like this:
+I’ve made hundreds of population pyramids for the last few years as [I’ve produced many population pyramids](https://rfortherestofus.com/2023/01/multiple-plots) as part of the annual [Oregon by the Numbers report](https://www.tfff.org/obtn). I tried out a new technique this year, making separate plots for women, men, and the age categories and combining them using the [`patchwork` package](https://patchwork.data-imaginist.com/). When the report comes out in September, you’ll see population pyramids that look like this:
 
 ![](2024-population-pyramid-benton.png)
 
@@ -23,9 +12,7 @@ Keep reading to learn how to make population pyramids in ggplot!
 
 ## Make a basic population pyramid
 
-To make a basic population pyramid, I’ll load the `tidyverse` and then
-bring in the data I use for Oregon by the Numbers, saving it as an
-object called `oregon_population_pyramid_data`.
+To make a basic population pyramid, I’ll load the `tidyverse` and then bring in the data I use for Oregon by the Numbers, saving it as an object called `oregon_population_pyramid_data`.
 
 ``` r
 library(tidyverse)
@@ -38,27 +25,23 @@ We can take a look at the data to see its structure:
 
 ``` r
 oregon_population_pyramid_data
+#> # A tibble: 1,296 × 4
+#>    county    age   gender percent
+#>    <chr>     <chr> <chr>    <dbl>
+#>  1 Baker     0-4   Men     0.0260
+#>  2 Benton    0-4   Men     0.0194
+#>  3 Clackamas 0-4   Men     0.0258
+#>  4 Clatsop   0-4   Men     0.0270
+#>  5 Columbia  0-4   Men     0.0278
+#>  6 Coos      0-4   Men     0.0220
+#>  7 Crook     0-4   Men     0.0253
+#>  8 Curry     0-4   Men     0.0149
+#>  9 Deschutes 0-4   Men     0.0245
+#> 10 Douglas   0-4   Men     0.0260
+#> # ℹ 1,286 more rows
 ```
 
-    # A tibble: 1,296 × 4
-       county    age   gender percent
-       <chr>     <chr> <chr>    <dbl>
-     1 Baker     0-4   Men     0.0260
-     2 Benton    0-4   Men     0.0194
-     3 Clackamas 0-4   Men     0.0258
-     4 Clatsop   0-4   Men     0.0270
-     5 Columbia  0-4   Men     0.0278
-     6 Coos      0-4   Men     0.0220
-     7 Crook     0-4   Men     0.0253
-     8 Curry     0-4   Men     0.0149
-     9 Deschutes 0-4   Men     0.0245
-    10 Douglas   0-4   Men     0.0260
-    # ℹ 1,286 more rows
-
-A population pyramid is essentially a back-to-back bar chart, with women
-on one side and men on the other. Here’s how I would filter my data to
-just show one county in Oregon (Benton) and attempt to make a population
-pyramid.
+A population pyramid is essentially a back-to-back bar chart, with women on one side and men on the other. Here’s how I would filter my data to just show one county in Oregon (Benton) and attempt to make a population pyramid.
 
 ``` r
 oregon_population_pyramid_data |>
@@ -71,9 +54,7 @@ oregon_population_pyramid_data |>
   geom_col()
 ```
 
-However, as you can see in the resulting plot, this doesn’t work because
-the bars for Women and Men stack on top of each other, both going to the
-right.
+However, as you can see in the resulting plot, this doesn’t work because the bars for Women and Men stack on top of each other, both going to the right.
 
 ``` r
 oregon_population_pyramid_data |>
@@ -86,11 +67,7 @@ oregon_population_pyramid_data |>
   geom_col()
 ```
 
-To fix this, I need to have the data for Women show up as negative
-numbers. To do that, I use an `if_else()` statement, stating that, if
-the `gender` variable is “Men”, keep `percent` as the `percent` value.
-However, if `gender` is “Women” then `percent` becomes `-percent`
-(i.e. the negative value of `percent`).
+To fix this, I need to have the data for Women show up as negative numbers. To do that, I use an `if_else()` statement, stating that, if the `gender` variable is “Men”, keep `percent` as the `percent` value. However, if `gender` is “Women” then `percent` becomes `-percent` (i.e. the negative value of `percent`).
 
 ``` r
 oregon_population_pyramid_data <-
@@ -98,16 +75,11 @@ oregon_population_pyramid_data <-
   mutate(percent = if_else(gender == "Men", percent, -percent))
 ```
 
-With this change, we can now use the same code to make a basic
-population pyramid, with Women on the left and Men on the right.
+With this change, we can now use the same code to make a basic population pyramid, with Women on the left and Men on the right.
 
-![](population-pyramid_files/figure-commonmark/unnamed-chunk-6-1.png)
+<img src="population-pyramid-part-1_files/figure-commonmark/unnamed-chunk-6-1.png" style="width:70.0%" />
 
-One thing I’ve always done in population pyramids for Oregon by the
-Numbers is to put the age labels in the center of the bars. I think it’s
-much easier for people to see them there than at the left, where they
-appear by default. To do this, I have used `geom_label()` to put the age
-labels in the center of the population pyramid. As
+One thing I’ve always done in population pyramids for Oregon by the Numbers is to put the age labels in the center of the bars. I think it’s much easier for people to see them there than at the left, where they appear by default. To do this, I have used `geom_label()` to put the age labels in the center of the population pyramid. As
 
 ``` r
 oregon_population_pyramid_data |>
@@ -156,11 +128,9 @@ oregon_population_pyramid_data |>
   )
 ```
 
-![](population-pyramid_files/figure-commonmark/unnamed-chunk-8-1.png)
+<img src="population-pyramid-part-1_files/figure-commonmark/unnamed-chunk-8-1.png" style="width:70.0%" />
 
-We can fix the order by converting `age` to a factor. The
-`fct_inorder()` function from the `forcats` package makes `age` into a
-factor and sets its order to be the order that the values appear.
+We can fix the order by converting `age` to a factor. The `fct_inorder()` function from the `forcats` package makes `age` into a factor and sets its order to be the order that the values appear.
 
 ``` r
 oregon_population_pyramid_data <-
@@ -191,22 +161,13 @@ oregon_population_pyramid_data |>
   )
 ```
 
-![](population-pyramid_files/figure-commonmark/unnamed-chunk-10-1.png)
+<img src="population-pyramid-part-1_files/figure-commonmark/unnamed-chunk-10-1.png" style="width:70.0%" />
 
-The second issue – that the age labels cover up bars – is harder to fix.
-Depending on the size of the plots you ultimately output, some bars can
-be covered up entirely. Not ideal! To fix this, I decided to use a
-different approach: making separate plots for Women, Men, and the age
-labels and then stitching them together with the `patchwork` package.
-I’ll show you how this works and show you some of the other small tweaks
-I made along the way to make a polished population pyramid.
+The second issue – that the age labels cover up bars – is harder to fix. Depending on the size of the plots you ultimately output, some bars can be covered up entirely. Not ideal! To fix this, I decided to use a different approach: making separate plots for Women, Men, and the age labels and then stitching them together with the `patchwork` package. I’ll show you how this works and show you some of the other small tweaks I made along the way to make a polished population pyramid.
 
 ## Making a population pyramid using the `patchwork` package
 
-To make our multi-plot population pyramid, I’ll create a plot for the
-women half and save it as `population_pyramid_women`. In addition to the
-code above, I’ve applied `theme_void()` to remove all of the elements
-except the bars themselves.
+To make our multi-plot population pyramid, I’ll create a plot for the women half and save it as `population_pyramid_women`. In addition to the code above, I’ve applied `theme_void()` to remove all of the elements except the bars themselves.
 
 ``` r
 population_pyramid_women <-
@@ -236,9 +197,7 @@ population_pyramid_men <-
   theme_void()
 ```
 
-The magic comes by loading the `patchwork` package and stitching the two
-plots together. After we’ve loaded the `patchwork` package, we can
-combine two plots using the plus sign.
+The magic comes by loading the `patchwork` package and stitching the two plots together. After we’ve loaded the `patchwork` package, we can combine two plots using the plus sign.
 
 ``` r
 library(patchwork)
@@ -249,12 +208,9 @@ population_pyramid_women +
 
 The result is the women and men plot back to back.
 
-![](population-pyramid_files/figure-commonmark/unnamed-chunk-14-1.png)
+<img src="population-pyramid-part-1_files/figure-commonmark/unnamed-chunk-14-1.png" style="width:70.0%" />
 
-Now we need to add the age labels in the center. To do this, we manually
-create a tibble called `age_labels`, which has all age categories.
-Applying `fct_inorder()` to the `age` variable ensures they appear in
-the right order when we plot.
+Now we need to add the age labels in the center. To do this, we manually create a tibble called `age_labels`, which has all age categories. Applying `fct_inorder()` to the `age` variable ensures they appear in the right order when we plot.
 
 ``` r
 age_labels <-
@@ -315,10 +271,9 @@ age_labels |>
   theme_void()
 ```
 
-![](population-pyramid_files/figure-commonmark/unnamed-chunk-17-1.png)
+<img src="population-pyramid-part-1_files/figure-commonmark/unnamed-chunk-17-1.png" style="width:70.0%" />
 
-I want to combine this plot with the women and men plot so I’ll save it
-as an object called `age_labels_plot`
+I want to combine this plot with the women and men plot so I’ll save it as an object called `age_labels_plot`
 
 ``` r
 age_labels_plot <-
@@ -350,14 +305,9 @@ population_pyramid_women +
   population_pyramid_men
 ```
 
-![](population-pyramid_files/figure-commonmark/unnamed-chunk-20-1.png)
+<img src="population-pyramid-part-1_files/figure-commonmark/unnamed-chunk-20-1.png" style="width:70.0%" />
 
-By default, `patchwork` will make each plot the same width. For the
-population pyramid we’re making, we don’t need the age labels to be as
-wide as they are. We can use the `plot_layout()` function to set their
-widths manually. The code below sets the widths of the plots relative to
-each other. The women and men plots are 7.5 times the size of the age
-labels plot.
+By default, `patchwork` will make each plot the same width. For the population pyramid we’re making, we don’t need the age labels to be as wide as they are. We can use the `plot_layout()` function to set their widths manually. The code below sets the widths of the plots relative to each other. The women and men plots are 7.5 times the size of the age labels plot.
 
 ``` r
 population_pyramid_women +
@@ -370,26 +320,15 @@ population_pyramid_women +
 
 The result looks much better!
 
-![](population-pyramid_files/figure-commonmark/unnamed-chunk-22-1.png)
+<img src="population-pyramid-part-1_files/figure-commonmark/unnamed-chunk-22-1.png" style="width:70.0%" />
 
 ## Polishing our population pyramid
 
-There is still a lot of work to get the type of polished population
-pyramids that I made for Oregon by the Numbers. The overall population
-pyramid looks better (and doesn’t have age labels covering up bars), but
-it is impossible to tell which bars are for women and which are for men.
-Additionally, after we applied `theme_void()`, we no longer have axis
-text showing what percents the bars correspond to. Let’s get started
-polishing our population pyramid!
+There is still a lot of work to get the type of polished population pyramids that I made for Oregon by the Numbers. The overall population pyramid looks better (and doesn’t have age labels covering up bars), but it is impossible to tell which bars are for women and which are for men. Additionally, after we applied `theme_void()`, we no longer have axis text showing what percents the bars correspond to. Let’s get started polishing our population pyramid!
 
 ### Distinguishing men and women
 
-To begin, I’m going to add different colors to the women and men plots.
-This is done by manually setting the fill colors for women to a light
-green and men to a dark green (the hex values below are brand colors for
-the Ford Family Foundation, which publishes Oregon by the Numbers).
-Additionally, we use the `annotate()` function to manually place text
-labels for Women and Men in appropriate locations.
+To begin, I’m going to add different colors to the women and men plots. This is done by manually setting the fill colors for women to a light green and men to a dark green (the hex values below are brand colors for the Ford Family Foundation, which publishes Oregon by the Numbers). Additionally, we use the `annotate()` function to manually place text labels for Women and Men in appropriate locations.
 
 ``` r
 population_pyramid_women <-
@@ -441,14 +380,11 @@ population_pyramid_men <-
 
 Combining the plots using `patchwork`, it’s already looking better!
 
-![](population-pyramid_files/figure-commonmark/unnamed-chunk-25-1.png)
+<img src="population-pyramid-part-1_files/figure-commonmark/unnamed-chunk-25-1.png" style="width:70.0%" />
 
 ### Axis text
 
-Next, we use the `theme()` function add x axis grid lines and text back
-(recall that `theme_void()` took them away). Here’s what this looks like
-for `population_pyramid_women` (we do the exact same thing for
-`population_pyramid_men`):
+Next, we use the `theme()` function add x axis grid lines and text back (recall that `theme_void()` took them away). Here’s what this looks like for `population_pyramid_women` (we do the exact same thing for `population_pyramid_men`):
 
 ``` r
 population_pyramid_women <-
@@ -478,26 +414,21 @@ population_pyramid_women <-
   ) #<<
 ```
 
-In the resulting plot, it is now much easier to see the value of each
-bar.
+In the resulting plot, it is now much easier to see the value of each bar.
 
-![](population-pyramid_files/figure-commonmark/unnamed-chunk-28-1.png)
+<img src="population-pyramid-part-1_files/figure-commonmark/unnamed-chunk-28-1.png" style="width:70.0%" />
 
 However, there are several issues with the axis text:
 
-1.  The values are not easy to read (we’d much rather have 5% than
-    0.050).
+1.  The values are not easy to read (we’d much rather have 5% than 0.050).
 2.  The values on women side are negative.
-3.  The values on the women and men side are different, which just looks
-    a bit odd.
+3.  The values on the women and men side are different, which just looks a bit odd.
 
 Let’s deal with each of these issues.
 
 #### Improve percents
 
-The `scales` package is a lifesaver when it comes to formatting numbers.
-After loading it, we use the `label_percent()` function with
-`accuracy = 1` to make our axis text show up as whole numbers percents.
+The `scales` package is a lifesaver when it comes to formatting numbers. After loading it, we use the `label_percent()` function with `accuracy = 1` to make our axis text show up as whole numbers percents.
 
 ``` r
 library(scales)
@@ -561,16 +492,11 @@ population_pyramid_men <-
   )
 ```
 
-Note on the resulting plot how the x axis text is now formatted as
-easy-to-read percent values.
+Note on the resulting plot how the x axis text is now formatted as easy-to-read percent values.
 
-![](population-pyramid_files/figure-commonmark/unnamed-chunk-31-1.png)
+<img src="population-pyramid-part-1_files/figure-commonmark/unnamed-chunk-31-1.png" style="width:70.0%" />
 
-However, the values on the women side are negative. To make them look
-better, we’re going to create a custom function, which takes the value
-the is to appear on the x axis, uses the base R `abs()` function to get
-the absolute value (e.g. turning -0.02 into 0.02), and then applies
-`label_percent(accuracy = 1)` to this.
+However, the values on the women side are negative. To make them look better, we’re going to create a custom function, which takes the value the is to appear on the x axis, uses the base R `abs()` function to get the absolute value (e.g. turning -0.02 into 0.02), and then applies `label_percent(accuracy = 1)` to this.
 
 ``` r
 population_pyramid_women <-
@@ -632,13 +558,9 @@ population_pyramid_men <-
   )
 ```
 
-![](population-pyramid_files/figure-commonmark/unnamed-chunk-34-1.png)
+<img src="population-pyramid-part-1_files/figure-commonmark/unnamed-chunk-34-1.png" style="width:70.0%" />
 
-This looks much better! However, we can now more clearly see an
-additional issue: the breaks on the men side are uneven. Rather than 0%,
-2%, 5%, and 8%, we’d rather have the value go up by 2%. The simplest way
-to do this is to use the `breaks_pretty()` function from the `scales`
-package.
+This looks much better! However, we can now more clearly see an additional issue: the breaks on the men side are uneven. Rather than 0%, 2%, 5%, and 8%, we’d rather have the value go up by 2%. The simplest way to do this is to use the `breaks_pretty()` function from the `scales` package.
 
 ### breaks_pretty()
 
@@ -706,18 +628,13 @@ population_pyramid_men <-
 
 The resulting plot has much more consistent breaks!
 
-![](population-pyramid_files/figure-commonmark/unnamed-chunk-37-1.png)
+<img src="population-pyramid-part-1_files/figure-commonmark/unnamed-chunk-37-1.png" style="width:70.0%" />
 
-We’re almost there! The breaks are consistent, but now we can see that
-the women side only goes out to 6% while the men side goes out to 8%. It
-would be nice if we could set the limits to be identical on both plots.
+We’re almost there! The breaks are consistent, but now we can see that the women side only goes out to 6% while the men side goes out to 8%. It would be nice if we could set the limits to be identical on both plots.
 
 ### Consistent limits on x axis
 
-To do this, we need to calculate the maximum value of any age group,
-women or men, in our data. Below, I use the `slice_max()` function to
-keep only the top observation in the `percent` column. I then use the
-`pull()` function to get this as a single value.
+To do this, we need to calculate the maximum value of any age group, women or men, in our data. Below, I use the `slice_max()` function to keep only the top observation in the `percent` column. I then use the `pull()` function to get this as a single value.
 
 ``` r
 max_percent <-
@@ -735,13 +652,10 @@ If we look at `max_percent`, we can see its value:
 ``` r
 # : echo: false
 max_percent
+#> [1] 0.08987084
 ```
 
-    [1] 0.08987084
-
-We can now use `max_percent` to set the limits of our plots. For the
-women plot, we set the limits to be `c(-max_percent, 0)`. That is, they
-go from -0.0898708 to 0.
+We can now use `max_percent` to set the limits of our plots. For the women plot, we set the limits to be `c(-max_percent, 0)`. That is, they go from -0.0898708 to 0.
 
 ``` r
 population_pyramid_women <-
@@ -809,15 +723,10 @@ population_pyramid_men <-
   )
 ```
 
-When running this code, ggplot now sets the limits on both sides such
-that they look identical.
+When running this code, ggplot now sets the limits on both sides such that they look identical.
 
-![](population-pyramid_files/figure-commonmark/unnamed-chunk-42-1.png)
+<img src="population-pyramid-part-1_files/figure-commonmark/unnamed-chunk-42-1.png" style="width:70.0%" />
 
-And there we go! We’ve gone from a basic population pyramid plot to a
-polished one, with the help of the `patchwork` and `scales` packages.
+And there we go! We’ve gone from a basic population pyramid plot to a polished one, with the help of the `patchwork` and `scales` packages.
 
-Of course, the code we’ve written just works for one county (Benton).
-I’ll be back soon with a follow-up blog post showing how to turn what
-we’ve done into a function to make a population pyramid for any county
-in Oregon.
+Of course, the code we’ve written just works for one county (Benton). I’ll be back soon with a follow-up blog post showing how to turn what we’ve done into a function to make a population pyramid for any county in Oregon.

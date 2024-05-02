@@ -32,7 +32,7 @@ To make a basic population pyramid, I'll load the `tidyverse` and then bring in 
 library(tidyverse)
 
 oregon_population_pyramid_data <-
-  read_csv("https://raw.githubusercontent.com/rfortherestofus/blog/main/population-pyramid/oregon_population_pyramid_data.csv")
+  read_csv("https://raw.githubusercontent.com/rfortherestofus/blog/main/population-pyramid-part-1/oregon_population_pyramid_data.csv")
 ```
 
 We can take a look at the data to see its structure:
@@ -364,7 +364,8 @@ population_pyramid_women <-
     y = age
   )) +
   geom_col(fill = "#A9C27F") + #<<
-  annotate( #<<
+  annotate(
+    #<<
     geom = "label", #<<
     x = -0.05, #<<
     y = 17, #<<
@@ -372,7 +373,7 @@ population_pyramid_women <-
     fill = "#A9C27F", #<<
     color = "grey30", #<<
     label.size = 0, #<<
-    label.padding = unit(0.3, "lines")#<<
+    label.padding = unit(0.3, "lines") #<<
   ) + #<<
   theme_void()
 ```
@@ -387,7 +388,8 @@ population_pyramid_men <-
     y = age
   )) +
   geom_col(fill = "#004f39") + #<<
-  annotate( #<<
+  annotate(
+    #<<
     geom = "label", #<<
     x = 0.05, #<<
     y = 17, #<<
@@ -437,7 +439,8 @@ population_pyramid_women <-
     label.padding = unit(0.3, "lines")
   ) +
   theme_void() +
-  theme( #<<
+  theme(
+    #<<
     axis.text.x = element_text(), #<<
     panel.grid.major.x = element_line(color = "grey90") #<<
   ) #<<
@@ -562,8 +565,8 @@ Note on the resulting plot how the x axis text is now formatted as easy-to-read 
 
 ```{r}
 #| echo: false
-population_pyramid_women + 
-  age_labels_plot + 
+population_pyramid_women +
+  age_labels_plot +
   population_pyramid_men +
   plot_layout(
     widths = c(7.5, 1, 7.5)
@@ -635,8 +638,8 @@ population_pyramid_men <-
 
 ```{r}
 #| echo: false
-population_pyramid_women + 
-  age_labels_plot + 
+population_pyramid_women +
+  age_labels_plot +
   population_pyramid_men +
   plot_layout(
     widths = c(7.5, 1, 7.5)
@@ -713,8 +716,8 @@ The resulting plot has much more consistent breaks!
 
 ```{r}
 #| echo: false
-population_pyramid_women + 
-  age_labels_plot + 
+population_pyramid_women +
+  age_labels_plot +
   population_pyramid_men +
   plot_layout(
     widths = c(7.5, 1, 7.5)
@@ -741,7 +744,7 @@ max_percent <-
 If we look at `max_percent`, we can see its value:
 
 ```{r}
-#: echo: false
+# : echo: false
 max_percent
 ```
 
@@ -817,8 +820,8 @@ When running this code, ggplot now sets the limits on both sides such that they 
 
 ```{r}
 #| echo: false
-population_pyramid_women + 
-  age_labels_plot + 
+population_pyramid_women +
+  age_labels_plot +
   population_pyramid_men +
   plot_layout(
     widths = c(7.5, 1, 7.5)
@@ -828,6 +831,8 @@ population_pyramid_women +
 And there we go! We've gone from a basic population pyramid plot to a polished one, with the help of the `patchwork` and `scales` packages. 
 
 Of course, the code we've written just works for one county (Benton). I'll be back soon with a follow-up blog post showing how to turn what we've done into a function to make a population pyramid for any county in Oregon. 
+
+
 
 <!-- ## Make a function -->
 
