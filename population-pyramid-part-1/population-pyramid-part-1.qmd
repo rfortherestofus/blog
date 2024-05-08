@@ -222,7 +222,7 @@ population_pyramid_men <-
 The magic comes by loading the `patchwork` package and stitching the two plots together. After we've loaded the `patchwork` package, we can combine two plots using the plus sign. 
 
 ```{r}
-#| output: false
+#| eval: false
 library(patchwork)
 
 population_pyramid_women +

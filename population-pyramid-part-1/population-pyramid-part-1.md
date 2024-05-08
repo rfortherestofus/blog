@@ -209,3 +209,35 @@ Now, reusing the same code, we see the age labels in the right order.
 <img
 src="population-pyramid-part-1_files/figure-commonmark/unnamed-chunk-10-1.png"
 style="width:100.0%" />
+
+The second issue – that the age labels cover up bars – is harder to fix.
+Depending on the size of the plots you ultimately output, some bars can
+be covered up entirely. Not ideal!
+
+To fix this, I decided to use a different approach: making separate
+plots for Women, Men, and the age labels and then stitching them
+together with the `patchwork` package. I’ll show you how this works and
+show you some of the other small tweaks I made along the way to make a
+polished population pyramid.
+
+## Making a population pyramid using the `patchwork` package
+
+To make our multi-plot population pyramid, I’ll create a plot for the
+women half and save it as `population_pyramid_women`. In addition to the
+code above, I’ve applied `theme_void()` to remove all of the elements
+except the bars themselves.
+
+``` r
+population_pyramid_women <-
+  oregon_population_pyramid_data |>
+  filter(county == "Benton") |>
+  filter(gender == "Women") |>
+  ggplot(aes(
+    x = percent,
+    y = age
+  )) +
+  geom_col() +
+  theme_void()
+```
+
+I’ll do the same thing for men, saving it as `population_pyramid_men`.
