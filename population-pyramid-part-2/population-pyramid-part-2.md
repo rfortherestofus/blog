@@ -14,13 +14,13 @@ The result is a polished version of a population pyramid that I’m quite please
 
 The blog post I wrote about making this version of the population pyramid saw us make one for Benton county. But this is only one of the 36 counties that make up Oregon. Given that my job is to make 36 population pyramids ([alongside a couple hundred other visuals](TODO:%20Add%20link)), what I really need is not the code to make *one* population pyramid, but a function to make *all* population pyramids.
 
-In this blog post, I detail how I would turn code for a single population pyramid into a function. As you’ll see, it’s not that much more work to make a function that works for any county.
+In this blog post, I detail how to turn code for a single population pyramid into a function to make a population for any county.
 
 ## Getting started
 
-To do this, I’ll use three packages:
+To do this, I’ll load three packages:
 
-1.  `tidyverse` for data wrangling and plotting.
+1.  The `tidyverse` collection of packages for data wrangling and plotting.
 2.  `scales` to give me nicely formatted values in my plots.
 3.  `patchwork` to stitch together my women, men, and age labels plots.
 
@@ -30,7 +30,7 @@ library(scales)
 library(patchwork)
 ```
 
-Next, I’ll import my data. As I showed in part 1, the first step is to make the values in `percent` variable show up as negative for women so that they appear on the left side while the values for men show up on the right side. Additionally, I make the `age` variable a factor and use `fct_inorder()` to ensure the age categories show up in the right order.
+Next, I’ll import my data. As I showed in [part 1](TODO:%20Add%20link), the first step is to make the values in `percent` variable show up as negative for women so that they appear on the left side while the values for men show up on the right side. Additionally, I make the `age` variable a factor and use `fct_inorder()` to ensure the age categories show up in the right order.
 
 ``` r
 oregon_population_pyramid_data <-
@@ -95,7 +95,11 @@ max_percent <-
   pull(percent)
 ```
 
-## Filter by county and gender
+Combining these pieces, I made a population pyramid that combined a plot for women, men, and age labels.
+
+<img src="population-pyramid-part-2_files/figure-commonmark/unnamed-chunk-5-1.png" style="width:100.0%" />
+
+## Create a population pyramid function
 
 First, I’m going to take the code I used to make the men plot and make it a function. In part 1, I manually filtered `oregon_population_pyramid_data` to only include Benton county and men. To start my function, however, I’ll add two arguments: `county_to_filter` and `gender_to_filter`.
 
@@ -147,11 +151,11 @@ population_pyramid_single_gender_plot(
 
 I can run my code and see that it creates a nice plot for men.
 
-<img src="population-pyramid-part-2_files/figure-commonmark/unnamed-chunk-7-1.png" style="width:100.0%" />
+<img src="population-pyramid-part-2_files/figure-commonmark/unnamed-chunk-8-1.png" style="width:100.0%" />
 
 Unfortunately, when I try to run this function for women, it doesn’t work.
 
-<img src="population-pyramid-part-2_files/figure-commonmark/unnamed-chunk-8-1.png" style="width:100.0%" />
+<img src="population-pyramid-part-2_files/figure-commonmark/unnamed-chunk-9-1.png" style="width:100.0%" />
 
 Why doesn’t this function work for women? The problem is that the x axis limits go from 0 to `max_percent`, which is 0.0898708. But, since the values for women are all negative, nothing appears on our chart.
 
@@ -166,7 +170,7 @@ population_pyramid_single_gender_plot(
 
 Let’s see!
 
-<img src="population-pyramid-part-2_files/figure-commonmark/unnamed-chunk-10-1.png" style="width:100.0%" />
+<img src="population-pyramid-part-2_files/figure-commonmark/unnamed-chunk-11-1.png" style="width:100.0%" />
 
 That doesn’t look right. If we try to create a plot for Multnomah county, the x axis limits don’t adapt. That’s why there’s too much space on the right side. Let’s make our x axis limits adapt to the data we’re plotting.
 
@@ -174,7 +178,19 @@ That doesn’t look right. If we try to create a plot for Multnomah county, the 
 
 To do this, we need to move the `max_percent` calculation *inside* our function. I’ve done that below, replacing the line that read `filter(county == "Benton)` with `filter(county == county_to_filter)` so that `max_percent` will be calculated for the county being plotted.
 
-In addition, I’ve added a couple `if` statements to ensure the limits show up correctly for women and men. Within these two `if` statements, I’ve created an object called `x_limits`. For men, it goes from 0 to `max_percent` times 1.1 (I do this just to give it a bit of padding and make sure nothing gets cut off). For women, it goes from `-max_percent` times 1.1 to 0. We then use `limits = x_limits` within `scale_x_continuous()` to apply our calculated x axis limits.
+In addition, I’ve added a couple `if` statements to ensure the limits show up correctly for women and men. Within these two `if` statements, I’ve created an object called `x_limits`. For men, it goes from 0 to `max_percent` times 1.1 (I do this just to give it a bit of padding and make sure nothing gets cut off). For women, it goes from `-max_percent` times 1.1 to 0.
+
+``` r
+if (gender_to_filter == "Men") {
+  x_limits <- c(0, max_percent * 1.1)
+}
+
+if (gender_to_filter == "Women") {
+  x_limits <- c(-max_percent * 1.1, 0)
+}
+```
+
+We then use `limits = x_limits` within `scale_x_continuous()` to apply our calculated x axis limits. Our function as of now looks like this:
 
 ``` r
 population_pyramid_single_gender_plot <-
@@ -232,20 +248,40 @@ population_pyramid_single_gender_plot <-
 
 Now, if we run our code to make the Benton plot for women, the x axis limits look good and, importantly, we can actually see our bars!
 
-``` r
-population_pyramid_single_gender_plot(
-  county_to_filter = "Benton",
-  gender_to_filter = "Women"
-)
-```
-
-<img src="population-pyramid-part-2_files/figure-commonmark/unnamed-chunk-12-1.png" style="width:100.0%" />
+<img src="population-pyramid-part-2_files/figure-commonmark/unnamed-chunk-14-1.png" style="width:100.0%" />
 
 However, we can’t see the Women label. Let’s fix that.
 
 ## Adjust gender label position and text
 
-The reason why we can’t see the Women label is that its x position is hard coded within the `annotate()` function to 0.04. This works for the Men label, but not for Women, where all values are negative. To remedy this, let’s create a `gender_label_x_position` variable within our two `if` statements. If `gender_to_filter` is Men, then `gender_label_x_position` is 0.05; if it is Women, `gender_label_x_position` is -0.05 (I cheated a bit because I know from having worked with my data that the bars will never overlap at this location). Then, we update the `annotate()` function to specify that the x position should be the value of `gender_label_x_position`. Additionally, we set the `label` argument in `annotate()` to take the value of the `gender_to_filter` argument so that the label text adapts dynamically.
+The reason why we can’t see the Women label is that its x position is hard coded within the `annotate()` function to 0.05. This works for the Men label, but not for Women, where all values are negative. To remedy this, let’s create a `gender_label_x_position` variable within our two `if` statements. If `gender_to_filter` is Men, then `gender_label_x_position` is 0.05; if it is Women, `gender_label_x_position` is -0.05 (I cheated a bit because I know from having worked with my data that the bars will never overlap at this location).
+
+``` r
+if (gender_to_filter == "Men") {
+  x_limits <- c(0, max_percent * 1.1)
+  gender_label_x_position <- 0.05
+}
+
+if (gender_to_filter == "Women") {
+  x_limits <- c(-max_percent * 1.1, 0)
+  gender_label_x_position <- -0.05
+}
+```
+
+Then, we update the `annotate()` function to specify that the x position should be the value of `gender_label_x_position`. Additionally, we set the `label` argument in `annotate()` to take the value of the `gender_to_filter` argument so that the label text adapts dynamically.
+
+``` r
+annotate(
+  geom = "label",
+  x = gender_label_x_position,
+  y = 17,
+  label = gender_to_filter,
+  fill = "#004f39",
+  color = "white",
+  label.size = 0,
+  label.padding = unit(0.3, "lines")
+)
+```
 
 ``` r
 population_pyramid_single_gender_plot <-
@@ -264,12 +300,12 @@ population_pyramid_single_gender_plot <-
 
     if (gender_to_filter == "Men") {
       x_limits <- c(0, max_percent * 1.1)
-      gender_label_x_position <- 0.04
+      gender_label_x_position <- 0.05
     }
 
     if (gender_to_filter == "Women") {
       x_limits <- c(-max_percent * 1.1, 0)
-      gender_label_x_position <- -0.04
+      gender_label_x_position <- -0.05
     }
 
     oregon_population_pyramid_data |>
@@ -305,11 +341,11 @@ population_pyramid_single_gender_plot <-
 
 This works for Men:
 
-<img src="population-pyramid-part-2_files/figure-commonmark/unnamed-chunk-14-1.png" style="width:100.0%" />
+<img src="population-pyramid-part-2_files/figure-commonmark/unnamed-chunk-18-1.png" style="width:100.0%" />
 
 And for Women:
 
-<img src="population-pyramid-part-2_files/figure-commonmark/unnamed-chunk-15-1.png" style="width:100.0%" />
+<img src="population-pyramid-part-2_files/figure-commonmark/unnamed-chunk-19-1.png" style="width:100.0%" />
 
 ## Use different colors for men and women
 
@@ -332,14 +368,14 @@ population_pyramid_single_gender_plot <-
 
     if (gender_to_filter == "Men") {
       x_limits <- c(0, max_percent * 1.1)
-      gender_label_x_position <- 0.04
+      gender_label_x_position <- 0.05
       fill_color <- "#004f39"
       gender_text_color <- "white"
     }
 
     if (gender_to_filter == "Women") {
       x_limits <- c(-max_percent * 1.1, 0)
-      gender_label_x_position <- -0.04
+      gender_label_x_position <- -0.05
       fill_color <- "#A9C27F"
       gender_text_color <- "grey30"
     }
@@ -378,7 +414,7 @@ population_pyramid_single_gender_plot <-
 
 Now, when I make a plot for women in Multnomah county, we can see the light green in action.
 
-<img src="population-pyramid-part-2_files/figure-commonmark/unnamed-chunk-17-1.png" style="width:100.0%" />
+<img src="population-pyramid-part-2_files/figure-commonmark/unnamed-chunk-21-1.png" style="width:100.0%" />
 
 ## Combine everything into a population pyramid
 
@@ -407,7 +443,7 @@ women_plot +
 
 Run this code and I’ve got a really nice population pyramid!
 
-<img src="population-pyramid-part-2_files/figure-commonmark/unnamed-chunk-19-1.png" style="width:100.0%" />
+<img src="population-pyramid-part-2_files/figure-commonmark/unnamed-chunk-23-1.png" style="width:100.0%" />
 
 To top it off, let’s make a single function to make a population pyramid by just passing the name of a county. I’ll call it `population_pyramid_combined_plot()`. The function takes just one argument (`county_to_filter`), which it uses to make a `women_plot` and a `men_plot`, which it then combines with the `age_labels_plot`.
 
@@ -442,10 +478,10 @@ population_pyramid_combined_plot(county_to_filter = "Gilliam")
 
 And I get a nicely formatted population pyramid in return!
 
-<img src="population-pyramid-part-2_files/figure-commonmark/unnamed-chunk-22-1.png" style="width:100.0%" />
+<img src="population-pyramid-part-2_files/figure-commonmark/unnamed-chunk-26-1.png" style="width:100.0%" />
 
 And, just for fun, here’s Wallowa county (one of my favorite places in Oregon!).
 
-<img src="population-pyramid-part-2_files/figure-commonmark/unnamed-chunk-23-1.png" style="width:100.0%" />
+<img src="population-pyramid-part-2_files/figure-commonmark/unnamed-chunk-27-1.png" style="width:100.0%" />
 
 I could now run this for [any county in Oregon](https://www.oregon.gov/pages/counties.aspx). Don’t believe me? Copy the code and try it for yourself!

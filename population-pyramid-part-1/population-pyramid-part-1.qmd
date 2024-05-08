@@ -4,7 +4,6 @@ author: David Keyes
 date: 2024-07-23
 toc: false
 format: gfm
-wrap: none
 knitr:
   opts_chunk:
     out.width: 100%
@@ -46,9 +45,9 @@ oregon_population_pyramid_data <-
 We can take a look at the data to see its structure. Here I'm just showing one county.
 
 ```{r}
-oregon_population_pyramid_data |> 
-  filter(county == "Benton") |> 
-  arrange(age, gender) |> 
+oregon_population_pyramid_data |>
+  filter(county == "Benton") |>
+  arrange(age, gender) |>
   print(n = 36)
 ```
 
@@ -341,9 +340,9 @@ By default, `patchwork` will make each plot the same width. For the population p
 population_pyramid_women +
   age_labels_plot +
   population_pyramid_men +
-  plot_layout( 
-    widths = c(7.5, 1, 7.5) 
-  ) 
+  plot_layout(
+    widths = c(7.5, 1, 7.5)
+  )
 ```
 
 The result looks much better!  
@@ -375,17 +374,17 @@ population_pyramid_women <-
     x = percent,
     y = age
   )) +
-  geom_col(fill = "#A9C27F") + 
+  geom_col(fill = "#A9C27F") +
   annotate(
-    geom = "label", 
-    x = -0.05, 
-    y = 17, 
-    label = "Women", 
-    fill = "#A9C27F", 
-    color = "grey30", 
-    label.size = 0, 
-    label.padding = unit(0.3, "lines") 
-  ) + 
+    geom = "label",
+    x = -0.05,
+    y = 17,
+    label = "Women",
+    fill = "#A9C27F",
+    color = "grey30",
+    label.size = 0,
+    label.padding = unit(0.3, "lines")
+  ) +
   theme_void()
 ```
 
@@ -428,10 +427,9 @@ population_pyramid_women <-
   ) +
   theme_void() +
   theme(
-    
-    axis.text.x = element_text(), 
-    panel.grid.major.x = element_line(color = "grey90") 
-  ) 
+    axis.text.x = element_text(),
+    panel.grid.major.x = element_line(color = "grey90")
+  )
 ```
 
 ```{r}
@@ -510,7 +508,7 @@ population_pyramid_women <-
     label.padding = unit(0.3, "lines")
   ) +
   scale_x_continuous(
-    labels = label_percent(accuracy = 1) 
+    labels = label_percent(accuracy = 1)
   ) +
   theme_void() +
   theme(
@@ -541,7 +539,7 @@ population_pyramid_men <-
     label.padding = unit(0.3, "lines")
   ) +
   scale_x_continuous(
-    labels = label_percent(accuracy = 1) 
+    labels = label_percent(accuracy = 1)
   ) +
   theme_void() +
   theme(
@@ -585,7 +583,7 @@ population_pyramid_women <-
     label.padding = unit(0.3, "lines")
   ) +
   scale_x_continuous(
-    labels = function(x) label_percent(accuracy = 1)(abs(x)) 
+    labels = function(x) label_percent(accuracy = 1)(abs(x))
   ) +
   theme_void() +
   theme(
@@ -617,7 +615,7 @@ population_pyramid_men <-
     label.padding = unit(0.3, "lines")
   ) +
   scale_x_continuous(
-    labels = function(x) label_percent(accuracy = 1)(abs(x)) 
+    labels = function(x) label_percent(accuracy = 1)(abs(x))
   ) +
   theme_void() +
   theme(
@@ -662,7 +660,7 @@ population_pyramid_women <-
   ) +
   scale_x_continuous(
     labels = function(x) label_percent(accuracy = 1)(abs(x)),
-    breaks = breaks_pretty() 
+    breaks = breaks_pretty()
   ) +
   theme_void() +
   theme(
@@ -693,7 +691,7 @@ population_pyramid_men <-
   ) +
   scale_x_continuous(
     labels = function(x) label_percent(accuracy = 1)(abs(x)),
-    breaks = breaks_pretty() 
+    breaks = breaks_pretty()
   ) +
   theme_void() +
   theme(
@@ -763,7 +761,7 @@ population_pyramid_women <-
   scale_x_continuous(
     labels = function(x) label_percent(accuracy = 1)(abs(x)),
     breaks = breaks_pretty(),
-    limits = c(-max_percent, 0) 
+    limits = c(-max_percent, 0)
   ) +
   theme_void() +
   theme(
@@ -797,7 +795,7 @@ population_pyramid_men <-
   scale_x_continuous(
     labels = function(x) label_percent(accuracy = 1)(abs(x)),
     breaks = breaks_pretty(),
-    limits = c(0, max_percent) 
+    limits = c(0, max_percent)
   ) +
   theme_void() +
   theme(

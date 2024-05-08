@@ -30,13 +30,13 @@ The result is a polished version of a population pyramid that I'm quite pleased 
 
 The blog post I wrote about making this version of the population pyramid saw us make one for Benton county. But this is only one of the 36 counties that make up Oregon. Given that my job is to make 36 population pyramids ([alongside a couple hundred other visuals](TODO: Add link)), what I really need is not the code to make *one* population pyramid, but a function to make *all* population pyramids.
 
-In this blog post, I detail how I would turn code for a single population pyramid into a function. As you'll see, it's not that much more work to make a function that works for any county.
+In this blog post, I detail how to turn code for a single population pyramid into a function to make a population for any county. 
 
 ## Getting started
 
-To do this, I'll use three packages:
+To do this, I'll load three packages:
 
-1. `tidyverse` for data wrangling and plotting.
+1. The `tidyverse` collection of packages for data wrangling and plotting.
 1. `scales` to give me nicely formatted values in my plots.
 1. `patchwork` to stitch together my women, men, and age labels plots.
 
@@ -46,7 +46,7 @@ library(scales)
 library(patchwork)
 ```
 
-Next, I'll import my data. As I showed in part 1, the first step is to make the values in `percent` variable show up as negative for women so that they appear on the left side while the values for men show up on the right side. Additionally, I make the `age` variable a factor and use `fct_inorder()` to ensure the age categories show up in the right order. 
+Next, I'll import my data. As I showed in [part 1](TODO: Add link), the first step is to make the values in `percent` variable show up as negative for women so that they appear on the left side while the values for men show up on the right side. Additionally, I make the `age` variable a factor and use `fct_inorder()` to ensure the age categories show up in the right order. 
 
 ```{r}
 oregon_population_pyramid_data <-
@@ -111,9 +111,80 @@ max_percent <-
   pull(percent)
 ```
 
+Combining these pieces, I made a population pyramid that combined a plot for women, men, and age labels.
 
+```{r}
+#| echo: false
 
-## Filter by county and gender
+population_pyramid_women <-
+  oregon_population_pyramid_data |>
+  filter(county == "Benton") |>
+  filter(gender == "Women") |>
+  ggplot(aes(
+    x = percent,
+    y = age
+  )) +
+  geom_col(fill = "#A9C27F") +
+  annotate(
+    geom = "label",
+    x = -0.05,
+    y = 17,
+    label = "Women",
+    fill = "#A9C27F",
+    color = "grey30",
+    label.size = 0,
+    label.padding = unit(0.3, "lines")
+  ) +
+  scale_x_continuous(
+    labels = function(x) label_percent(accuracy = 1)(abs(x)),
+    breaks = breaks_pretty(),
+    limits = c(-max_percent, 0)
+  ) +
+  theme_void() +
+  theme(
+    axis.text.x = element_text(),
+    panel.grid.major.x = element_line(color = "grey90")
+  )
+
+population_pyramid_men <-
+  oregon_population_pyramid_data |>
+  filter(county == "Benton") |>
+  filter(gender == "Men") |>
+  ggplot(aes(
+    x = percent,
+    y = age
+  )) +
+  geom_col(fill = "#004f39") +
+  annotate(
+    geom = "label",
+    x = 0.05,
+    y = 17,
+    label = "Men",
+    fill = "#004f39",
+    color = "white",
+    label.size = 0,
+    label.padding = unit(0.3, "lines")
+  ) +
+  scale_x_continuous(
+    labels = function(x) label_percent(accuracy = 1)(abs(x)),
+    breaks = breaks_pretty(),
+    limits = c(0, max_percent)
+  ) +
+  theme_void() +
+  theme(
+    axis.text.x = element_text(),
+    panel.grid.major.x = element_line(color = "grey90")
+  )
+
+population_pyramid_women +
+  age_labels_plot +
+  population_pyramid_men +
+  plot_layout(
+    widths = c(7.5, 1, 7.5)
+  )
+```
+
+## Create a population pyramid function
 
 First, I'm going to take the code I used to make the men plot and make it a function. In part 1, I manually filtered `oregon_population_pyramid_data` to only include Benton county and men. To start my function, however, I'll add two arguments: `county_to_filter` and `gender_to_filter`.
 
@@ -212,7 +283,21 @@ That doesn't look right. If we try to create a plot for Multnomah county, the x 
 
 To do this, we need to move the `max_percent` calculation *inside* our function. I've done that below, replacing the line that read `filter(county == "Benton)` with `filter(county == county_to_filter)` so that `max_percent` will be calculated for the county being plotted. 
 
-In addition, I've added a couple `if` statements to ensure the limits show up correctly for women and men. Within these two `if` statements, I've created an object called `x_limits`. For men, it goes from 0 to `max_percent` times 1.1 (I do this just to give it a bit of padding and make sure nothing gets cut off). For women, it goes from `-max_percent` times 1.1 to 0. We then use `limits = x_limits` within `scale_x_continuous()` to apply our calculated x axis limits.
+In addition, I've added a couple `if` statements to ensure the limits show up correctly for women and men. Within these two `if` statements, I've created an object called `x_limits`. For men, it goes from 0 to `max_percent` times 1.1 (I do this just to give it a bit of padding and make sure nothing gets cut off). For women, it goes from `-max_percent` times 1.1 to 0. 
+
+```{r}
+#| eval: false
+
+if (gender_to_filter == "Men") {
+  x_limits <- c(0, max_percent * 1.1)
+}
+
+if (gender_to_filter == "Women") {
+  x_limits <- c(-max_percent * 1.1, 0)
+}
+```
+
+We then use `limits = x_limits` within `scale_x_continuous()` to apply our calculated x axis limits. Our function as of now looks like this:
 
 ```{r}
 population_pyramid_single_gender_plot <-
@@ -271,6 +356,7 @@ population_pyramid_single_gender_plot <-
 Now, if we run our code to make the Benton plot for women, the x axis limits look good and, importantly, we can actually see our bars!
 
 ```{r}
+#| echo: false
 population_pyramid_single_gender_plot(
   county_to_filter = "Benton",
   gender_to_filter = "Women"
@@ -281,7 +367,39 @@ However, we can't see the Women label. Let's fix that.
 
 ## Adjust gender label position and text
 
-The reason why we can't see the Women label is that its x position is hard coded within the `annotate()` function to 0.04. This works for the Men label, but not for Women, where all values are negative. To remedy this, let's create a `gender_label_x_position` variable within our two `if` statements. If `gender_to_filter` is Men, then `gender_label_x_position` is 0.05; if it is Women, `gender_label_x_position` is -0.05 (I cheated a bit because I know from having worked with my data that the bars will never overlap at this location). Then, we update the `annotate()` function to specify that the x position should be the value of `gender_label_x_position`. Additionally, we set the `label` argument in `annotate()` to take the value of the `gender_to_filter` argument so that the label text adapts dynamically.
+The reason why we can't see the Women label is that its x position is hard coded within the `annotate()` function to 0.05. This works for the Men label, but not for Women, where all values are negative. To remedy this, let's create a `gender_label_x_position` variable within our two `if` statements. If `gender_to_filter` is Men, then `gender_label_x_position` is 0.05; if it is Women, `gender_label_x_position` is -0.05 (I cheated a bit because I know from having worked with my data that the bars will never overlap at this location). 
+
+```{r}
+#| eval: false
+
+if (gender_to_filter == "Men") {
+  x_limits <- c(0, max_percent * 1.1)
+  gender_label_x_position <- 0.05
+}
+
+if (gender_to_filter == "Women") {
+  x_limits <- c(-max_percent * 1.1, 0)
+  gender_label_x_position <- -0.05
+}
+```
+
+Then, we update the `annotate()` function to specify that the x position should be the value of `gender_label_x_position`. Additionally, we set the `label` argument in `annotate()` to take the value of the `gender_to_filter` argument so that the label text adapts dynamically.
+
+```{r}
+#| eval: false
+annotate(
+  geom = "label",
+  x = gender_label_x_position,
+  y = 17,
+  label = gender_to_filter,
+  fill = "#004f39",
+  color = "white",
+  label.size = 0,
+  label.padding = unit(0.3, "lines")
+)
+```
+
+Here's our updated function:
 
 ```{r}
 population_pyramid_single_gender_plot <-
@@ -300,12 +418,12 @@ population_pyramid_single_gender_plot <-
 
     if (gender_to_filter == "Men") {
       x_limits <- c(0, max_percent * 1.1)
-      gender_label_x_position <- 0.04
+      gender_label_x_position <- 0.05
     }
 
     if (gender_to_filter == "Women") {
       x_limits <- c(-max_percent * 1.1, 0)
-      gender_label_x_position <- -0.04
+      gender_label_x_position <- -0.05
     }
 
     oregon_population_pyramid_data |>
@@ -339,7 +457,7 @@ population_pyramid_single_gender_plot <-
   }
 ```
 
-This works for Men:
+Running the version of the function works for the Men label:
 
 ```{r}
 #| echo: false
@@ -361,7 +479,44 @@ population_pyramid_single_gender_plot(
 
 ## Use different colors for men and women
 
-The only remaining issue to deal with at this point is the color of the bars and the gender labels. I want to make women show up in a light green and men in the dark green we've seen up to this point. To do this, I follow the same procedure as above, creating a new variable called `fill_color` in our `if` statements and then applying it within both `geom_col()` and the `annotate()` functions. 
+The only remaining issue to deal with at this point is the color of the bars and the gender labels. I want to make women show up in a light green and men in the dark green we've seen up to this point. To do this, I follow the same procedure as above, creating a new variable called `fill_color` in our `if` statements:
+
+```{r}
+#| eval: false
+
+if (gender_to_filter == "Men") {
+  x_limits <- c(0, max_percent * 1.1)
+  gender_label_x_position <- 0.05
+  fill_color <- "#004f39"
+  gender_text_color <- "white"
+}
+
+if (gender_to_filter == "Women") {
+  x_limits <- c(-max_percent * 1.1, 0)
+  gender_label_x_position <- -0.05
+  fill_color <- "#A9C27F"
+  gender_text_color <- "grey30"
+}
+```
+
+ and then applying it within both `geom_col()` and the `annotate()` functions. 
+ 
+```{r}
+#| eval: false
+geom_col(fill = fill_color) +
+annotate(
+  geom = "label",
+  x = gender_label_x_position,
+  y = 17,
+  label = gender_to_filter,
+  fill = fill_color,
+  color = gender_text_color,
+  label.size = 0,
+  label.padding = unit(0.3, "lines")
+)
+```
+
+The final version of our function looks like this:
 
 ```{r}
 population_pyramid_single_gender_plot <-
@@ -380,14 +535,14 @@ population_pyramid_single_gender_plot <-
 
     if (gender_to_filter == "Men") {
       x_limits <- c(0, max_percent * 1.1)
-      gender_label_x_position <- 0.04
+      gender_label_x_position <- 0.05
       fill_color <- "#004f39"
       gender_text_color <- "white"
     }
 
     if (gender_to_filter == "Women") {
       x_limits <- c(-max_percent * 1.1, 0)
-      gender_label_x_position <- -0.04
+      gender_label_x_position <- -0.05
       fill_color <- "#A9C27F"
       gender_text_color <- "grey30"
     }
@@ -434,7 +589,7 @@ population_pyramid_single_gender_plot(
 )
 ```
 
-## Combine everything into a population pyramid
+## Combine everything into a population pyramid function
 
 Now that we've adjusted our `population_pyramid_single_gender_plot()` function so that it works for men and women, let's make a population pyramid! I'll create a population pyramid for Multnomah county by running the function to create a `women_plot` object and a `men_plot` object. I then use the `patchwork` package to combine these with the `age_labels_plot` I made above. 
 
@@ -531,4 +686,3 @@ population_pyramid_combined_plot(county_to_filter = "Wallowa")
 ```
 
 I could now run this for [any county in Oregon](https://www.oregon.gov/pages/counties.aspx). Don't believe me? Copy the code and try it for yourself!
-
