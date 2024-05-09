@@ -1,0 +1,37 @@
+---
+title: "Blog Posts Overview"
+format: 
+    html:
+        theme: cosmo
+toc: true
+toc-depth: 2
+---
+
+
+## Population pyramids, part 1
+
+### Blog post link
+
+https://rfortherestofus.com/cp/collections/blog/entries/5939e6e8-285f-41fc-b8f2-fcfdd5a0ea2e
+
+### Descript link 
+
+https://web.descript.com/31528b62-1d93-46b9-b72a-2776306949ae
+
+### Email text
+
+Hi friend,
+
+
+
+## Population pyramids, part 2
+
+## TEMPLATE
+
+### Blog post link
+
+### Descript link
+
+https://web.descript.com/7a6c02b8-a7c1-4246-903a-0a1f05f619b8
+
+### Email text

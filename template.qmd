@@ -1,0 +1,21 @@
+---
+title: ""
+author: David Keyes
+date: 2024-05-09
+toc: false
+format: gfm
+execute: 
+  warning: false
+  message: false
+knitr:
+  opts_chunk:
+    collapse: true
+    comment: "#>"
+    dev: "svglite"
+    dev.args: { scaling: 1 }
+    dpi: 300
+    fig.height: 4.25
+    fig.width: 8.5
+editor_options: 
+  chunk_output_type: console
+---
