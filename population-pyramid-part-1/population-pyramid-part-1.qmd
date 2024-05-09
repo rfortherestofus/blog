@@ -4,15 +4,18 @@ author: David Keyes
 date: 2024-07-23
 toc: false
 format: gfm
+execute: 
+  warning: false
+  message: false
 knitr:
   opts_chunk:
-    out.width: 100%
-    fig.height: 8
-    dpi: 300
     collapse: true
     comment: "#>"
-    warning: false
-    message: false
+    dev: "svglite"
+    dev.args: { scaling: 1 }
+    dpi: 300
+    fig.height: 4.25
+    fig.width: 8.5
 editor_options: 
   chunk_output_type: console
 ---
@@ -187,7 +190,7 @@ The second issue – that the age labels cover up bars – is harder to fix. Dep
 
 To fix this, I decided to use a different approach: making separate plots for Women, Men, and the age labels and then stitching them together with the `patchwork` package. I'll show you how this works and show you some of the other small tweaks I made along the way to make a polished population pyramid. 
 
-## Making a population pyramid using the `patchwork` package
+## Making a population pyramid using the patchwork package
 
 To make our multi-plot population pyramid, I'll create a plot for the women half and save it as `population_pyramid_women`. In addition to the code above, I've applied `theme_void()` to remove all of the elements except the bars themselves. 
 
@@ -220,6 +223,12 @@ population_pyramid_men <-
 ```
 
 The magic comes by loading the `patchwork` package and stitching the two plots together. After we've loaded the `patchwork` package, we can combine two plots using the plus sign. 
+
+```{r}
+#| echo: false
+library(patchwork)
+```
+
 
 ```{r}
 #| eval: false
@@ -366,6 +375,29 @@ There is still a lot of work to get the type of polished population pyramids tha
 To begin, I'm going to add different colors to the women and men plots. This is done by manually setting the fill colors for women to a light green and men to a dark green (the hex values below are brand colors for the Ford Family Foundation, which publishes Oregon by the Numbers). Additionally, we use the `annotate()` function to manually place text labels for Women and Men in appropriate locations. 
 
 ```{r}
+population_pyramid_men <-
+  oregon_population_pyramid_data |>
+  filter(county == "Benton") |>
+  filter(gender == "Men") |>
+  ggplot(aes(
+    x = percent,
+    y = age
+  )) +
+  geom_col(fill = "#004f39") +
+  annotate(
+    geom = "label",
+    x = 0.05,
+    y = 17,
+    label = "Men",
+    fill = "#004f39",
+    color = "white",
+    label.size = 0,
+    label.padding = unit(0.3, "lines")
+  ) +
+  theme_void()
+```
+
+```{r}
 population_pyramid_women <-
   oregon_population_pyramid_data |>
   filter(county == "Benton") |>
@@ -387,7 +419,6 @@ population_pyramid_women <-
   ) +
   theme_void()
 ```
-
 
 Combining the plots using `patchwork`, it's already looking better!
 
@@ -729,12 +760,7 @@ max_percent <-
   pull(percent)
 ```
 
-If we look at `max_percent`, we can see its value:
-
-```{r}
-#| echo: false
-max_percent
-```
+If we look at `max_percent`, we can see its value is `r max_percent`.
 
 We can now use `max_percent` to set the limits of our plots. For the women plot, we set the limits to be `c(-max_percent, 0)`. That is, they go from `r -max_percent` to 0. 
 
