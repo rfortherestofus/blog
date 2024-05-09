@@ -22,7 +22,23 @@ https://web.descript.com/31528b62-1d93-46b9-b72a-2776306949ae
 
 Hi friend,
 
+For the last few years, I've made hundreds of population pyramids for the last few years as [I've produced many population pyramids](https://rfortherestofus.com/2023/01/multiple-plots) as part of the annual [Oregon by the Numbers report](https://www.tfff.org/obtn). 
 
+[Population pyramids](https://education.nationalgeographic.org/resource/population-pyramid/), if you're not familiar with them, are graphs that allow the reader to see the breakdown of gender and age in a particular place. But before I worked on Oregon by the Numbers, I struggled to make population pyramids. I especially struggled to make population pyramids that went beyond the undistinguished plots in the tutorials I found. 
+
+Now, with years of population pyramid making experience, I decided to a blog post and record a video showing how I make *polished* population pyramids. The blog post and video will show you how to make population pyramids that look like this:
+
+![](population-pyramid-part-1/2024-population-pyramid-benton.png)
+
+I used some very particular techniques to make these population pyramids. Even if you never need to make a population pyramid, I think you'll get a lot out of the blog post and video.
+
+Check it out →
+
+After you've taken a look, I'd love to know what you think! Hit reply and let me know.
+
+Cheers,
+
+David
 
 ## Population pyramids, part 2
 
