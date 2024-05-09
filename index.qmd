@@ -1,5 +1,5 @@
 ---
-title: "Blog Posts Overview"
+title: "Blog Posts Content Info"
 format: 
     html:
         theme: cosmo
