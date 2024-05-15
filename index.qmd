@@ -42,12 +42,44 @@ David
 
 ## Population pyramids, part 2
 
+### Blog post link
+
+https://rfortherestofus.com/cp/collections/blog/entries/dc7c7a62-9b68-434c-8a72-846b70d7870b
+
+### Descript link
+
+https://web.descript.com/7a6c02b8-a7c1-4246-903a-0a1f05f619b8
+
+### Email text
+
+Hi friend,
+
+[I wrote recently about how I revamped the process of making population pyramids for Oregon by the Numbers](https://rfortherestofus.com/2024/07/population-pyramid-part-1), the report I’ve worked on for the last several years. Rather than making one plot, I used the {patchwork} package to stitch together three parts:
+
+- A plot for women on the left
+- Age labels in the center
+- A plot for men on the right
+
+The result is a polished version of a population pyramid that I’m quite pleased with. 
+
+![](population-pyramid-part-1/2024-population-pyramid-benton.png)
+
+[The blog post I wrote about making this version of the population pyramid saw us make one for Benton county](https://rfortherestofus.com/2024/07/population-pyramid-part-1). But this is only one of the 36 counties that make up Oregon. Given that my job is to make 36 population pyramids (alongside a couple hundred other visuals), what I really need is not the code to make one population pyramid, but a function to make all population pyramids.
+
+[I've written now about how to turn code for a single population pyramid into a function to make a population for any county](https://rfortherestofus.com/2024/07/population-pyramid-part-2). There's a video and code samples to help you make your own population pyramids.
+
+[Check it out →](https://rfortherestofus.com/2024/07/population-pyramid-part-2)
+
+After you've taken a look, I'd love to know what you think! Hit reply and let me know.
+
+Cheers,
+
+David
+
 ## TEMPLATE
 
 ### Blog post link
 
 ### Descript link
-
-https://web.descript.com/7a6c02b8-a7c1-4246-903a-0a1f05f619b8
 
 ### Email text
