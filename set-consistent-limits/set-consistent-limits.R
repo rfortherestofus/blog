@@ -1,11 +1,11 @@
-
 library(tidyverse)
-library(scales)
 
 median_income <-
-  read_csv("https://raw.githubusercontent.com/rfortherestofus/blog/main/set-consistent-limits/median_income.csv")
+  read_csv("set-consistent-limits/median_income.csv")
 
 median_income
+
+
 
 
 
@@ -55,6 +55,14 @@ median_income_plot("Jackson")
 median_income_plot("Harney")
 
 median_income_plot("Washington")
+
+
+
+
+
+
+
+
 
 
 

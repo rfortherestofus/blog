@@ -21,11 +21,11 @@
   </clipPath>
 </defs>
 <g clip-path='url(#cpMC4wMHw2MTIuMDB8MC4wMHwzMDYuMDA=)'>
-<rect x='27.82' y='159.95' width='425.84' height='125.18' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #BEBEBE;' />
-<rect x='27.82' y='20.86' width='252.63' height='125.18' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #006400;' />
-<text x='437.21' y='230.70' text-anchor='end' style='font-size: 22.76px;fill: #FFFFFF; font-family: "Arial";' textLength='82.22px' lengthAdjust='spacingAndGlyphs'>$76,632</text>
-<text x='264.00' y='91.61' text-anchor='end' style='font-size: 22.76px;fill: #FFFFFF; font-family: "Arial";' textLength='82.22px' lengthAdjust='spacingAndGlyphs'>$45,462</text>
-<text x='38.93' y='230.70' style='font-size: 22.76px;fill: #FFFFFF; font-family: "Arial";' textLength='75.87px' lengthAdjust='spacingAndGlyphs'>Oregon</text>
-<text x='38.93' y='91.61' style='font-size: 22.76px;fill: #FFFFFF; font-family: "Arial";' textLength='73.33px' lengthAdjust='spacingAndGlyphs'>Harney</text>
+<rect x='27.82' y='159.95' width='423.71' height='125.18' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #BEBEBE;' />
+<rect x='27.82' y='20.86' width='368.91' height='125.18' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #006400;' />
+<text x='435.09' y='230.70' text-anchor='end' style='font-size: 22.76px;fill: #FFFFFF; font-family: "Arial";' textLength='82.22px' lengthAdjust='spacingAndGlyphs'>$70,084</text>
+<text x='380.29' y='91.61' text-anchor='end' style='font-size: 22.76px;fill: #FFFFFF; font-family: "Arial";' textLength='82.22px' lengthAdjust='spacingAndGlyphs'>$61,020</text>
+<text x='39.91' y='230.70' style='font-size: 22.76px;fill: #FFFFFF; font-family: "Arial";' textLength='75.87px' lengthAdjust='spacingAndGlyphs'>Oregon</text>
+<text x='39.91' y='91.61' style='font-size: 22.76px;fill: #FFFFFF; font-family: "Arial";' textLength='83.46px' lengthAdjust='spacingAndGlyphs'>Jackson</text>
 </g>
 </svg>

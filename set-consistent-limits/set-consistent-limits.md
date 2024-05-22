@@ -6,25 +6,22 @@ One of the biggest challenges we face when doing [parameterized
 reporting](https://rfortherestofus.com/2024/06/parameterized-reporting-quarto)
 is how to make plots consistent across multiple reports. We’ve learned
 (oftentimes the hard way) many tricks for dealing with this problem. One
-I want to share with you today is making your axis limits consistent.
+I want to share with you today is making your axis limits consistent
+when making multiple plots.
 
-Here’s an issue I made making plots that show median income by county
-for the [annual Oregon by the Numbers
+Here’s an example of plots that show median income by county for the
+[annual Oregon by the Numbers
 report](https://rfortherestofus.com/success-stories/oregon-by-the-numbers).
 
-![](jackson-median-income.png)
-
-Let me show you a simplified version of the function I created to make
-these plots. We’ll begin by loading two packages: `tidyverse` for data
-wrangling and plotting with `ggplot2` and the `scales` package to create
-numbers formatted as dollars for plotting.
+![](jackson-median-income.png) Let me show you a simplified version of
+the function I created to make these plots. We’ll begin by the
+`tidyverse` package for data wrangling and plotting with `ggplot2`.
 
 ``` r
 library(tidyverse)
-library(scales)
 ```
 
-Next, we’ll import my data.
+Next, we’ll import our data.
 
 ``` r
 median_income <-
@@ -35,19 +32,19 @@ You can see the four variables we have in this data frame.
 
 ``` r
 median_income
-#> # A tibble: 37 × 4
-#>    geography  year amount amount_formatted
-#>    <chr>     <dbl>  <dbl> <chr>           
-#>  1 Oregon     2024  76632 $76,632         
-#>  2 Baker      2024  51657 $51,657         
-#>  3 Benton     2024  72882 $72,882         
-#>  4 Clackamas  2024  95740 $95,740         
-#>  5 Clatsop    2024  68025 $68,025         
-#>  6 Columbia   2024  83265 $83,265         
-#>  7 Coos       2024  57563 $57,563         
-#>  8 Crook      2024  74969 $74,969         
-#>  9 Curry      2024  64300 $64,300         
-#> 10 Deschutes  2024  82042 $82,042         
+#> # A tibble: 37 × 3
+#>    geography amount amount_formatted
+#>    <chr>      <dbl> <chr>           
+#>  1 Oregon     70084 $70,084         
+#>  2 Baker      46922 $46,922         
+#>  3 Benton     68732 $68,732         
+#>  4 Clackamas  88517 $88,517         
+#>  5 Clatsop    61846 $61,846         
+#>  6 Columbia   73909 $73,909         
+#>  7 Coos       52548 $52,548         
+#>  8 Crook      64820 $64,820         
+#>  9 Curry      57553 $57,553         
+#> 10 Deschutes  74082 $74,082         
 #> # ℹ 27 more rows
 ```
 
@@ -98,7 +95,7 @@ make some plots. Here’s the plot for Jackson county.
 median_income_plot("Jackson")
 ```
 
-![](set-consistent-limits_files/figure-commonmark/unnamed-chunk-5-1.svg)
+![](set-consistent-limits_files/figure-commonmark/unnamed-chunk-6-1.svg)
 
 And here’s the plot for Harney county.
 
@@ -106,7 +103,7 @@ And here’s the plot for Harney county.
 median_income_plot("Harney")
 ```
 
-![](set-consistent-limits_files/figure-commonmark/unnamed-chunk-6-1.svg)
+![](set-consistent-limits_files/figure-commonmark/unnamed-chunk-7-1.svg)
 
 Everything looks good so far. But take a look at what happens when we
 make the same plot for Washington county. Because the median income of
@@ -117,7 +114,7 @@ the limits of the plots for Jackson and Harney counties.
 median_income_plot("Washington")
 ```
 
-![](set-consistent-limits_files/figure-commonmark/unnamed-chunk-7-1.svg)
+![](set-consistent-limits_files/figure-commonmark/unnamed-chunk-8-1.svg)
 
 If we were to put plots with different x axis limits in the Oregon by
 the Numbers report, readers might be confused. If they looked at two
@@ -146,7 +143,7 @@ We can now see the value of `max_median_income`:
 
 ``` r
 max_median_income
-#> [1] 100121
+#> [1] 92025
 ```
 
 Next, what we’ll do is adjust our `median_income_plot()` function by
@@ -205,7 +202,7 @@ median_income_plot_v2 <- function(county) {
     theme_void() +
     scale_x_continuous(
       limits = c(0, max_median_income)
-    ) 
+    )
 }
 ```
 
@@ -215,7 +212,7 @@ Now let’s use our function make a plot for Jackson county:
 median_income_plot_v2("Jackson")
 ```
 
-![](set-consistent-limits_files/figure-commonmark/unnamed-chunk-12-1.svg)
+![](set-consistent-limits_files/figure-commonmark/unnamed-chunk-13-1.svg)
 
 For Harney county:
 
@@ -223,7 +220,7 @@ For Harney county:
 median_income_plot_v2("Harney")
 ```
 
-![](set-consistent-limits_files/figure-commonmark/unnamed-chunk-13-1.svg)
+![](set-consistent-limits_files/figure-commonmark/unnamed-chunk-14-1.svg)
 
 And for Washington county:
 
@@ -231,7 +228,7 @@ And for Washington county:
 median_income_plot_v2("Washington")
 ```
 
-![](set-consistent-limits_files/figure-commonmark/unnamed-chunk-14-1.svg)
+![](set-consistent-limits_files/figure-commonmark/unnamed-chunk-15-1.svg)
 
 The size of the Oregon bar is the same throughout and our readers will
 no longer be confused. By calculating the maximum median income and

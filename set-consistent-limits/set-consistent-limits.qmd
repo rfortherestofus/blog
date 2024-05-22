@@ -25,17 +25,18 @@ One of the biggest challenges we face when doing [parameterized reporting](https
 Here's an example of plots that show median income by county for the [annual Oregon by the Numbers report](https://rfortherestofus.com/success-stories/oregon-by-the-numbers). 
 
 ![](jackson-median-income.png)
-Let me show you a simplified version of the function I created to make these plots. We'll begin by loading two packages: `tidyverse` for data wrangling and plotting with `ggplot2` and the `scales` package to create numbers formatted as dollars for plotting.
+Let me show you a simplified version of the function I created to make these plots. We'll begin by the `tidyverse` package for data wrangling and plotting with `ggplot2`.
 
 ```{r}
 library(tidyverse)
-library(scales)
 ```
 
-Next, we'll import my data. 
+Next, we'll import our data. 
 
 ```{r}
 #| echo: false
+library(scales)
+
 obtn::obtn_data_median_income |> 
   rename("amount" = "value") |>
   mutate(amount_formatted = dollar(amount, 1)) |>
