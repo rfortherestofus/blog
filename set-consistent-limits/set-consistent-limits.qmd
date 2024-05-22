@@ -20,13 +20,11 @@ editor_options:
   chunk_output_type: console
 ---
 
-One of the biggest challenges we face when doing [parameterized reporting](https://rfortherestofus.com/2024/06/parameterized-reporting-quarto) is how to make plots consistent across multiple reports. We've learned (oftentimes the hard way) many tricks for dealing with this problem. One I want to share with you today is making your axis limits consistent. 
+One of the biggest challenges we face when doing [parameterized reporting](https://rfortherestofus.com/2024/06/parameterized-reporting-quarto) is how to make plots consistent across multiple reports. We've learned (oftentimes the hard way) many tricks for dealing with this problem. One I want to share with you today is making your axis limits consistent when making multiple plots. 
 
-Here's an issue I made making plots that show median income by county for the [annual Oregon by the Numbers report](https://rfortherestofus.com/success-stories/oregon-by-the-numbers). 
+Here's an example of plots that show median income by county for the [annual Oregon by the Numbers report](https://rfortherestofus.com/success-stories/oregon-by-the-numbers). 
 
 ![](jackson-median-income.png)
-
-
 Let me show you a simplified version of the function I created to make these plots. We'll begin by loading two packages: `tidyverse` for data wrangling and plotting with `ggplot2` and the `scales` package to create numbers formatted as dollars for plotting.
 
 ```{r}
@@ -35,6 +33,17 @@ library(scales)
 ```
 
 Next, we'll import my data. 
+
+```{r}
+#| echo: false
+obtn::obtn_data_median_income |> 
+  rename("amount" = "value") |>
+  mutate(amount_formatted = dollar(amount, 1)) |>
+  select(geography, year, amount, amount_formatted) |>
+  filter(year == 2023) |> 
+  write_csv(here::here("set-consistent-limits/median_income.csv"))
+```
+
 
 ```{r}
 median_income <-
