@@ -41,6 +41,7 @@ obtn::obtn_data_median_income |>
   mutate(amount_formatted = dollar(amount, 1)) |>
   select(geography, year, amount, amount_formatted) |>
   filter(year == 2023) |> 
+  select(-year) |> 
   write_csv(here::here("set-consistent-limits/median_income.csv"))
 ```
 
