@@ -9,13 +9,15 @@ is how to make plots consistent across multiple reports. We’ve learned
 I want to share with you today is making your axis limits consistent
 when making multiple plots.
 
-Here’s an example of plots that show median income by county for the
+Here’s an example of a plot that shows median income by county for the
 [annual Oregon by the Numbers
 report](https://rfortherestofus.com/success-stories/oregon-by-the-numbers).
 
-![](jackson-median-income.png) Let me show you a simplified version of
-the function I created to make these plots. We’ll begin by the
-`tidyverse` package for data wrangling and plotting with `ggplot2`.
+![](jackson-median-income.png)
+
+Let me show you a simplified version of the function I created to make
+these plots. We’ll begin by the `tidyverse` package for data wrangling
+and plotting with `ggplot2`.
 
 ``` r
 library(tidyverse)
