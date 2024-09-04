@@ -1,7 +1,7 @@
 # Use smart labeling in ggplot to help your audience understand your
 graphs
 David Keyes
-2024-08-01
+2024-10-24
 
 When making data viz in R, it’s easy to think that adding label to
 everything will make your charts easier to understand. This is rarely

@@ -1,7 +1,7 @@
 ---
 title: "Use smart labeling in ggplot to help your audience understand your graphs"
 author: David Keyes
-date: 2024-08-01
+date: 2024-10-24
 toc: false
 format: gfm
 execute: 
