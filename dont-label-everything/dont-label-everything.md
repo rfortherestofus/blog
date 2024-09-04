@@ -6,9 +6,9 @@ David Keyes
 When making data viz in R, it’s easy to think that adding label to
 everything will make your charts easier to understand. This is rarely
 the case. Instead, when making charts, maps, etc with ggplot, your best
-bet is to label judiciously. Only labeling the most important pieces of
-your data viz ensures that your audience will grasp what you want them
-to grasp. In this blog post, I’ll show you how to use smart labeling in
+bet is to label smartly. Only labeling the most important pieces of your
+data viz ensures that your audience will grasp what you want them to
+grasp. In this blog post, I’ll show you how to use smart labeling in
 ggplot to help your audience understand your graphs.
 
 ## An example
@@ -22,14 +22,14 @@ One graph in the reports aims to show population projections for various
 age groups. Here, for example, is the chart we made for the city of
 Hartford.
 
-TODO: Add graph
+![](unnamed-chunk-11-1.svg)
 
 Note how the only text we add to the graphs is that for the city of
 Hartford. While there are lines that show trends in Hartford County and
-Connectcitu, we don’t try to label these. If we did, the result would be
+Connecticut, we don’t try to label these. If we did, the result would be
 completely illegible:
 
-TODO: Add graph
+![](unnamed-chunk-8-1.svg)
 
 How, then, do you decide what text to add and what to leave off? The
 answer comes down to a simple question that you should ask yourself
@@ -41,8 +41,6 @@ Housing Data Profiles, we wanted to highlight the city (the county and
 state were there for comparison). So, when adding text to this plot, we
 didn’t try to label everything; instead, we only labeled the values for
 Hartford.
-
-## Code
 
 How did we do this in ggplot? The answer is actually less about ggplot
 and more about getting our data in the right format using other
@@ -86,6 +84,8 @@ projection plot. This plot takes two arguments: `town_to_plot` and
 data to only include the town, county, and Connecticut. This data is
 then piped into ggplot, where we make a set of slope graphs (one for
 each age group) to show the population projections from 2020 to 2040.
+The function below, with explanatory comments throughout, shows how this
+all works.
 
 ``` r
 population_projection_plot <- function(town_to_plot, county_to_plot) {
@@ -109,12 +109,13 @@ population_projection_plot <- function(town_to_plot, county_to_plot) {
     geom_line(show.legend = FALSE) +
     # Remote legend title
     labs(color = NULL) +
-    # Make the chart facetted by age group
+    # Make the chart faceted by age group
     facet_wrap(
       vars(age_group),
       nrow = 1
     ) +
-    # Set the y limits to go from 0% to 40% and use percent formatting from the {scales} package
+    # Set the y limits to go from 0% to 40%
+    # Use percent formatting from the {scales} package
     scale_y_continuous(
       limits = c(0, 0.4),
       labels = scales::percent_format(1)
@@ -166,7 +167,9 @@ population_projection_plot(
 
 As you can see, the function only adds points and lines. If we want to
 add labels, we’ll need to add another layer using `geom_text()`. We can
-use the `pct_formatted` variable for the text labels, as follows:
+use the `pct_formatted` variable for the text labels, as follows (the
+`show.legend = FALSE` ensures that no unnecessary text elements get
+added to the legend).
 
 ``` r
 population_projection_plot(
@@ -176,7 +179,8 @@ population_projection_plot(
   geom_text(
     aes(
       label = pct_formatted
-    )
+    ),
+    show.legend = FALSE
   )
 ```
 
@@ -201,8 +205,9 @@ population_projection_plot(
   geom_text_repel(
     aes(
       label = pct_formatted
-    )
-  )
+    ),
+    show.legend = FALSE
+  ) 
 ```
 
 ![](dont-label-everything_files/figure-commonmark/unnamed-chunk-9-1.svg)
@@ -221,7 +226,8 @@ population_projection_plot(
     nudge_y = 0.03,
     aes(
       label = pct_formatted
-    )
+    ),
+    show.legend = FALSE
   )
 ```
 
@@ -230,4 +236,13 @@ Connecticut. The result is much clearer.
 
 ![](dont-label-everything_files/figure-commonmark/unnamed-chunk-11-1.svg)
 
-# Conclusion
+When making plots in ggplot, it can be tempting to label everything. But
+this is rarely an ideal approach. You often end up with overlapping
+text. And, more importantly, too much text makes things less clear for
+your reader.
+
+Instead, the best solution is to start by identifying what you want your
+reader to focus on. From there, you can add text to highlight that
+thing. In this example, I filtered data within `geom_text()` to only
+show text labels for the city we care about (in this case, Hartford).
+Doing this makes your data viz clear for your readers.

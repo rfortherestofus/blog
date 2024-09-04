@@ -232,11 +232,8 @@
 <text x='31.49' y='90.49' text-anchor='end' style='font-size: 13.00px;fill: #666666; font-family: "Arial";' textLength='26.01px' lengthAdjust='spacingAndGlyphs'>30%</text>
 <text x='31.49' y='41.00' text-anchor='end' style='font-size: 13.00px;fill: #666666; font-family: "Arial";' textLength='26.01px' lengthAdjust='spacingAndGlyphs'>40%</text>
 <circle cx='186.81' cy='286.40' r='2.49' style='stroke-width: 0.71; stroke: #9F3515; fill: #9F3515;' />
-<text x='186.81' y='290.36' text-anchor='middle' style='font-size: 11.04px;fill: #9F3515; font-family: "Arial";' textLength='6.13px' lengthAdjust='spacingAndGlyphs'>a</text>
 <circle cx='262.00' cy='286.40' r='2.49' style='stroke-width: 0.71; stroke: #FBBFB8; fill: #FBBFB8;' />
-<text x='262.00' y='290.36' text-anchor='middle' style='font-size: 11.04px;fill: #FBBFB8; font-family: "Arial";' textLength='6.13px' lengthAdjust='spacingAndGlyphs'>a</text>
 <circle cx='382.01' cy='286.40' r='2.49' style='stroke-width: 0.71; stroke: #C4C4C4; fill: #C4C4C4;' />
-<text x='382.01' y='290.36' text-anchor='middle' style='font-size: 11.04px;fill: #C4C4C4; font-family: "Arial";' textLength='6.13px' lengthAdjust='spacingAndGlyphs'>a</text>
 <text x='200.93' y='291.06' style='font-size: 13.00px;fill: #666666; font-family: "Arial";' textLength='46.96px' lengthAdjust='spacingAndGlyphs'>Hartford</text>
 <text x='276.12' y='291.06' style='font-size: 13.00px;fill: #666666; font-family: "Arial";' textLength='91.76px' lengthAdjust='spacingAndGlyphs'>Hartford County</text>
 <text x='396.13' y='291.06' style='font-size: 13.00px;fill: #666666; font-family: "Arial";' textLength='68.65px' lengthAdjust='spacingAndGlyphs'>Connecticut</text>

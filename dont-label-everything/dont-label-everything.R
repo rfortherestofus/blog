@@ -1,21 +1,11 @@
-## ----------------------------------------------------------------------------------------------------
 library(tidyverse)
 
+population_projection <-
+  read_rds("dont-label-everything/population_projection.rds")
 
-## ----------------------------------------------------------------------------------------------------
-#| echo: true
-population_projection <- 
-  read_rds("population_projection.rds")
-
-
-## ----------------------------------------------------------------------------------------------------
-#| label: population-projection-data
-#| echo: true
 population_projection |>
   filter(location == "Hartford")
 
-
-## ----------------------------------------------------------------------------------------------------
 population_projection_plot <- function(town_to_plot, county_to_plot) {
   population_projection |>
     # Filter the data to only include town, county, and Connecticut
@@ -81,44 +71,24 @@ population_projection_plot <- function(town_to_plot, county_to_plot) {
     )
 }
 
-
-## ----------------------------------------------------------------------------------------------------
-#| label: plot-function
-#| echo: true
-#| output: false
 population_projection_plot(
   town_to_plot = "Hartford",
   county_to_plot = "Hartford County"
 )
 
 
-## ----------------------------------------------------------------------------------------------------
-#| ref-label: plot-function
-#| echo: false
+population_projection_plot(
+  town_to_plot = "Hartford",
+  county_to_plot = "Hartford County"
+) +
+  geom_text(
+    aes(
+      label = pct_formatted
+    ),
+    show.legend = FALSE
+  )
 
 
-## ----------------------------------------------------------------------------------------------------
-#| label: label-everything
-#| echo: true
-#| eval: false
-## population_projection_plot(
-##   town_to_plot = "Hartford",
-##   county_to_plot = "Hartford County"
-## ) +
-##   geom_text(
-##     aes(
-##       label = pct_formatted
-##     ),
-##     show.legend = FALSE
-##   )
-
-
-## ----------------------------------------------------------------------------------------------------
-#| ref-label: label-everything
-#| echo: false
-
-
-## ----------------------------------------------------------------------------------------------------
 library(ggrepel)
 
 population_projection_plot(
@@ -130,13 +100,9 @@ population_projection_plot(
       label = pct_formatted
     ),
     show.legend = FALSE
-  ) 
+  )
 
 
-## ----------------------------------------------------------------------------------------------------
-#| label: plot-with-text
-#| echo: true
-#| output: false
 population_projection_plot(
   town_to_plot = "Hartford",
   county_to_plot = "Hartford County"
@@ -149,9 +115,3 @@ population_projection_plot(
     ),
     show.legend = FALSE
   )
-
-
-## ----------------------------------------------------------------------------------------------------
-#| ref-label: plot-with-text
-#| echo: false
-
