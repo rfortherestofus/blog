@@ -20,15 +20,16 @@ editor_options:
   chunk_output_type: console
 ---
 
+
 **How to Create a Line Chart with Two Lines and a Filled Area Between Them for a Specific Part of the Chart**
 
-In this guide, I’ll walk you through the steps of creating a line chart with two lines, where the area between the lines is filled only for a specific portion of the chart. We will use GDP per capita data from the Gapminder dataset and the `tidyverse` package in R.
+In this guide, I'll walk you through the steps of creating a line chart with two lines, where the area between the lines is filled only for a specific portion of the chart. We will use GDP per capita data from the Gapminder dataset and the `tidyverse` package in R.
 
-The final plot will feature two lines showing GDP per capita over time for two countries, and we’ll fill the area between them for a defined period.
+The final plot will feature two lines showing GDP per capita over time for two countries, and we'll fill the area between them for a defined period.
 
 ## Step 1: Load the Necessary Libraries
 
-First, we need to load the `tidyverse` package, which includes `ggplot2` for plotting and `dplyr` for data manipulation. We’ll also be using the `gapminder` dataset that comes preloaded with the `gapminder` package. It contains data about life expectancy, GDP per capita, and population for different countries over time. 
+First, we need to load the `tidyverse` package, which includes `ggplot2` for plotting and `dplyr` for data manipulation. We'll also be using the `gapminder` dataset that comes preloaded with the `gapminder` package. It contains data about life expectancy, GDP per capita, and population for different countries over time. 
 
 ```{r}
 library(tidyverse)
@@ -37,7 +38,7 @@ library(gapminder)
 
 ## Step 2: Filter the Data
 
-We’ll focus on two specific countries (e.g., "Australia" and "Japan") and plot their GDP per capita over time. To do this, we’ll filter the dataset accordingly.
+We'll focus on two specific countries (e.g., "Australia" and "Japan") and plot their GDP per capita over time. To do this, we'll filter the dataset accordingly.
 
 ```{r}
 gdp_data <- gapminder |>
@@ -46,7 +47,7 @@ gdp_data <- gapminder |>
    select(year, country, gdpPercap)
 ```
 
-Now that we’ve filtered the data to include only the Australia and Japan after 1982, let’s take a look at it:
+Now that we've filtered the data to include only Australia and Japan after 1982, let's take a look at it:
 
 ```{r}
 gdp_data
@@ -54,7 +55,7 @@ gdp_data
 
 ## Step 3: Create a Basic Line Plot
 
-To begin, we'll create a basic line chart that shows the GDP per capita for both the Australia and Japan over time, thanks to the `geom_line()` function.
+To begin, we'll create a basic line chart that shows the GDP per capita for both Australia and Japan over time, using the `geom_line()` function.
 
 ```{r}
 ggplot(gdp_data, aes(x = year, y = gdpPercap, color = country)) +
@@ -65,7 +66,7 @@ ggplot(gdp_data, aes(x = year, y = gdpPercap, color = country)) +
 
 ### 4.1: Filter Data for the Highlighted Area
 
-We'll focus on a specific time period to fill the area between the two lines. Let’s say we want to highlight the period **between 2000 and 2010**. We’ll first filter the data to include only that range of years:
+We'll focus on a specific time period to fill the area between the two lines. Let's say we want to highlight the period **between 2000 and 2010**. We'll first filter the data to include only that range of years:
 
 ```{r}
 highlight_data <- gdp_data |>
@@ -74,7 +75,7 @@ highlight_data <- gdp_data |>
 highlight_data
 ```
 
-We’ll need to reshape the data so that the GDP per capita for both countries appears in separate columns.
+We'll need to reshape the data so that the GDP per capita for both countries appears in separate columns.
 
 ```{r}
 highlight_data_wide <- highlight_data |>
@@ -106,14 +107,13 @@ ggplot() +
    )
 ```
 
-
 ## Step 5: Customize the Plot
 
-Now we’ll customize the plot to make it more visually appealing.
+Now we'll customize the plot to make it more visually appealing.
 
 ### 5.1: Add Labels and Titles
 
-We’ll add a title and a caption for the data source, using the `labs()` function:
+We'll add a title and a caption for the data source, using the `labs()` function:
 
 ```{r}
 ggplot() +
@@ -143,7 +143,7 @@ ggplot() +
 
 ### 5.2: Improve the Color Scheme and Theme
 
-We’ll refine the colors and use a minimal theme (via `theme_minimal()`) to make the chart cleaner. We customize text style with the `theme()` function:
+We'll refine the colors and use a minimal theme (via `theme_minimal()`) to make the chart cleaner. We customize text style with the `theme()` function:
 
 ```{r}
 ggplot() +
@@ -182,7 +182,7 @@ ggplot() +
 
 ### 5.3: Annotation for the highlighted area
 
-First, and to make our code easier, let's create variables with the information about the region we want to highlight. For this we need: the last year, the maximum value of both Australia and Japan, and then the difference between them.
+First, to make our code easier, let's create variables with the information about the region we want to highlight. For this we need: the last year, the maximum value of both Australia and Japan, and then the difference between them.
 
 ```{r}
 last_year <- 2007
@@ -194,7 +194,6 @@ difference <- max_australia - max_japan
 Once we have those values, we use the `geom_segment()` function to add the lines on the right of the highlighted area. Their position is defined via the variables from above, but we add +/- 0.3 to make the horizontal lines a bit wider.
 
 This looks like:
-
 
 ```{r}
 #| eval: false
@@ -249,14 +248,29 @@ ggplot() +
       legend.title = element_blank()
    ) +
    geom_segment(
-      aes(x = last_year, xend = last_year, y = max_japan, yend = max_australia),
+      aes(
+         x = last_year,
+         xend = last_year,
+         y = max_japan,
+         yend = max_australia
+      ),
       linetype = "dashed"
    ) +
    geom_segment(
-      aes(x = last_year - 0.3, xend = last_year + 0.3, y = max_japan, yend = max_japan)
+      aes(
+         x = last_year - 0.3,
+         xend = last_year + 0.3,
+         y = max_japan,
+         yend = max_japan
+      )
    ) +
    geom_segment(
-      aes(x = last_year - 0.3, xend = last_year + 0.3, y = max_australia, yend = max_australia)
+      aes(
+         x = last_year - 0.3,
+         xend = last_year + 0.3,
+         y = max_australia,
+         yend = max_australia
+      )
    ) +
    geom_label(
       aes(x = last_year + 1, y = (max_australia + max_japan) / 2),
@@ -268,6 +282,6 @@ ggplot() +
    coord_cartesian(clip = "off", xlim = c(1982, 2012))
 ```
 
-You now have a polished line chart comparing GDP per capita between the Australia and Japan. The area between the two lines is filled for the years 2002-2007, making it easy to visually compare their economic performance during that period.
+You now have a polished line chart comparing GDP per capita between Australia and Japan. The area between the two lines is filled for the years 2002-2007, making it easy to visually compare their economic performance during that period.
 
 This technique is a great way to highlight differences between two variables over a specific range of time, helping the viewer focus on key periods of interest in the data.
