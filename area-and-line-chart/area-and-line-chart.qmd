@@ -212,7 +212,13 @@ Then we need to ensure that our annotation will be visible. For this we use:
 
 ```{r}
 #| eval: false
-coord_cartesian(clip = "off", xlim = c(min(gdp_data$year), max(gdp_data$year) + 6))
+coord_cartesian(
+   clip = "off",
+   xlim = c(
+      min(gdp_data$year),
+      max(gdp_data$year) + 6
+   )
+)
 ```
 
 This line extends the x-axis limit by 5 years (2007 + 5 = 2012) beyond the maximum year in the data and allows plot elements to be drawn outside the plot area, which is useful for positioning annotations like the GDP gap label.
