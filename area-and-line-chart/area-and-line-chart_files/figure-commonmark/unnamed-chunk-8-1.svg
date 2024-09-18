@@ -1,0 +1,77 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' class='svglite' width='612.00pt' height='306.00pt' viewBox='0 0 612.00 306.00'>
+<defs>
+  <style type='text/css'><![CDATA[
+    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {
+      fill: none;
+      stroke: #000000;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10.00;
+    }
+    .svglite text {
+      white-space: pre;
+    }
+  ]]></style>
+</defs>
+<rect width='100%' height='100%' style='stroke: none; fill: #FFFFFF;'/>
+<defs>
+  <clipPath id='cpMC4wMHw2MTIuMDB8MC4wMHwzMDYuMDA='>
+    <rect x='0.00' y='0.00' width='612.00' height='306.00' />
+  </clipPath>
+</defs>
+<g clip-path='url(#cpMC4wMHw2MTIuMDB8MC4wMHwzMDYuMDA=)'>
+<rect x='0.00' y='0.000000000000057' width='612.00' height='306.00' style='stroke-width: 1.07; stroke: #FFFFFF; fill: #FFFFFF;' />
+</g>
+<defs>
+  <clipPath id='cpNDcuOTZ8NTI3LjYxfDM5LjE0fDI3My41OQ=='>
+    <rect x='47.96' y='39.14' width='479.66' height='234.45' />
+  </clipPath>
+</defs>
+<g clip-path='url(#cpNDcuOTZ8NTI3LjYxfDM5LjE0fDI3My41OQ==)'>
+<rect x='47.96' y='39.14' width='479.66' height='234.45' style='stroke-width: 1.07; stroke: none; fill: #EBEBEB;' />
+<polyline points='47.96,218.81 527.61,218.81 ' style='stroke-width: 0.53; stroke: #FFFFFF; stroke-linecap: butt;' />
+<polyline points='47.96,148.01 527.61,148.01 ' style='stroke-width: 0.53; stroke: #FFFFFF; stroke-linecap: butt;' />
+<polyline points='47.96,77.20 527.61,77.20 ' style='stroke-width: 0.53; stroke: #FFFFFF; stroke-linecap: butt;' />
+<polyline points='122.08,273.59 122.08,39.14 ' style='stroke-width: 0.53; stroke: #FFFFFF; stroke-linecap: butt;' />
+<polyline points='296.51,273.59 296.51,39.14 ' style='stroke-width: 0.53; stroke: #FFFFFF; stroke-linecap: butt;' />
+<polyline points='470.93,273.59 470.93,39.14 ' style='stroke-width: 0.53; stroke: #FFFFFF; stroke-linecap: butt;' />
+<polyline points='47.96,254.21 527.61,254.21 ' style='stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt;' />
+<polyline points='47.96,183.41 527.61,183.41 ' style='stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt;' />
+<polyline points='47.96,112.61 527.61,112.61 ' style='stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt;' />
+<polyline points='47.96,41.80 527.61,41.80 ' style='stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt;' />
+<polyline points='209.30,273.59 209.30,39.14 ' style='stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt;' />
+<polyline points='383.72,273.59 383.72,39.14 ' style='stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt;' />
+<polygon points='418.60,102.87 505.81,49.80 505.81,89.15 418.60,132.37 ' style='stroke-width: 0.00; stroke: none; stroke-linecap: butt; fill: #ADD8E6; fill-opacity: 0.50;' />
+<polyline points='418.60,102.87 505.81,49.80 ' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt;' />
+<polyline points='505.81,89.15 418.60,132.37 ' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt;' />
+<polyline points='69.76,261.62 156.97,227.47 244.18,205.72 331.39,155.12 418.60,102.87 505.81,49.80 ' style='stroke-width: 2.56; stroke: #F8766D; stroke-linecap: butt;' />
+<polyline points='69.76,262.94 156.97,220.57 244.18,157.57 331.39,129.36 418.60,132.37 505.81,89.15 ' style='stroke-width: 2.56; stroke: #00BFC4; stroke-linecap: butt;' />
+</g>
+<g clip-path='url(#cpMC4wMHw2MTIuMDB8MC4wMHwzMDYuMDA=)'>
+<text x='43.02' y='257.37' text-anchor='end' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='24.48px' lengthAdjust='spacingAndGlyphs'>20000</text>
+<text x='43.02' y='186.56' text-anchor='end' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='24.48px' lengthAdjust='spacingAndGlyphs'>25000</text>
+<text x='43.02' y='115.76' text-anchor='end' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='24.48px' lengthAdjust='spacingAndGlyphs'>30000</text>
+<text x='43.02' y='44.95' text-anchor='end' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='24.48px' lengthAdjust='spacingAndGlyphs'>35000</text>
+<polyline points='45.22,254.21 47.96,254.21 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='45.22,183.41 47.96,183.41 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='45.22,112.61 47.96,112.61 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='45.22,41.80 47.96,41.80 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='209.30,276.33 209.30,273.59 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='383.72,276.33 383.72,273.59 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
+<text x='209.30' y='284.83' text-anchor='middle' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='19.58px' lengthAdjust='spacingAndGlyphs'>1990</text>
+<text x='383.72' y='284.83' text-anchor='middle' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='19.58px' lengthAdjust='spacingAndGlyphs'>2000</text>
+<text transform='translate(13.37,156.37) rotate(-90)' text-anchor='middle' style='font-size: 11.00px; font-family: "Arial";' textLength='78.85px' lengthAdjust='spacingAndGlyphs'>GDP Per Capita</text>
+<rect x='538.57' y='125.70' width='67.95' height='61.32' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
+<text x='544.05' y='140.29' style='font-size: 11.00px; font-family: "Arial";' textLength='36.08px' lengthAdjust='spacingAndGlyphs'>country</text>
+<rect x='544.05' y='146.99' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #EBEBEB;' />
+<line x1='545.78' y1='155.63' x2='559.60' y2='155.63' style='stroke-width: 2.56; stroke: #F8766D; stroke-linecap: butt;' />
+<rect x='544.05' y='164.27' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #EBEBEB;' />
+<line x1='545.78' y1='172.91' x2='559.60' y2='172.91' style='stroke-width: 2.56; stroke: #00BFC4; stroke-linecap: butt;' />
+<text x='566.81' y='158.78' style='font-size: 8.80px; font-family: "Arial";' textLength='34.23px' lengthAdjust='spacingAndGlyphs'>Australia</text>
+<text x='566.81' y='176.06' style='font-size: 8.80px; font-family: "Arial";' textLength='23.98px' lengthAdjust='spacingAndGlyphs'>Japan</text>
+<text x='47.96' y='31.23' style='font-size: 11.00px; font-family: "Arial";' textLength='299.04px' lengthAdjust='spacingAndGlyphs'>Area between the lines is highlighted for the years 2002-2007</text>
+<text x='47.96' y='14.94' style='font-size: 13.20px; font-family: "Arial";' textLength='284.46px' lengthAdjust='spacingAndGlyphs'>GDP Per Capita Comparison: Australia vs Japan</text>
+<text x='527.61' y='298.57' text-anchor='end' style='font-size: 8.80px; font-family: "Arial";' textLength='76.30px' lengthAdjust='spacingAndGlyphs'>Source: Gapminder</text>
+</g>
+</svg>
