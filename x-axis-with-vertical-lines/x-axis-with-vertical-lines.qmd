@@ -1,5 +1,5 @@
 ---
-title: "Use vertical lines instead of axis lines for cleaner charts"
+title: "Use vertical white lines instead of axis lines for cleaner charts"
 author: David Keyes
 date: 2024-09-16
 toc: false
