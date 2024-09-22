@@ -41,9 +41,9 @@ We'll focus on two specific countries (e.g., "Australia" and "Japan") and plot t
 
 ```{r}
 gdp_data <- gapminder |>
-   filter(country %in% c("Japan", "Australia")) |>
-   filter(year >= 1982) |>
-   select(year, country, gdpPercap)
+  filter(country %in% c("Japan", "Australia")) |>
+  filter(year >= 1982) |>
+  select(year, country, gdpPercap)
 ```
 
 Now that we've filtered the data to include only Australia and Japan after 1982, let's take a look at it:
@@ -58,15 +58,15 @@ To begin, we'll create a basic line chart that shows the GDP per capita for both
 
 ```{r}
 ggplot(gdp_data, aes(x = year, y = gdpPercap, color = country)) +
-   geom_line(size = 1.2) +
-   labs(
-      title = "GDP Per Capita Comparison: Australia vs Japan",
-      subtitle = "Area between the lines is highlighted for the years 2002-2007",
-      x = NULL,
-      y = "GDP Per Capita",
-      caption = "Source: Gapminder"
-   ) +
-   theme_minimal()
+  geom_line(size = 1.2) +
+  labs(
+    title = "GDP Per Capita Comparison: Australia vs Japan",
+    subtitle = "Area between the lines is highlighted for the years 2002-2007",
+    x = NULL,
+    y = "GDP Per Capita",
+    caption = "Source: Gapminder"
+  ) +
+  theme_minimal()
 ```
 
 ## Highlight the Area Between the Two Lines for a Specific Time Period
@@ -77,7 +77,7 @@ We'll focus on a specific time period to fill the area between the two lines. Le
 
 ```{r}
 highlight_data <- gdp_data |>
-   filter(year > 2000 & year < 2010)
+  filter(year > 2000 & year < 2010)
 
 highlight_data
 ```
@@ -86,7 +86,7 @@ We'll need to reshape the data so that the GDP per capita for both countries app
 
 ```{r}
 highlight_data_wide <- highlight_data |>
-   pivot_wider(names_from = country, values_from = gdpPercap)
+  pivot_wider(names_from = country, values_from = gdpPercap)
 
 highlight_data_wide
 ```
@@ -99,29 +99,29 @@ In this case, we apply `geom_ribbon()` to our filtered data (`highlight_data_wid
 
 ```{r}
 ggplot() +
-   geom_line(
-      data = gdp_data,
-      aes(
-         x = year,
-         y = gdpPercap,
-         color = country
-      ),
-      size = 1.2
-   ) +
-   geom_ribbon(
-      data = highlight_data_wide,
-      aes(x = year, ymin = Japan, ymax = Australia),
-      fill = "#ADD8E6",
-      alpha = 0.7
-   ) +
-   labs(
-      title = "GDP Per Capita Comparison: Australia vs Japan",
-      subtitle = "Area between the lines is highlighted for the years 2002-2007",
-      x = NULL,
-      y = "GDP Per Capita",
-      caption = "Source: Gapminder"
-   ) +
-   theme_minimal()
+  geom_line(
+    data = gdp_data,
+    aes(
+      x = year,
+      y = gdpPercap,
+      color = country
+    ),
+    size = 1.2
+  ) +
+  geom_ribbon(
+    data = highlight_data_wide,
+    aes(x = year, ymin = Japan, ymax = Australia),
+    fill = "#ADD8E6",
+    alpha = 0.7
+  ) +
+  labs(
+    title = "GDP Per Capita Comparison: Australia vs Japan",
+    subtitle = "Area between the lines is highlighted for the years 2002-2007",
+    x = NULL,
+    y = "GDP Per Capita",
+    caption = "Source: Gapminder"
+  ) +
+  theme_minimal()
 ```
 
 
@@ -135,14 +135,14 @@ First, to make our code easier, let's create variables with the information abou
 
 ```{r}
 max_australia <- gdp_data |>
-   filter(country == "Australia") |>
-   slice_max(gdpPercap, n = 1) |>
-   pull(gdpPercap)
+  filter(country == "Australia") |>
+  slice_max(gdpPercap, n = 1) |>
+  pull(gdpPercap)
 
 max_japan <- gdp_data |>
-   filter(country == "Japan") |>
-   slice_max(gdpPercap, n = 1) |>
-   pull(gdpPercap)
+  filter(country == "Japan") |>
+  slice_max(gdpPercap, n = 1) |>
+  pull(gdpPercap)
 
 difference <- max_australia - max_japan
 
@@ -157,45 +157,45 @@ Then, we use the same code as before but with 2 new geoms:
 
 ```{r}
 ggplot() +
-   geom_ribbon(
-      data = highlight_data_wide,
-      aes(x = year, ymin = Japan, ymax = Australia),
-      fill = "#ADD8E6",
-      alpha = 0.7
-   ) +
-   geom_line(data = gdp_data, aes(x = year, y = gdpPercap, color = country), size = 1.2) +
-   labs(
-      title = "GDP Per Capita Comparison: Australia vs Japan",
-      subtitle = "Area between the lines is highlighted for the years 2002-2007",
-      x = "Year",
-      y = "GDP Per Capita",
-      caption = "Source: Gapminder"
-   ) +
-   theme_minimal() +
-   geom_segment(
-      aes(
-         x = 2008,
-         xend = 2008,
-         y = max_australia - 1000,
-         yend = max_australia + 100
-      )
-   ) +
-   geom_segment(
-      aes(
-         x = 2008,
-         xend = 2008,
-         y = max_japan - 100,
-         yend = max_japan + 900
-      )
-   ) +
-   geom_text(
-      aes(x = 2007.5, y = 33000),
-      label = gap_label,
-      hjust = 0,
-      vjust = 0.5,
-      size = 3
-   ) +
-   coord_cartesian(clip = "off", xlim = c(1982, 2012))
+  geom_ribbon(
+    data = highlight_data_wide,
+    aes(x = year, ymin = Japan, ymax = Australia),
+    fill = "#ADD8E6",
+    alpha = 0.7
+  ) +
+  geom_line(data = gdp_data, aes(x = year, y = gdpPercap, color = country), size = 1.2) +
+  labs(
+    title = "GDP Per Capita Comparison: Australia vs Japan",
+    subtitle = "Area between the lines is highlighted for the years 2002-2007",
+    x = "Year",
+    y = "GDP Per Capita",
+    caption = "Source: Gapminder"
+  ) +
+  theme_minimal() +
+  geom_segment(
+    aes(
+      x = 2008,
+      xend = 2008,
+      y = max_australia - 1000,
+      yend = max_australia + 100
+    )
+  ) +
+  geom_segment(
+    aes(
+      x = 2008,
+      xend = 2008,
+      y = max_japan - 100,
+      yend = max_japan + 900
+    )
+  ) +
+  geom_text(
+    aes(x = 2007.5, y = 33000),
+    label = gap_label,
+    hjust = 0,
+    vjust = 0.5,
+    size = 3
+  ) +
+  coord_cartesian(clip = "off", xlim = c(1982, 2012))
 ```
 
 You now have a polished line chart comparing GDP per capita between Australia and Japan. The area between the two lines is filled for the years 2002-2007, making it easy to visually compare their economic performance during that period.
