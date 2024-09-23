@@ -206,10 +206,7 @@ difference <- max_australia - max_japan
 gap_label <- str_glue("{scales::dollar(difference, accuracy = 1)}\ngap")
 ```
 
-Then, we use the same code as before but with 2 new geoms:
-
-- `geom_segment()`: draw a straight line segment between two points. In our case, we will use it to draw 2 segments around the GDP per capita gap annotation.
-- `geom_text()`: add text annotations to the plot. We'll use it to label the gap between the two lines, which represents the difference in GDP per capita between the two countries.
+Then, we use the `annotate()` function from ggplot to add both the line showing the gap size and the text annotation of it.
 
 ```{r}
 #| eval: false
