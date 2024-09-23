@@ -42,9 +42,6 @@
 <polyline points='378.62,399.59 378.62,39.14 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
 <polyline points='53.54,381.19 143.84,328.68 234.14,295.24 324.44,217.45 414.74,137.11 505.04,55.52 ' style='stroke-width: 2.56; stroke-linecap: butt;' />
 <polyline points='53.54,383.21 143.84,318.07 234.14,221.21 324.44,177.85 414.74,182.47 505.04,116.03 ' style='stroke-width: 2.56; stroke: #B3B3B3; stroke-linecap: butt;' />
-<polygon points='414.74,137.11 505.04,55.52 505.04,116.03 414.74,182.47 ' style='stroke-width: 0.00; stroke: none; stroke-linecap: butt; fill: #AF7D95; fill-opacity: 0.80;' />
-<polyline points='414.74,137.11 505.04,55.52 ' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt;' />
-<polyline points='505.04,116.03 414.74,182.47 ' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt;' />
 </g>
 <g clip-path='url(#cpMC4wMHw2MTIuMDB8MC4wMHw0MzIuMDA=)'>
 <text x='26.04' y='372.95' text-anchor='end' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='20.56px' lengthAdjust='spacingAndGlyphs'>$20K</text>
