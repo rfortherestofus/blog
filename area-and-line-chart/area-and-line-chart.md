@@ -1,6 +1,6 @@
-# Combine line chart and area chart
+# Use geom_ribbon() to highlight the gap between two lines
 David Keyes
-2024-09-16
+2024-12-31
 
 I recently found this really nice graph in [the New York
 Times](https://www.nytimes.com/2024/04/15/upshot/mortgage-rates-homes-stuck.html)
@@ -11,9 +11,10 @@ existing mortgages and rates on new loans?
 
 ![](preview-chart.png)
 
-In this guide, I’ll walk you through the steps of creating a line chart
-with two lines, where the area between the lines is filled only for a
-specific portion of the chart. Here’s what we’re going to do:
+In this guide, written with Joseph Barbier, I’ll walk you through the
+steps of creating a line chart with two lines, where the area between
+the lines is filled only for a specific portion of the chart. Here’s
+what we’re going to do:
 
 ## Load the Necessary Packages
 
@@ -215,14 +216,8 @@ difference <- max_australia - max_japan
 gap_label <- str_glue("{scales::dollar(difference, accuracy = 1)}\ngap")
 ```
 
-Then, we use the same code as before but with 2 new geoms:
-
-- `geom_segment()`: draw a straight line segment between two points. In
-  our case, we will use it to draw 2 segments around the GDP per capita
-  gap annotation.
-- `geom_text()`: add text annotations to the plot. We’ll use it to label
-  the gap between the two lines, which represents the difference in GDP
-  per capita between the two countries.
+Then, we use the `annotate()` function from ggplot to add both the line
+showing the gap size and the text annotation of it.
 
 ``` r
 gdp_line_chart +
@@ -244,7 +239,7 @@ gdp_line_chart +
   annotate(
     geom = "text",
     x = 2008,
-    y = max_japan + (max_australia - max_japan) / 2,
+    y = max_japan + difference / 2,
     label = gap_label,
     lineheight = 1,
     label.size = 0,

@@ -1,7 +1,7 @@
 ---
 title: "Use geom_ribbon() to highlight the gap between two lines"
 author: David Keyes
-date: 2024-09-16
+date: 2024-12-31
 toc: false
 format: gfm
 execute: 
@@ -24,7 +24,7 @@ I recently found this really nice graph in [the New York Times](https://www.nyti
 
 ![](preview-chart.png)
 
-In this guide, I'll walk you through the steps of creating a line chart with two lines, where the area between the lines is filled only for a specific portion of the chart. Here's what we're going to do: 
+In this guide, written with Joseph Barbier, I'll walk you through the steps of creating a line chart with two lines, where the area between the lines is filled only for a specific portion of the chart. Here's what we're going to do: 
  
 ## Load the Necessary Packages
 
