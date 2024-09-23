@@ -1,5 +1,5 @@
 ---
-title: "Combine line chart and area chart"
+title: "Use geom_ribbon() to highlight the gap between two lines"
 author: David Keyes
 date: 2024-09-16
 toc: false
@@ -229,7 +229,7 @@ gdp_line_chart +
   annotate(
     geom = "text",
     x = 2008,
-    y = max_japan + (max_australia - max_japan) / 2,
+    y = max_japan + difference / 2,
     label = gap_label,
     lineheight = 1,
     label.size = 0,
@@ -264,7 +264,7 @@ plot_with_annotation <-
   annotate(
     geom = "text",
     x = 2008,
-    y = max_japan + (max_australia - max_japan) / 2,
+    y = max_japan + difference / 2,
     label = gap_label,
     lineheight = 1,
     label.size = 0,
