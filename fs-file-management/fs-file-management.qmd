@@ -17,8 +17,7 @@ knitr:
     out.width: 80%
 ---
 
-Imagine you're working on a project, and your folder is filled with subfolders and files named in different styles: some in uppercase, some in lowercase, and with a mixture of spaces, dashes, and underscores. 
-
+Imagine you're working on a project, and you receive a folder filled with subfolders and files named in different styles: some in uppercase, some in lowercase, and with a mixture of spaces, dashes, and underscores. 
 
 This disorganized chaos can make it hard to find anything, but the [`{fs}` package](https://fs.r-lib.org/index.html) lets you quickly rename and organize everything to a consistent case and format. This guide will show you how to use `{fs}` to automate tedious tasks like creating, renaming, moving, and deleting files and folders with just a few lines of code.
 
@@ -147,7 +146,7 @@ Beautiful! Much more tidy!
 
 ## Delete files and directory
 
-Lastly, let's use `dir_delete()` to remove our entire example folder. If we only wanted to delete a file or two, we could instead use `file_delete()`.
+Lastly, let's use `dir_delete()` to remove our entire example folder. If we only wanted to delete a file or two, we could instead use `file_delete()`. But here we'll use `dir_delete()`:
 
 ```{r}
 dir_exists("fs-example")
