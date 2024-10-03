@@ -2,13 +2,18 @@
 Jadey Ryan
 2024-09-24
 
-Tired of messy folders filled with inconsistently named files? The [`fs`
-package](https://fs.r-lib.org/index.html) is a powerful tool for
-automating tedious tasks like creating, renaming, moving, and deleting
-files and folders. This guide will show you how to use `fs` to quickly
-organize and clean up your files and folders.
+Imagine you’re working on a project, and your folder is filled with
+subfolders and files named in different styles: some in uppercase, some
+in lowercase, and with a mixture of spaces, dashes, and underscores.
 
-`fs` has very nice, consistent syntax with the following four main
+This disorganized chaos can make it hard to find anything, but the
+[`{fs}` package](https://fs.r-lib.org/index.html) lets you quickly
+rename and organize everything to a consistent case and format. This
+guide will show you how to use `{fs}` to automate tedious tasks like
+creating, renaming, moving, and deleting files and folders with just a
+few lines of code.
+
+`{fs}` has very nice, consistent syntax with the following four main
 categories of functions:
 
 - `path_` for manipulating and constructing paths
@@ -20,7 +25,7 @@ categories of functions:
 Directories and links are special types of files, so `file_` functions
 will generally also work when applied to a directory or link.
 
-Throughout this guide, we’ll use `fs` for file/directory handling and
+Throughout this guide, we’ll use `{fs}` for file/directory handling and
 `stringr` for string manipulation.
 
 ``` r
@@ -30,8 +35,8 @@ library(stringr)
 
 ## Create an example messy folder
 
-To demonstrate the power of `fs` for efficient file management, we first
-need to create a messy folder with inconsistently named files.
+To demonstrate the power of `{fs}` for efficient file management, we
+first need to create a messy folder with inconsistently named files.
 
 Let’s first create our example directory with nothing in it using
 `dir_create()`, and then check that it exists with `dir_exists()`.
@@ -45,9 +50,9 @@ dir_exists("fs-example")
 
 Next, we’ll add some poorly named files with inconsistent case and
 delimiters (spaces, underscores, and dashes) without any subfolder
-organization. All `fs` functions are vectorized, so we can pass multiple
-file names to the `path` argument of `file_create()` to create all our
-files at once in our `fs-example` folder.
+organization. All `{fs}` functions are vectorized, so we can pass
+multiple file names to the `path` argument of `file_create()` to create
+all our files at once in our `fs-example` folder.
 
 ``` r
 files <- c(
@@ -63,15 +68,15 @@ files <- c(
 file_create("fs-example", files)
 ```
 
-A cool safety feature of `fs` is the `*_create()` functions will not
+A cool safety feature of `{fs}` is the `*_create()` functions will not
 overwrite existing files or folders.
 
 ``` r
-try(dir_create("fs-example", "1-analysis.R"))
-#> Error : [EEXIST] Failed to make directory 'fs-example/1-analysis.R': file already exists
+dir_create("fs-example", "1-analysis.R")
+#> Error: [EEXIST] Failed to make directory 'fs-example/1-analysis.R': file already exists
 
-try(file_create("fs-example"))
-#> Error : [EISDIR] Failed to open 'fs-example': illegal operation on a directory
+file_create("fs-example")
+#> Error: [EISDIR] Failed to open 'fs-example': illegal operation on a directory
 ```
 
 ## Standardize file name case and format
@@ -120,7 +125,7 @@ files_old
 
 files_new <- files_old |>
   str_to_lower() |>
-  str_replace_all(" ", "-") |> 
+  str_replace_all(" ", "-") |>
   str_replace_all("_", "-")
 
 files_new
@@ -179,8 +184,14 @@ We can use `dir_ls()` with the `glob` argument to filter the file paths
 to just one file type so we can easily move them into the appropriate
 subfolder with `file_move()`.
 
+A [glob](https://en.wikipedia.org/wiki/Glob_(programming)) is a pattern
+to expand wildcards (an asterisk `*`) in a filepath. Since globs are
+case-sensitive, in our first example below, we combine two globs: `*.r`
+and `*.R` with the `|` OR operator to get the filepaths of all R
+scripts, regardless if the extension is upper or lower case.
+
 ``` r
-r_files <- dir_ls("fs-example", glob = "*.r")
+r_files <- dir_ls("fs-example", glob = "*.r|*.R")
 data_files <- dir_ls("fs-example", glob = "*.csv")
 reports <- dir_ls("fs-example", glob = "*.qmd|*.pdf")
 
@@ -227,12 +238,77 @@ dir_exists("fs-example")
 #>      FALSE
 ```
 
+## Use functions to easily repeat this process
+
+As a bonus, we can package this code into two functions that we can
+incorporate into our workflow or reuse for many folders:
+
+`clean_file_names()` will rename all files in a given directory to be
+all lowercase and use only dashes as the delimiter.
+
+``` r
+clean_file_names <- function(folder) {
+  files_old <- dir_ls(folder)
+
+  files_new <- files_old |>
+    str_to_lower() |>
+    str_replace_all(" ", "-") |>
+    str_replace_all("_", "-")
+
+  file_move(files_old, files_new)
+}
+
+# Run the function
+clean_file_names("fs-example")
+```
+
+`organize_files()` will create new folders for R scripts, data, and
+reports, and then move all files with the appropriate extensions into
+those subfolders.
+
+Here, we change the code in the `file_move()` functions to make it work
+within our custom function’s new `folder` argument. We use `str_glue()`
+to glue together the folder and subfolder, which creates the string
+`"fs-example/R"`. However, this string is not a filepath, so we have to
+wrap this with the `path()` function (also from `{fs}`) to turn the
+string into a complete filepath.
+
+``` r
+organize_files <- function(folder) {
+  subdirs <- c("R", "data", "reports")
+
+  dir_create(folder, subdirs)
+
+  r_files <- dir_ls(folder, glob = "*.r|*.R")
+  data_files <- dir_ls(folder, glob = "*.csv|*.xlsx")
+  reports <- dir_ls(folder, glob = "*.qmd|*.pdf")
+
+  file_move(r_files, path(str_glue("{folder}/R")))
+  file_move(data_files, path(str_glue("{folder}/data")))
+  file_move(reports, path(str_glue("{folder}/reports")))
+}
+
+# Run the function
+organize_files("fs-example")
+```
+
+You can easily adapt these two functions for your own work by changing
+the `str_` functions and arguments in `clean_file_names()` to use your
+preferred case and delimiter. Or, in `organize_files()`, you can create
+other subdirectories, call them something different, or add more file
+extensions to be moved into those subfolders.
+
+**Caution**: when adapting the above functions, make a copy of the
+folder and files you want to rename and organize to experiment with.
+There is no “undo” button, so test the function first on this copy to be
+sure you are happy with the results.
+
 ## Conclusion
 
 We hope this guide helps you with your file cleaning and organizing
 endeavors! While we focused mostly on creating, renaming, moving, and
-deleting files and directories, `fs` can also help you programmatically
-query and change file permissions and metadata. Learn more about these
-functions through the [package documentation
+deleting files and directories, `{fs}` can also help you
+programmatically query and change file permissions and metadata. Learn
+more about these functions through the [package documentation
 website](https://fs.r-lib.org/index.html) and [Tidyverse blog
 post](https://www.tidyverse.org/blog/2018/01/fs-1.0.0/).
