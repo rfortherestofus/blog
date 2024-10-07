@@ -209,4 +209,4 @@ You can easily adapt these two functions for your own work by changing the `str_
 
 ## Conclusion
 
-We hope this guide helps you with your file cleaning and organizing endeavors! While we focused mostly on creating, renaming, moving, and deleting files and directories, `{fs}` can also help you programmatically query and change file permissions and metadata. Learn more about these functions through the [package documentation website](https://fs.r-lib.org/index.html) and [Tidyverse blog post](https://www.tidyverse.org/blog/2018/01/fs-1.0.0/).
+We hope this guide helps you with your file cleaning and organizing endeavors! While we focused mostly on creating, renaming, moving, and deleting files and directories, `{fs}` can also help you programmatically query and change file permissions and metadata. Learn more about these functions through the [package documentation website](https://fs.r-lib.org/index.html) and [Tidyverse blog post](https://www.tidyverse.org/blog/2018/01/fs-1.0.0/). And, for an even deeper dive on the {fs} package, check out [this blog post by Danielle Navarro](https://blog.djnavarro.net/posts/2024-10-06_fs/).
