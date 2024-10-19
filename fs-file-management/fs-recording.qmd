@@ -1,0 +1,163 @@
+Load packages:
+```{r}
+library(fs)
+library(stringr)
+```
+
+Create a directory for this demo:
+```{r}
+dir_create("fs-file-management/fs-example")
+dir_exists("fs-file-management/fs-example")
+```
+
+Create some poorly named files:
+```{r}
+files <- c(
+  "RAW-DATA.csv",
+  "Clean Data.csv",
+  "1-analysis.R",
+  "2_visualization.R",
+  "Very important report.qmd",
+  "Very important report.pdf",
+  "Very important report_final.pdf"
+)
+
+file_create("fs-file-management/fs-example", files)
+```
+
+Built in safety to not overwrite directories and files: 
+```{r}
+#| error: true
+file_create("fs-file-management/fs-example", "1-analysis.R")
+
+dir_create("fs-file-management/fs-example")
+```
+
+Demonstrate the directory tree:
+```{r}
+dir_tree("fs-file-management/fs-example")
+```
+
+Get file names:
+```{r}
+files_old <- dir_ls("fs-file-management/fs-example")
+
+files_old
+```
+
+Standardize file names in a new vector:
+```{r}
+files_new <- files_old |>
+  str_to_lower() |>
+  str_replace_all(" ", "-") |>
+  str_replace_all("_", "-")
+
+files_new
+```
+
+Rename the old file names with the new names:
+```{r}
+file_move(files_old, files_new)
+
+dir_ls("fs-file-management/fs-example")
+```
+
+Create subdirectories:
+```{r}
+subdirs <- c("R", "data", "reports")
+
+dir_create("fs-file-management/fs-example", subdirs)
+
+dir_tree("fs-file-management/fs-example")
+```
+
+Get vectors of the same file type:
+```{r}
+r_files <- dir_ls("fs-file-management/fs-example", glob = "*.r|*.R")
+data_files <- dir_ls("fs-file-management/fs-example", glob = "*.csv")
+reports <- dir_ls("fs-file-management/fs-example", glob = "*.qmd|*.pdf")
+```
+
+Move files into the new subdirectories:
+```{r}
+file_move(r_files, "fs-file-management/fs-example/R")
+file_move(data_files, "fs-file-management/fs-example/data")
+file_move(reports, "fs-file-management/fs-example/reports")
+```
+
+Check it worked as expected:
+```{r}
+dir_tree("fs-file-management/fs-example")
+```
+
+Clean up and delete our demo directory:
+```{r}
+dir_exists("fs-file-management/fs-example")
+
+dir_delete("fs-file-management/fs-example")
+
+dir_exists("fs-file-management/fs-example")
+```
+
+Automate the process with custom functions:
+
+```{r}
+dir_create("fs-file-management/fs-example")
+
+files <- c(
+  "RAW-DATA.csv",
+  "Clean Data.csv",
+  "1-analysis.R",
+  "2_visualization.R",
+  "Very important report.qmd",
+  "Very important report.pdf",
+  "Very important report_final.pdf"
+)
+
+file_create("fs-file-management/fs-example", files)
+```
+
+```{r}
+#| eval: false
+clean_file_names <- function(folder) {
+  files_old <- dir_ls(folder)
+
+  files_new <- files_old |>
+    str_to_lower() |>
+    str_replace_all(" ", "-") |>
+    str_replace_all("_", "-")
+
+  file_move(files_old, files_new)
+}
+
+# Run the function
+clean_file_names("fs-file-management/fs-example")
+```
+
+```{r}
+#| eval: false
+organize_files <- function(folder) {
+  subdirs <- c("R", "data", "reports")
+
+  dir_create(folder, subdirs)
+
+  r_files <- dir_ls(folder, glob = "*.r|*.R")
+  data_files <- dir_ls(folder, glob = "*.csv|*.xlsx")
+  reports <- dir_ls(folder, glob = "*.qmd|*.pdf|*.rmd")
+
+  file_move(r_files, path(str_glue("{folder}/R")))
+  file_move(data_files, path(str_glue("{folder}/data")))
+  file_move(reports, path(str_glue("{folder}/reports")))
+}
+
+# Run the function
+organize_files("fs-file-management/fs-example")
+
+# See the results
+dir_tree("fs-file-management/fs-example")
+```
+
+Clean up and delete our demo directory:
+```{r}
+dir_delete("fs-file-management/fs-example")
+```
