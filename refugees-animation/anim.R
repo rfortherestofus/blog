@@ -8,6 +8,8 @@ library(sf)
 geodata <- read_sf("refugees-animation/countries.geojson") %>%
   filter(ADMIN != "Antarctica")
 
+world_pop <- read_csv("refugees-animation/population-and-demography.csv", show_col_types = FALSE)
+
 all_countries_years <- expand.grid(
   year = unique(population$year),
   coa_iso = unique(geodata$ISO_A3)
@@ -23,20 +25,22 @@ refugee_data <- population %>%
 
 map_data <- geodata %>%
   left_join(refugee_data, by = c("ISO_A3" = "coa_iso"), relationship = "many-to-many") %>%
-  select(geometry, year, coa_name, refugees)
+  select(geometry, year, coa_name, refugees, ISO_A3) %>%
+  left_join(world_pop, by = c("year" = "Year", "ISO_A3" = "Code")) %>%
+  mutate(refugee_per_cap = refugees / Population * 100)
 
-p <- ggplot(map_data, aes(fill = refugees)) +
+p <- ggplot(map_data, aes(fill = refugee_per_cap)) +
   geom_sf(linewidth = 0.2, color = "black") +
   scale_fill_gradientn(
     colours = c("blue", "red"),
     na.value = "lightgrey",
-    limits = range(map_data$refugees, na.rm = TRUE),
-    name = "Number of Refugees",
+    limits = range(map_data$refugee_per_cap, na.rm = TRUE),
+    name = "Refugees per capita",
     labels = comma
   ) +
   theme_void() +
   labs(
-    title = "Evolution of Refugees Over Time",
+    title = "Evolution of Refugees/capita Over Time",
     subtitle = "Year: {current_frame}",
     fill = "Refugees"
   ) +
@@ -56,9 +60,9 @@ animated_map <- p +
   transition_manual(year)
 
 anim_save(
-  "refugees - animation/animated_refugee_map.gif",
+  "refugees-animation/animated_refugee_map.gif",
   animated_map,
-  fps = 10,
+  fps = 5,
   width = 1200, height = 800, res = 150, # Higher resolution
   renderer = gifski_renderer(loop = TRUE)
 )
