@@ -1,24 +1,8 @@
----
-title: "Refugees animation"
-author: David Keyes
-date: 1/17/2024
-toc: false
-format: gfm
-wrap: none
-knitr:
-  opts_chunk:
-    out.width: 100%
-    fig.height: 8
-    dpi: 300
-    collapse: true
-    comment: "#>"
-    warning: false
-    message: false
-editor_options: 
-  chunk_output_type: console
----
+# Refugees animation
+David Keyes
+2024-01-17
 
-```{r}
+``` r
 # Load necessary libraries
 library(tidyverse)
 library(gganimate)
@@ -31,18 +15,47 @@ library(scales)
 
 # Data
 
-```{r}
+``` r
 population |>
   select(year, coo_iso, refugees) |>
   group_by(year, coo_iso) |>
   summarise(number_of_refugees = sum(refugees, na.rm = TRUE)) |>
   ungroup() |>
   filter(year >= 2000)
+#> # A tibble: 4,635 × 3
+#>     year coo_iso number_of_refugees
+#>    <dbl> <chr>                <dbl>
+#>  1  2000 AFG                3587327
+#>  2  2000 AGO                 433756
+#>  3  2000 ALB                   6801
+#>  4  2000 ARE                     17
+#>  5  2000 ARG                    608
+#>  6  2000 ARM                   5787
+#>  7  2000 ATG                      0
+#>  8  2000 AUS                      0
+#>  9  2000 AUT                     33
+#> 10  2000 AZE                 284278
+#> # ℹ 4,625 more rows
 ```
 
-
-```{r}
+``` r
 population
+#> # A tibble: 126,402 × 16
+#>     year coo_name coo   coo_iso coa_name   coa   coa_iso refugees asylum_seekers
+#>    <dbl> <chr>    <chr> <chr>   <chr>      <chr> <chr>      <dbl>          <dbl>
+#>  1  1951 Unknown  UKN   UNK     Australia  AUL   AUS       180000              0
+#>  2  1951 Unknown  UKN   UNK     Austria    AUS   AUT       282000              0
+#>  3  1951 Unknown  UKN   UNK     Belgium    BEL   BEL        55000              0
+#>  4  1951 Unknown  UKN   UNK     Canada     CAN   CAN       168511              0
+#>  5  1951 Unknown  UKN   UNK     Denmark    DEN   DNK         2000              0
+#>  6  1951 Unknown  UKN   UNK     France     FRA   FRA       290000              0
+#>  7  1951 Unknown  UKN   UNK     United Ki… GBR   GBR       208000              0
+#>  8  1951 Unknown  UKN   UNK     Germany    GFR   DEU       265000              0
+#>  9  1951 Unknown  UKN   UNK     Greece     GRE   GRC        18000              0
+#> 10  1951 Unknown  UKN   UNK     China, Ho… HKG   HKG        30000              0
+#> # ℹ 126,392 more rows
+#> # ℹ 7 more variables: returned_refugees <dbl>, idps <dbl>, returned_idps <dbl>,
+#> #   stateless <dbl>, ooc <dbl>, oip <dbl>, hst <dbl>
 
 refugees <-
   population |>
@@ -76,10 +89,9 @@ refugees_as_pct <-
 
 - Syria
 
-
 # Plot
 
-```{r}
+``` r
 refugees_as_pct |>
   filter(country_abbreviation == "SYR") |>
   ggplot(
@@ -98,12 +110,14 @@ refugees_as_pct |>
   ) +
   hrbrthemes::theme_ipsum_inter() +
   theme(panel.grid.minor = element_blank()) +
-  transition_reveal(year) 
+  transition_reveal(year)
 ```
+
+<img src="refugees-animation_files/figure-commonmark/unnamed-chunk-4-1.gif" style="width:100.0%" />
 
 # Map
 
-```{r}
+``` r
 library(rnaturalearth)
 
 countries_geospatial <-
@@ -152,6 +166,11 @@ countries_geospatial |>
     )
   ) +
   transition_manual(year)
+```
+
+<img src="refugees-animation_files/figure-commonmark/unnamed-chunk-5-1.gif" style="width:100.0%" />
+
+``` r
 
 # anim_save(
 #   "refugees-animation/animated_refugee_map.gif",
