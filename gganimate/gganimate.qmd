@@ -1,5 +1,5 @@
 ---
-title: "Refugees animation"
+title: "An introduction to the {gganimate} package"
 author: David Keyes
 date: 11/27/2024
 toc: false
@@ -82,7 +82,7 @@ countries_data |>
 
 The {gganimate} package is the easiest way to make animated plots in R. If you know how to make plots in ggplot, you can animate them with {gganimate}. Animated plots are a great way to capture attention, especially online where the next shiny object is just a scroll away. If you want to get attention on your data, using animation with a package like {gganimate} is a great option. 
 
-In this blog post, I'll show how to use the {gganimate} package by animating data on refugees. As part of our [one percent for people, one percent for the planet giving program](https://rfortherestofus.com/1percent), we regularly support the work of the United Nations High Commissioner for Refugees (UNHCR). If you want to learn more about how the UNHCR uses R, please see our interviews with UNHCR statistician [Ahmadou Dicko](https://youtu.be/CN6FVID5ydU) and information management officer Cédric Vidonne. TODO: Add link
+In this blog post, I'll show how to use the {gganimate} package by animating data on refugees. As part of our [one percent for people, one percent for the planet giving program](https://rfortherestofus.com/1percent), we regularly support the work of the United Nations High Commissioner for Refugees (UNHCR). If you want to learn more about how the UNHCR uses R, please see our interviews with UNHCR statistician [Ahmadou Dicko](https://rfortherestofus.com/2024/03/podcast-episode-13) and information management officer Cédric Vidonne. TODO: Add link
 
 ## Import Data
 
