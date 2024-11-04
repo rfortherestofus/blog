@@ -6,9 +6,15 @@ David Keyes
 
 ## Intro
 
-The {gganimate} package is the easiest way to make animated plots in R. If you know how to make plots in ggplot, you can animate them with {gganimate}.
+The {gganimate} package is the easiest way to make animated plots in R. If you know how to make plots in ggplot, you can animate them with {gganimate}. Animated plots are a great way to capture attention, especially online where the next shiny object is just a scroll away. If you want to get attention on your data, using animation with a package like {gganimate} is a great option.
 
-To show how {gganimate} works, let’s use data from the United Nations High Commissioner for Refugees (UNHCR). [Their package](https://www.unhcr.org/refugee-statistics/insights/explainers/refugees-r-package.html), called {refugees}, has data on a number of different datasets related to refugee populations. I’ll use one of these datasets, called `population`, which has “data on forcibly displaced and stateless persons by year, including refugees, asylum-seekers, internally displaced people (IDPs) and stateless people.” I begin by loading the {refugees} package:
+In this blog post, I’ll show how to use the {gganimate} package by animating data on refugees. As part of our [one percent for people, one percent for the planet giving program](https://rfortherestofus.com/1percent), we regularly support the work of the United Nations High Commissioner for Refugees (UNHCR). If you want to learn more about how the UNHCR uses R, please see our interviews with UNHCR statistician Ahmadou Dicko and information management officer Cédric Vidonne. TODO: Add links
+
+## Import Data
+
+To show how {gganimate} works, let’s use data from UNHCR. [Their {refugees} package](https://www.unhcr.org/refugee-statistics/insights/explainers/refugees-r-package.html) has data on a number of different datasets related to refugee populations. I’ll use one of these datasets, called `population`, which has “data on forcibly displaced and stateless persons by year, including refugees, asylum-seekers, internally displaced people (IDPs) and stateless people.”
+
+I begin by loading the {refugees} package:
 
 ``` r
 library(refugees)
@@ -36,28 +42,51 @@ population
 #> #   stateless <dbl>, ooc <dbl>, oip <dbl>, hst <dbl>
 ```
 
-``` r
+This dataset has more variables than we need. I’ve done some work to calculate the refugee population from each country as a percentage of its total population in all years since 2000 (you can see the code for that [here](https://github.com/rfortherestofus/blog/blob/main/gganimate/gganimate.qmd)). To see the data that I end up with, I’ll load the {tidyverse}:
 
+``` r
 library(tidyverse)
-library(sf)
-library(scales)
-library(hrbrthemes)
-library(gganimate)
 ```
 
-## Data
+Next, I’ll import the data I’ve created and saved as an RDS file:
 
 ``` r
 refugees_data <-
   read_rds("https://github.com/rfortherestofus/blog/raw/refs/heads/main/gganimate/refugees_data.rds")
 ```
 
+We can take a look at the `refugees_data` tibble we now have to work with:
+
 ``` r
-refugees_data_geospatial <-
-  read_sf("https://github.com/rfortherestofus/blog/raw/refs/heads/main/gganimate/refugees_data_geospatial.geojson")
+refugees_data
+#> # A tibble: 5,136 × 5
+#>     year country_abbreviation total_population number_of_refugees
+#>    <dbl> <chr>                           <dbl>              <dbl>
+#>  1  2018 SYR                          19333463            6654374
+#>  2  2017 SYR                          18983373            6310498
+#>  3  2019 SYR                          20098251            6615249
+#>  4  2020 SYR                          20772595            6702910
+#>  5  2021 SYR                          21324367            6848865
+#>  6  2022 SYR                          22125249            6559736
+#>  7  2016 SYR                          18964252            5524511
+#>  8  2023 SYR                          23227014            6355788
+#>  9  2015 SYR                          19205178            4873236
+#> 10  2017 SSD                          10658226            2439888
+#> # ℹ 5,126 more rows
+#> # ℹ 1 more variable: refugees_as_pct <dbl>
 ```
 
+I’ve sorted the data to show the single year and country with the highest percentage of refugees as a proportion of the total population. As you can see, Syria (with the country abbreviation SYR) has the top 9 observations, a result of its [decade-plus civil war](https://www.cfr.org/article/syrias-civil-war).
+
 ## Plot
+
+We’re now ready to
+
+``` r
+library(scales)
+library(hrbrthemes)
+library(gganimate)
+```
 
 ``` r
 refugees_data |>
@@ -81,9 +110,18 @@ refugees_data |>
   transition_reveal(year)
 ```
 
-<img src="gganimate_files/figure-commonmark/unnamed-chunk-7-1.gif" style="width:100.0%" />
+<img src="gganimate_files/figure-commonmark/unnamed-chunk-8-1.gif" style="width:100.0%" />
 
 ## Map
+
+``` r
+library(sf)
+```
+
+``` r
+refugees_data_geospatial <-
+  read_sf("https://github.com/rfortherestofus/blog/raw/refs/heads/main/gganimate/refugees_data_geospatial.geojson")
+```
 
 ``` r
 refugees_data_geospatial |>
@@ -129,4 +167,4 @@ refugees_data_geospatial |>
   transition_manual(year)
 ```
 
-<img src="gganimate_files/figure-commonmark/unnamed-chunk-8-1.gif" style="width:100.0%" />
+<img src="gganimate_files/figure-commonmark/unnamed-chunk-11-1.gif" style="width:100.0%" />

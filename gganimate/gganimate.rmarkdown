@@ -21,7 +21,11 @@ editor_options:
   chunk_output_type: console
 ---
 
+
+
 ## Data {.unnumbered .hidden}
+
+
 
 ```{r}
 #| echo: false
@@ -78,6 +82,8 @@ refugees_data_geospatial |>
   )
 ```
 
+
+
 ## Intro
 
 The {gganimate} package is the easiest way to make animated plots in R. If you know how to make plots in ggplot, you can animate them with {gganimate}. Animated plots are a great way to capture attention, especially online where the next shiny object is just a scroll away. If you want to get attention on your data, using animation with a package like {gganimate} is a great option. 
@@ -90,34 +96,54 @@ To show how {gganimate} works, let's use data from UNHCR. [Their {refugees} pack
 
 I begin by loading the {refugees} package:
 
+
+
 ```{r}
 library(refugees)
 ```
 
+
+
 And then showing the `population` data:
+
+
 
 ```{r}
 population
 ```
 
+
+
 This dataset has more variables than we need. I've done some work to calculate the refugee population from each country as a percentage of its total population in all years since 2000 (you can see the code for that [here](https://github.com/rfortherestofus/blog/blob/main/gganimate/gganimate.qmd)). To see the data that I end up with, I'll load the {tidyverse}:
+
+
 
 ```{r}
 library(tidyverse)
 ```
 
+
+
 Next, I'll import the data I've created and saved as an RDS file:
+
+
 
 ```{r}
 refugees_data <-
   read_rds("https://github.com/rfortherestofus/blog/raw/refs/heads/main/gganimate/refugees_data.rds")
 ```
 
+
+
 We can take a look at the `refugees_data` tibble we now have to work with:
+
+
 
 ```{r}
 refugees_data
 ```
+
+
 
 I've sorted the data to show the single year and country with the highest percentage of refugees as a proportion of the total population. As you can see, Syria (with the country abbreviation SYR) has the top 9 observations, a result of its [decade-plus civil war](https://www.cfr.org/article/syrias-civil-war).
 
@@ -125,12 +151,13 @@ I've sorted the data to show the single year and country with the highest percen
 
 We're now ready to 
 
+
+
 ```{r}
 library(scales)
 library(hrbrthemes)
 library(gganimate)
 ```
-
 
 ```{r}
 refugees_data |>
@@ -154,12 +181,15 @@ refugees_data |>
   transition_reveal(year)
 ```
 
+
+
 ## Map
+
+
 
 ```{r}
 library(sf)
 ```
-
 
 ```{r}
 refugees_data_geospatial <-
@@ -209,3 +239,4 @@ refugees_data_geospatial |>
   ) +
   transition_manual(year)
 ```
+
