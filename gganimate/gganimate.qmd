@@ -65,16 +65,16 @@ refugees_data <-
 refugees_data |>
   write_rds(here("gganimate/refugees_data.rds"))
 
-refugees_data_geospatial <-
+countries_data <-
   ne_countries() |>
   select(iso_a3, continent, subregion) |>
   rename(country_abbreviation = iso_a3)
 
-refugees_data_geospatial |> 
+countries_data |> 
   st_write(
-    here("gganimate/refugees_data_geospatial.geojson"),
+    here("gganimate/countries_data.geojson"),
     driver = "GeoJSON",
-    delete_dsn = TRUE  # This overwrites existing file if present
+    delete_dsn = TRUE
   )
 ```
 
@@ -111,6 +111,7 @@ Next, I'll import the data I've created and saved as an RDS file:
 ```{r}
 refugees_data <-
   read_rds("https://github.com/rfortherestofus/blog/raw/refs/heads/main/gganimate/refugees_data.rds")
+# TODO: make sure it just imports pct data
 ```
 
 We can take a look at the `refugees_data` tibble we now have to work with:
@@ -123,7 +124,7 @@ I've sorted the data to show the single year and country with the highest percen
 
 ## Plot
 
-We're now ready to 
+We're now ready to plot our data. I'll load a few more packages: {scales} to give me nicely formatted axis text, {hrbrthemes} for its lovely ggplot themes, and {gganimate}.
 
 ```{r}
 library(scales)
@@ -131,6 +132,7 @@ library(hrbrthemes)
 library(gganimate)
 ```
 
+First, we can make a basic chart from our data. We filter to only show Syria and then make a line chart with `geom_line()`. We make some aesthetic tweaks: the `percent_format()` function give us nicely formatted percentages on the y axis and `theme_ipsum()` makes our plot look good overall. 
 
 ```{r}
 refugees_data |>
@@ -141,30 +143,54 @@ refugees_data |>
       y = refugees_as_pct
     )
   ) +
+  geom_line() +
   scale_y_continuous(
     labels = percent_format()
   ) +
-  geom_line() +
   labs(
     x = NULL,
-    y = NULL
+    y = NULL,
+    title = "The refugee population in Syria increased dramatically as a result of its civil war"
   ) +
-  theme_ipsum_inter() +
-  theme(panel.grid.minor = element_blank()) +
+  theme_ipsum(base_size = 12) +
+  theme(panel.grid.minor = element_blank())
+```
+
+We then save this plot as `syria_refugees_plot`. 
+
+```{r}
+#| echo: false
+syria_refugees_plot <- last_plot()
+```
+
+Now, in order to animate the plot, we take the `syria_refugees_plot` object and add a transition to it. The {gganimate} package has [multiple transitions](https://gganimate.com/reference/index.html#transitions). Which one you use depends on the type of data you are working with as well as how you want to animate it. Here, I've used `transition_reveal(year)`, which tells {gganimate} to sequentially reveal the data, year by year. The result is an animated plot that shows the dramatic rise in the Syrian refugee population starting in 2011. 
+
+```{r}
+syria_refugees_plot +
   transition_reveal(year)
 ```
 
 ## Map
 
+The {gganimate} package works with any type of data. You can even use it when making maps. To demonstrate this, I'll begin by loading the {sf} package. 
+
 ```{r}
 library(sf)
 ```
 
+This package gives me access to the `read_sf()` function, which I use below to import geospatial data on refugees (which I created by merging the `refugees_data` with geospatial data). 
 
 ```{r}
-refugees_data_geospatial <-
-  read_sf("https://github.com/rfortherestofus/blog/raw/refs/heads/main/gganimate/refugees_data_geospatial.geojson")
+countries_data <-
+  read_sf("https://github.com/rfortherestofus/blog/raw/refs/heads/main/gganimate/countries_data.geojson")
 ```
+
+Taking a look at the `refugees_data_geospatial` object, 
+
+```{r}
+refugees_data_geospatial
+```
+
 
 ```{r}
 refugees_data_geospatial |>
@@ -180,7 +206,7 @@ refugees_data_geospatial |>
     linewidth = 0.1,
     color = "white"
   ) +
-  theme_ipsum_inter(
+  theme_ipsum(
     grid = FALSE
   ) +
   labs(
