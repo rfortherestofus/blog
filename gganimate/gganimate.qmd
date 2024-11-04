@@ -1,0 +1,170 @@
+---
+title: "Refugees animation"
+author: David Keyes
+date: 1/17/2024
+toc: false
+format: gfm
+wrap: none
+execute: 
+  warning: false
+  message: false
+knitr:
+  opts_chunk:
+    out.width: 100%
+    fig.height: 8
+    dpi: 300
+    collapse: true
+    comment: "#>"
+    warning: false
+    message: false
+editor_options: 
+  chunk_output_type: console
+---
+
+## Data {.unnumbered .hidden}
+
+```{r}
+#| echo: false
+#| eval: false
+library(tidyverse)
+library(refugees)
+library(wbstats)
+library(rnaturalearth)
+library(here)
+library(sf)
+
+refugees <-
+  population |>
+  rename(country_abbreviation = coo_iso) |>
+  group_by(year, country_abbreviation) |>
+  summarise(number_of_refugees = sum(refugees, na.rm = TRUE)) |>
+  ungroup() |>
+  filter(year >= 2000) |>
+  arrange(country_abbreviation)
+
+country_population <-
+  wb_data("SP.POP.TOTL", start_date = 2000, end_date = 2023) |>
+  select(date, iso3c, SP.POP.TOTL) |>
+  set_names("year", "country_abbreviation", "total_population") |>
+  labelled::remove_var_label()
+
+refugees_data <-
+  refugees |>
+  left_join(
+    country_population,
+    join_by(year, country_abbreviation)
+  ) |>
+  mutate(refugees_as_pct = number_of_refugees / total_population) |>
+  select(year, country_abbreviation, total_population, number_of_refugees, refugees_as_pct) |>
+  complete(year, country_abbreviation) |>
+  arrange(desc(refugees_as_pct))
+
+refugees_data |>
+  write_rds(here("gganimate/refugees_data.rds"))
+
+refugees_data_geospatial <-
+  ne_countries() |>
+  select(iso_a3, continent, subregion) |>
+  rename(country_abbreviation = iso_a3)
+
+refugees_data_geospatial |> 
+  st_write(
+    here("gganimate/refugees_data_geospatial.geojson"),
+    driver = "GeoJSON",
+    delete_dsn = TRUE  # This overwrites existing file if present
+  )
+```
+
+## Intro
+
+The {gganimate} package is the easiest way to make animated plots in R. If you know how to make plots in ggplot, you can animate them with {gganimate}. To show how {gganimate} works, let's use data from the United Nations High Commissioner for Refugees (UNHCR). Th
+
+```{r}
+library(tidyverse)
+library(gganimate)
+library(sf)
+library(scales)
+library(hrbrthemes)
+```
+
+## Data
+
+```{r}
+refugees_data <-
+  read_rds("refugees_data.rds") # TODO: Switch to web URL
+```
+
+```{r}
+refugees_data_geospatial <-
+  read_sf("refugees_data_geospatial.geojson")
+```
+
+## Plot
+
+```{r}
+refugees_data |>
+  filter(country_abbreviation == "SYR") |>
+  ggplot(
+    aes(
+      x = year,
+      y = refugees_as_pct
+    )
+  ) +
+  scale_y_continuous(
+    labels = percent_format()
+  ) +
+  geom_line() +
+  labs(
+    x = NULL,
+    y = NULL
+  ) +
+  theme_ipsum_inter() +
+  theme(panel.grid.minor = element_blank()) +
+  transition_reveal(year)
+```
+
+## Map
+
+```{r}
+refugees_data_geospatial |>
+  left_join(
+    refugees_data,
+    join_by(country_abbreviation)
+  ) |>
+  filter(continent == "Asia") |>
+  filter(subregion == "Western Asia") |>
+  ggplot() +
+  geom_sf(
+    aes(fill = refugees_as_pct),
+    linewidth = 0.1,
+    color = "white"
+  ) +
+  theme_ipsum_inter(
+    grid = FALSE
+  ) +
+  labs(
+    title = "Refugees as a percentage of total population in {current_frame}",
+    # caption = "{current_frame}",
+    fill = NULL
+  ) +
+  scale_fill_viridis_c(
+    labels = scales::percent_format(),
+    limits = c(0, .4),
+    option = "C",
+    guide = guide_colorsteps(show.limits = TRUE)
+  ) +
+  theme(
+    legend.position = "top",
+    plot.title = element_text(
+      face = "bold",
+      hjust = 0.5
+    ),
+    axis.text.x = element_blank(),
+    axis.text.y = element_blank(),
+    legend.key.width = unit(2, "cm"),
+    legend.text = element_text(
+      size = 12
+    )
+  ) +
+  transition_manual(year)
+```
