@@ -26,6 +26,9 @@ editor_options:
 ```{r}
 #| echo: false
 #| eval: false
+
+# This code chunk is where I import the data, but I'm not showing it in the blog post
+
 library(tidyverse)
 library(refugees)
 library(wbstats)
@@ -77,26 +80,44 @@ refugees_data_geospatial |>
 
 ## Intro
 
-The {gganimate} package is the easiest way to make animated plots in R. If you know how to make plots in ggplot, you can animate them with {gganimate}. To show how {gganimate} works, let's use data from the United Nations High Commissioner for Refugees (UNHCR). Th
+The {gganimate} package is the easiest way to make animated plots in R. If you know how to make plots in ggplot, you can animate them with {gganimate}. In this blog post, I'll show how to use the {gganimate} package by animating data on refugees. As part of our [one percent for people, one percent for the planet giving program](https://rfortherestofus.com/1percent), we regularly support the work of the United Nations High Commissioner for Refugees (UNHCR). If you want to learn more about how the UNHCR uses R, please see our interviews with UNHCR statistician Ahmadou Dicko and information management officer Cédric Vidonne. TODO: Add links
+
+To show how {gganimate} works, let's use data from UNHCR. [Their package](https://www.unhcr.org/refugee-statistics/insights/explainers/refugees-r-package.html), called {refugees}, has data on a number of different datasets related to refugee populations. I'll use one of these datasets, called `population`, which has "data on forcibly displaced and stateless persons by year, including refugees, asylum-seekers, internally displaced people (IDPs) and stateless people." 
+
+I begin by loading the {refugees} package:
 
 ```{r}
+library(refugees)
+```
+
+And then showing the `population` data:
+
+```{r}
+population
+```
+
+
+
+
+```{r}
+
 library(tidyverse)
-library(gganimate)
 library(sf)
 library(scales)
 library(hrbrthemes)
+library(gganimate)
 ```
 
 ## Data
 
 ```{r}
 refugees_data <-
-  read_rds("refugees_data.rds") # TODO: Switch to web URL
+  read_rds("https://github.com/rfortherestofus/blog/raw/refs/heads/main/gganimate/refugees_data.rds")
 ```
 
 ```{r}
 refugees_data_geospatial <-
-  read_sf("refugees_data_geospatial.geojson")
+  read_sf("https://github.com/rfortherestofus/blog/raw/refs/heads/main/gganimate/refugees_data_geospatial.geojson")
 ```
 
 ## Plot
