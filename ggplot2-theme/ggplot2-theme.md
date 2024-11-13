@@ -22,33 +22,36 @@ In this tutorial, we’ll cover:
 
 # Today’s inspiration: New York Times
 
-To demonstrate the creation of a custom theme function, let’s re-create
-the New York Times (NYT) style of figures.
+To demonstrate the creation of a custom theme function, let’s create a
+custom function based on how the New York Times styles their plots.
 
-By inspecting the [below
-figure](https://www.nytimes.com/2024/05/23/weather/noaa-atlantic-hurricane-forecast-prediction.html)
-on the NYT website, we can figure out the font, color, and sizing
-elements to include in our custom theme:
+Taking a look at [this sample New York Times (NYT) plot on ocean
+temperatures](https://www.nytimes.com/2024/05/23/weather/noaa-atlantic-hurricane-forecast-prediction.html),
+we can figure out the font, color, and sizing elements to include in our
+custom theme:
 
 ![](nyt-figure.png)
 
-- **Font family**: NYT uses Franklin Gothic. If you are following along
-  on your own, you will likely need to download this font family for
-  your own computer. For more information, see June Cho’s blog post
-  [*Setting and debugging custom
-  fonts*](https://yjunechoe.github.io/posts/2021-06-24-setting-up-and-debugging-custom-fonts/)
-  for a detailed guide on making downloaded fonts available to R without
-  the [`{showtext}`](https://github.com/yixuan/showtext) or
-  [{`extrafont`}](https://github.com/wch/extrafont) packages.
-- **Plot elements**:
-  - **Title**: bold, largest, darkest font
-  - **Subtitle**: regular face, medium sized, light gray font
-  - **Caption**: regular face, smallest sized, dark gray font
-  - **Axis text**: regular face, medium sized, dark gray font
-  - **Axis lines**: major grid lines only for y-axis that are dashed,
-    light gray
-  - **Spacing**: plenty of breathing room with margins around each
-    element
+First, we can see that the New York Times uses the [Franklin Gothic
+font](https://fonts.adobe.com/fonts/atf-franklin-gothic) for their
+plots. This is a paid font so instead I will use Libre Franklin, which
+can be [downloaded for free from Google
+Fonts](https://fonts.google.com/specimen/Libre+Franklin). Make sure to
+install the font on your system before proceeding. For more information
+on using custom fonts in R, see this [free
+lesson](https://rfortherestofus.com/courses/going-deeper/lessons/customize-your-fonts-v2)
+from [Going Deeper with
+R](https://rfortherestofus.com/courses/going-deeper/).
+
+From there, we can see that NYT plots use the following elements:
+
+- **Title**: bold, largest, darkest font
+- **Subtitle**: regular face, medium sized, light gray font
+- **Caption**: regular face, smallest sized, dark gray font
+- **Axis text**: regular face, medium sized, dark gray font
+- **Axis lines**: major grid lines only for y-axis that are dashed,
+  light gray
+- **Spacing**: plenty of breathing room with margins around each element
 
 NYT figures generally rely on annotations instead of legends. Though
 this is beyond the scope of this blog post, you can find a couple other
@@ -88,16 +91,20 @@ your plots and can be grouped in these main categories:
 
 You definitely don’t need to memorize all of these arguments, but it is
 worth it to learn where to find the descriptions so you can reference
-them as needed.
+them as needed. [This blog post by Henry
+Wang](https://henrywang.nl/ggplot2-theme-elements-demonstration/) also
+has a great figure to help you remember what is what!
+
+![](https://henrywang.nl/wp-content/uploads/2020/04/theme_elements-1024x755.png)
 
 # Create an example plot
 
 First, let’s create a basic plot with the default {`ggplot2`} theme and
-the `economics` built-in dataset.
+the built-in `economics` dataset.
 
 ``` r
 default_plot <- ggplot(economics, aes(date, unemploy)) +
-  geom_point() +
+  geom_line() +
   labs(
     title = "Unemployed persons in the United States",
     subtitle = "Monthly aggregation from 1967 - 2015",
@@ -124,8 +131,8 @@ style="width:80.0%" />
 
 # Pick a built-in theme as a base
 
-The easiest way to start customizing a theme is to pick one of the built
-in [`{ggplot2}`
+The easiest way to start customizing a theme is to pick one of the
+built-in [complete `{ggplot2}`
 themes](https://ggplot2.tidyverse.org/reference/ggtheme.html) that most
 closely matches the style you’re going for.
 
@@ -135,7 +142,7 @@ font family throughout all text elements in the plot.
 ``` r
 nyt_plot <- default_plot +
   theme_minimal(
-    base_family = "Franklin Gothic ATF"
+    base_family = "Libre Franklin"
   )
 
 nyt_plot
@@ -254,7 +261,7 @@ more arguments to the `theme()` function inside your custom function.
 nyt_theme <- function() {
   # Set base theme and font family =============================================
   theme_minimal(
-    base_family = "Franklin Gothic ATF"
+    base_family = "Libre Franklin"
   ) +
     # Overwrite base theme defaults ============================================
     theme(
@@ -397,7 +404,7 @@ nyt_theme <- function(gridline_x = TRUE, gridline_y = TRUE) {
 
   # Set base theme and font family =============================================
   theme_minimal(
-    base_family = "Franklin Gothic ATF"
+    base_family = "Libre Franklin"
   ) +
     # Overwrite base theme defaults ===========================================
     theme(
@@ -455,7 +462,7 @@ should show grid lines for the x-axis and y-axis.
 
 ``` r
 mtcars_plot <- ggplot(mtcars, aes(wt, mpg)) +
-  geom_point() +
+  geom_line() +
   labs(
     title = "Fuel economy declines as weight increases",
     subtitle = "Fuel economy and weight for 32 automobiles (1973–74 models)",
@@ -499,8 +506,10 @@ your own custom theme and apply it to many types of plots.
 For other examples and inspiration, check out this [article by BBC
 Visual and Data
 Journalism](https://medium.com/bbc-visual-and-data-journalism/how-the-bbc-visual-and-data-journalism-team-works-with-graphics-in-r-ed0b35693535)
-on how they created their custom theme functions, the [{ggthemes}
+(there is also a [chapter in R for the Rest of Us: A Statistics-Free
+Introduction about the creation of the BBC’s custom ggplot
+theme](https://book.rfortherestofus.com/themes.html)). There are also
+packages with custom themes in them, such as the [{ggthemes}
 package](https://jrnold.github.io/ggthemes/) that compiles other
-pre-built themes such as FiveThirtyEight, The Economist, etc., and the
-[{ThemePark} package](https://matthewbjane.github.io/ThemePark/) with
-many fun pop culture themes.
+pre-built themes to replicate the styles of other media outlets,
+including FiveThirtyEight, The Economist, and others.
