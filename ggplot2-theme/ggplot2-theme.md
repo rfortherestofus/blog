@@ -182,6 +182,9 @@ within the `element_text()` function:
 - `hjust`: horizontal justification between 0 and 1. Left-justified is
   0, center is 0.5, and right-justified is 1.
 
+Below, you can see how we use these arguments to customize various
+elements of our theme.
+
 ``` r
 nyt_plot <- nyt_plot +
   theme(
@@ -207,11 +210,15 @@ nyt_plot <- nyt_plot +
       color = "#333333" # dark gray
     )
   )
+```
 
+We can now view our plot with the updated in-progress theme.
+
+``` r
 nyt_plot
 ```
 
-<img src="ggplot2-theme_files/figure-commonmark/unnamed-chunk-4-1.png"
+<img src="ggplot2-theme_files/figure-commonmark/unnamed-chunk-5-1.png"
 style="width:80.0%" />
 
 Currently, the title, subtitle, and caption are aligned to the plot
@@ -224,11 +231,15 @@ nyt_plot <- nyt_plot +
     plot.title.position = "plot",
     plot.caption.position = "plot"
   )
+```
 
+Again, we can see our in-progress plot
+
+``` r
 nyt_plot
 ```
 
-<img src="ggplot2-theme_files/figure-commonmark/unnamed-chunk-5-1.png"
+<img src="ggplot2-theme_files/figure-commonmark/unnamed-chunk-7-1.png"
 style="width:80.0%" />
 
 # Customize line elements
@@ -272,11 +283,15 @@ nyt_plot <- nyt_plot +
     ),
     axis.ticks.length.x = unit(4, units = "pt")
   )
+```
 
+The plot with tweaks to the gridlines and ticks can be seen below.
+
+``` r
 nyt_plot
 ```
 
-<img src="ggplot2-theme_files/figure-commonmark/unnamed-chunk-6-1.png"
+<img src="ggplot2-theme_files/figure-commonmark/unnamed-chunk-9-1.png"
 style="width:80.0%" />
 
 We went from the boring {ggplot2} default theme to this much more
@@ -288,14 +303,14 @@ code!
 # Wrap it in a function
 
 To make our custom theme function, we simply paste our previous theme
-code within the curly braces of our new function called `nyt_theme()`.
+code within the curly braces of our new function called `theme_nyt()`.
 
 As you can see, there are so many lines of code, it may help your future
 self to separate text elements from line elements as you add more and
 more arguments to the `theme()` function inside your custom function.
 
 ``` r
-nyt_theme <- function() {
+theme_nyt <- function() {
   # Set base theme and font family =============================================
   theme_minimal(
     base_family = "Libre Franklin"
@@ -349,25 +364,26 @@ instead of calling the `theme()` function with many arguments.
 
 ``` r
 default_plot +
-  nyt_theme()
+  theme_nyt()
 ```
 
-<img src="ggplot2-theme_files/figure-commonmark/unnamed-chunk-8-1.png"
+The resulting plot matches exactly!
+
+<img src="ggplot2-theme_files/figure-commonmark/unnamed-chunk-12-1.png"
 style="width:80.0%" />
 
-Yay! It works! While we created `nyt_theme()` specifically for a
-time-series plot that only needs y-axis grid lines, we likely would need
-both x-axis and y-axis grid lines for a different plot type such as a
-scatter plot.
+While we created `theme_nyt()` specifically for a time-series plot that
+only needs y-axis grid lines, we likely would need both x-axis and
+y-axis grid lines for a different plot type such as a scatter plot.
 
 # Add arguments to your custom theme function
 
-We’ll add two new arguments to our `nyt_theme()` function: `gridline_x`
+We’ll add two new arguments to our `theme_nyt()` function: `gridline_x`
 and `gridline_y` which we will set default to `TRUE` to make it clear to
 the user that it should be logical.
 
 ``` r
-nyt_theme <- function(gridline_x = TRUE, gridline_y = TRUE) {
+theme_nyt <- function(gridline_x = TRUE, gridline_y = TRUE) {
 
 }
 ```
@@ -380,7 +396,7 @@ attributes for grid lines. If `gridline_x` or `gridline_y` evaluate to
 the plot.
 
 ``` r
-nyt_theme <- function(gridline_x = TRUE, gridline_y = TRUE) {
+theme_nyt <- function(gridline_x = TRUE, gridline_y = TRUE) {
   gridline <- element_line(
     linetype = "dashed",
     linewidth = 0.15,
@@ -404,10 +420,10 @@ nyt_theme <- function(gridline_x = TRUE, gridline_y = TRUE) {
 
 The last step is to set `panel.grid.major.x` and `panel.grid.major.y` to
 our new variables `gridline_x` and `gridline_y`, respectively, within
-the `theme()` function of our custom `nyt_theme()` function.
+the `theme()` function of our custom `theme_nyt()` function.
 
 ``` r
-nyt_theme <- function(gridline_x = TRUE, gridline_y = TRUE) {
+theme_nyt <- function(gridline_x = TRUE, gridline_y = TRUE) {
   ...
   # Overwrite base theme defaults ==============================================
   theme(
@@ -422,7 +438,7 @@ Now let’s see it all together in the updated function with the grid line
 arguments.
 
 ``` r
-nyt_theme <- function(gridline_x = TRUE, gridline_y = TRUE) {
+theme_nyt <- function(gridline_x = TRUE, gridline_y = TRUE) {
   gridline <- element_line(
     linetype = "dashed",
     linewidth = 0.15,
@@ -490,16 +506,17 @@ to make sure it looks as expected.
 
 ``` r
 default_plot +
-  nyt_theme(gridline_x = FALSE, gridline_y = TRUE)
+  theme_nyt(gridline_x = FALSE, gridline_y = TRUE)
 ```
-
-<img src="ggplot2-theme_files/figure-commonmark/unnamed-chunk-13-1.png"
-style="width:80.0%" />
 
 And it does! Yay!
 
+<img src="ggplot2-theme_files/figure-commonmark/unnamed-chunk-18-1.png"
+style="width:80.0%" />
+
 Our last test will be applying it to a different type of plot that
-should show grid lines for the x-axis and y-axis.
+should show grid lines for the x-axis and y-axis. First, we’ll create a
+scatterplot.
 
 ``` r
 mtcars_plot <- ggplot(mtcars, aes(wt, mpg)) +
@@ -511,21 +528,28 @@ mtcars_plot <- ggplot(mtcars, aes(wt, mpg)) +
     x = "Weight (1000 lbs)",
     y = "Miles per US gallon"
   )
+```
 
+Here’s what the plot looks like:
+
+``` r
 mtcars_plot
 ```
 
-<img src="ggplot2-theme_files/figure-commonmark/unnamed-chunk-14-1.png"
+<img src="ggplot2-theme_files/figure-commonmark/unnamed-chunk-20-1.png"
 style="width:80.0%" />
+
+Next, we can apply the them to our plot, setting `gridline_x` and
+`gridline_y` to `TRUE`.
 
 ``` r
 mtcars_plot <- mtcars_plot +
-  nyt_theme(gridline_x = TRUE, gridline_y = TRUE)
-
-mtcars_plot
+  theme_nyt(gridline_x = TRUE, gridline_y = TRUE)
 ```
 
-<img src="ggplot2-theme_files/figure-commonmark/unnamed-chunk-15-1.png"
+And here is the resulting plot:
+
+<img src="ggplot2-theme_files/figure-commonmark/unnamed-chunk-22-1.png"
 style="width:80.0%" />
 
 Awesome! We now have a scatter plot that looks like it could have come
