@@ -1,6 +1,6 @@
 # Hide text labels with small values to make charts easier to read
 David Keyes
-2024-11-27
+2025-01-01
 
 One issue that we often face when making data visualization in reports is text not fitting into graphs. This happened to us when working on reports for the [Connecticut Data Collaborative](https://www.ctdata.org/) and the [Partnership for Strong Communities](https://pschousing.org/) in Connecticut.
 

@@ -1,7 +1,7 @@
 ---
-title: "Hide text labels with small values to make charts easier to read"
+title: "Hide text labels with small values to make charts made in ggplot easier to read"
 author: David Keyes
-date: 11/27/2024
+date: 2025-01-01
 toc: false
 format: gfm
 wrap: none
@@ -226,6 +226,7 @@ housing_cost_burden_plot(
 ```
 
 ```{r}
+#| eval: false
 #| echo: false
 
 ggsave(
@@ -243,7 +244,6 @@ Running the code, the plot now looks close to what I want, but take a look at th
 #| label: hartford-plot-v1
 #| echo: false
 ```
-
 
 ## Hide Text Labels with Small Values
 
