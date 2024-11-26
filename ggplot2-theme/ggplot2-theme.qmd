@@ -122,7 +122,7 @@ them as needed. [Henry Wang's blog
 post](https://henrywang.nl/ggplot2-theme-elements-demonstration/) also
 has a great figure to help you remember what is what!
 
-![](https://henrywang.nl/wp-content/uploads/2020/04/theme_elements-1024x755.png)
+![](theme_elements-1024x755.png)
 
 # Create an example plot
 
