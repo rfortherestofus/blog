@@ -126,11 +126,11 @@ default_plot <- ggplot(economics, aes(date, unemploy)) +
     ),
     limits = c(0, max(economics$unemploy))
   )
-
-default_plot
 ```
 
-<img src="ggplot2-theme_files/figure-commonmark/unnamed-chunk-2-1.png"
+Here is our plot.
+
+<img src="ggplot2-theme_files/figure-commonmark/unnamed-chunk-3-1.png"
 style="width:80.0%" />
 
 # Pick a built-in theme as a base
@@ -148,11 +148,11 @@ nyt_plot <- default_plot +
   theme_minimal(
     base_family = "Libre Franklin"
   )
-
-nyt_plot
 ```
 
-<img src="ggplot2-theme_files/figure-commonmark/unnamed-chunk-3-1.png"
+Taking a look at `nyt_plot`, we can see these changes.
+
+<img src="ggplot2-theme_files/figure-commonmark/unnamed-chunk-5-1.png"
 style="width:80.0%" />
 
 Note, we could have set the base font family in the `theme()` function.
@@ -163,8 +163,8 @@ through multiple arguments, as we’ll see in the next section.
 
 Next, let’s set the size, face, color, and spacing options of the text
 elements in the `theme()` function that is called **after** we set the
-the `theme_minimal()`. Remember, this {`ggplot2}` follows the [*Grammar
-of Graphics*](https://ggplot2-book.org/), so each customization is
+the `theme_minimal()`. Remember, this {`ggplot2}` follows the [Grammar
+of Graphics](https://ggplot2-book.org/), so each customization is
 layered on top of the last.
 
 We recommend having the `theme()` and `element_text()` reference
@@ -214,11 +214,7 @@ nyt_plot <- nyt_plot +
 
 We can now view our plot with the updated in-progress theme.
 
-``` r
-nyt_plot
-```
-
-<img src="ggplot2-theme_files/figure-commonmark/unnamed-chunk-5-1.png"
+<img src="ggplot2-theme_files/figure-commonmark/unnamed-chunk-7-1.png"
 style="width:80.0%" />
 
 Currently, the title, subtitle, and caption are aligned to the plot
@@ -233,13 +229,9 @@ nyt_plot <- nyt_plot +
   )
 ```
 
-Again, we can see our in-progress plot
+Again, we can see our in-progress plot.
 
-``` r
-nyt_plot
-```
-
-<img src="ggplot2-theme_files/figure-commonmark/unnamed-chunk-7-1.png"
+<img src="ggplot2-theme_files/figure-commonmark/unnamed-chunk-9-1.png"
 style="width:80.0%" />
 
 # Customize line elements
@@ -287,11 +279,7 @@ nyt_plot <- nyt_plot +
 
 The plot with tweaks to the gridlines and ticks can be seen below.
 
-``` r
-nyt_plot
-```
-
-<img src="ggplot2-theme_files/figure-commonmark/unnamed-chunk-9-1.png"
+<img src="ggplot2-theme_files/figure-commonmark/unnamed-chunk-11-1.png"
 style="width:80.0%" />
 
 We went from the boring {ggplot2} default theme to this much more
@@ -369,7 +357,7 @@ default_plot +
 
 The resulting plot matches exactly!
 
-<img src="ggplot2-theme_files/figure-commonmark/unnamed-chunk-12-1.png"
+<img src="ggplot2-theme_files/figure-commonmark/unnamed-chunk-14-1.png"
 style="width:80.0%" />
 
 While we created `theme_nyt()` specifically for a time-series plot that
@@ -511,7 +499,7 @@ default_plot +
 
 And it does! Yay!
 
-<img src="ggplot2-theme_files/figure-commonmark/unnamed-chunk-18-1.png"
+<img src="ggplot2-theme_files/figure-commonmark/unnamed-chunk-20-1.png"
 style="width:80.0%" />
 
 Our last test will be applying it to a different type of plot that
@@ -532,11 +520,7 @@ mtcars_plot <- ggplot(mtcars, aes(wt, mpg)) +
 
 Here’s what the plot looks like:
 
-``` r
-mtcars_plot
-```
-
-<img src="ggplot2-theme_files/figure-commonmark/unnamed-chunk-20-1.png"
+<img src="ggplot2-theme_files/figure-commonmark/unnamed-chunk-22-1.png"
 style="width:80.0%" />
 
 Next, we can apply the them to our plot, setting `gridline_x` and
@@ -549,7 +533,7 @@ mtcars_plot <- mtcars_plot +
 
 And here is the resulting plot:
 
-<img src="ggplot2-theme_files/figure-commonmark/unnamed-chunk-22-1.png"
+<img src="ggplot2-theme_files/figure-commonmark/unnamed-chunk-24-1.png"
 style="width:80.0%" />
 
 Awesome! We now have a scatter plot that looks like it could have come
