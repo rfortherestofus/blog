@@ -1,0 +1,46 @@
+---
+title: Using typst and Quarto
+---
+
+## Short intro of context about those tools
+
+- what is typst
+- how it compares with pagedjs/pagedown
+
+## Using VS Writing typst in Quarto
+
+- **Use typst with Quarto**: You can use typst with Quarto to generate PDFs. You have a [bunch of options](https://quarto.org/docs/output-formats/typst.html), but if you want to build a template with all your branding / advanced custom style, you'll create a quarto typst custom format, which is very different.
+
+- **Create a Quarto typst custom format**:
+
+## Initialize the project
+
+Run:
+
+```bash
+quarto create extension format
+```
+
+Then you'll have:
+
+```
+my_extension_name/
+├── template.qmd                # Default Quarto file when someone use your template
+└── _extensions/
+    └── my_extension_name/
+        ├── _extension.yml      # Metadata for the extension
+        ├── typst-show.typ      # Layer between quarto and typst core file
+        └── typst-template.typ  # Where you'll write most typst code
+```
+
+## Workflow
+
+- Use either VS Code or Positron (RStudio does not support typst)
+- Install the following VSCode/Positron extensions:
+  - [Typst LSP](https://open-vsx.org/extension/nvarner/typst-lsp)
+  - [Tinymist Typst](https://open-vsx.org/extension/myriad-dreamin/tinymist)
+  - [vscode-pdf](https://open-vsx.org/extension/tomoki1207/pdf)
+
+## Communicate between Quarto and Typst files
+
+- quarto YAML --> `typst-show.typ` --> `typst-template.typ`
