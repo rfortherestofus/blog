@@ -1,0 +1,301 @@
+---
+title: "How to make a heatmaps in ggplot"
+author: David Keyes
+date: 2024-11-09
+toc: false
+format: gfm
+execute: 
+  warning: false
+  message: false
+knitr:
+  opts_chunk:
+    collapse: true
+    comment: "#>"
+    dev: "ragg_png"
+    dev.args: { scaling: 1 }
+    dpi: 300
+    out.width: 80%
+    fig.asp: 0.56
+editor_options: 
+  chunk_output_type: console
+---
+
+### Import data
+
+To start our map, we'll load several packages: the {tidvyerse} for general data wrangling and mapping with ggplot, {sf} for working with geospatial data, and {scales} to make nicely formatted values.
+
+```{r}
+library(tidyverse)
+library(sf)
+library(scales)
+```
+
+Next, we'll import our data. We begin by importing a geojson file with the location of all corners in Portland.
+
+```{r}
+improved_corners <-
+  read_sf(
+    "https://raw.githubusercontent.com/rfortherestofus/mapping-with-r-v2/refs/heads/main/data/improved_corners.geojson"
+  )
+```
+
+We can look the `improved_corners` data frame we've created and see that it consists of an id variable (`objectid)`, a `ramp_style` variable (which is either Improved or Unimproved), and a geometry column, which consists of the location of each corner:
+
+```{r}
+#| echo: false
+improved_corners
+```
+
+We'll also import a geojson file that has the boundaries of the city of Portland.
+
+```{r}
+portland_boundaries <-
+  read_sf(
+    "https://raw.githubusercontent.com/rfortherestofus/mapping-with-r-v2/refs/heads/main/data/portland_boundaries.geojson"
+  )
+```
+
+The easiest way to see what this data looks like is with a quick map, which we can do with ggplot:
+
+```{r}
+#| output: false
+portland_boundaries |>
+  ggplot() +
+  geom_sf() +
+  theme_void()
+```
+
+This code gives us this map:
+
+```{r}
+#| echo: false
+portland_boundaries |>
+  ggplot() +
+  geom_sf() +
+  theme_void()
+```
+
+### Create a grid
+
+Next, we're going to take our `portland_boundaries` object and create a grid from it. The `st_make_grid()` function enables us to do this as follows:
+
+```{r}
+portland_grid <-
+  portland_boundaries |>
+  st_make_grid()
+```
+
+We can see what this grid looks like by plotting it:
+
+```{r}
+#| output: false
+ggplot() +
+  geom_sf(data = portland_boundaries) +
+  geom_sf(
+    data = portland_grid,
+    alpha = 0.5
+  ) +
+  theme_void()
+```
+
+This code gives us a grid map overlaid on top of the boundaries of Portland.
+```{r}
+#| echo: false
+ggplot() +
+  geom_sf(data = portland_boundaries) +
+  geom_sf(
+    data = portland_grid,
+    alpha = 0.5
+  ) +
+  theme_void()
+```
+
+By default, the `st_make_grid()` creates a 10 by 10 grid. However, to make our heatmap, we'd like to have more cells. So let's adjust our code to make a 100 by 100 grid:
+
+```{r}
+portland_grid <-
+  portland_boundaries |>
+  st_make_grid(n = c(100, 100))
+```
+
+The same code as before makes a map that reflects the more fine-grained cells:
+
+```{r}
+#| echo: false
+ggplot() +
+  geom_sf(data = portland_boundaries) +
+  geom_sf(
+    data = portland_grid,
+    alpha = 0.5
+  ) +
+  theme_void()
+```
+
+### Clip city boundaries to the grid map
+
+We've made a grid, but the grid has many cells outside of the boundaries of Portland. To clip the grid to these boundaries, we can use the `st_intersection()` function as follows. After `st_intersection()`, we also run `st_make_valid()`, which deals with an issue particular to the city of Portland where there is [separate city within its boundaries](https://www.opb.org/artsandlife/article/maywood-park-oregon-portland-history-interstate-205/). I also create a `grid_id` variable, which we will use below when joining the data on corners with our grid map.
+
+```{r}
+portland_grid_map <-
+  st_intersection(
+    portland_boundaries,
+    portland_grid
+  ) |>
+  st_make_valid() |>
+  mutate(grid_id = row_number()) |>
+  select(grid_id)
+```
+
+We can now plot the `portland_grid_map` object:
+
+```{r}
+#| output: false
+portland_grid_map |>
+  ggplot() +
+  geom_sf() +
+  theme_void()
+```
+
+Which gives us this map:
+
+```{r}
+#| echo: false
+portland_grid_map |>
+  ggplot() +
+  geom_sf() +
+  theme_void()
+```
+
+### Join our corners data with the grid map
+
+Now that we've created a grid map that is clipped to the boundaries of Portland, we need to join our data on corners with it. Doing so will enable us to see where there are higher concentrations of unimproved corners. We join our `portland_grid_map` and `improved_corners` objects using the `st_join()` function:
+
+```{r}
+improved_corners_grid <-
+  st_join(
+    portland_grid_map,
+    improved_corners
+  )
+```
+
+If we look at `improved_corners_grid`, we can see that it has each corner joined to the grid cell within which it is located. 
+
+```{r}
+#| echo: false
+improved_corners_grid
+```
+
+From there, we need to calculate the percentage of unimproved corners in each grid. We can do this with some basic data wrangling using various {dplyr} functions (see around 7:00 of the video for a full walkthrough of this code). The code below also sees us use `st_drop_geometry()` to turn geospatial data into a regular data frame before we later turn it back into geospatial data with the `st_as_sf()` function (we do this in order to speed up our code, which tends to run slowly on geospatial data).
+
+```{r}
+unimproved_corners_grid_pct <-
+  improved_corners_grid |>
+  st_drop_geometry() |>
+  count(grid_id, ramp_style) |>
+  complete(grid_id, ramp_style) |>
+  group_by(grid_id) |>
+  mutate(pct = n / sum(n, na.rm = TRUE)) |>
+  ungroup() |>
+  select(-n) |>
+  pivot_wider(
+    id_cols = grid_id,
+    names_from = ramp_style,
+    values_from = pct
+  ) |>
+  mutate(
+    pct = case_when(
+      is.na(Unimproved) & Improved == 1 ~ 0,
+      .default = Unimproved
+    )
+  ) |>
+  select(grid_id, pct) |>
+  left_join(
+    portland_grid_map,
+    join_by(grid_id)
+  ) |>
+  st_as_sf()
+```
+
+Let's now look at our `unimproved_corners_grid_pct` object. As you can see, we now have one row for each grid cell, with a `pct` variable that shows the percentage of unimproved corners in that cell.
+
+```{r}
+#| echo: false
+unimproved_corners_grid_pct
+```
+
+### Making our heatmap
+
+Having created a grid, clipped it to Portland boundaries, joined in our data on improved corners, and calculated the percentage of unimproved corners in each grid cell, we are now ready to create our heatmap. The code below creates the heatmap. For a full walkthrough of the design decisions, check out the video starting at around 10:00. 
+
+```{r}
+#| output: false
+ggplot() +
+  geom_sf(data = portland_boundaries) +
+  geom_sf(
+    data = unimproved_corners_grid_pct,
+    aes(fill = pct),
+    color = "white"
+  ) +
+  labs(fill = NULL, title = "Percentage of unimproved corners in Portland") +
+  scale_fill_viridis_c(
+    option = "E",
+    na.value = "gray90",
+    limits = c(0, 1),
+    labels = percent_format()
+  ) +
+  theme_void() +
+  theme(
+    plot.title = element_text(
+      hjust = 0.5,
+      face = "bold",
+      margin = margin(b = 10, unit = "pt")
+    ),
+    legend.key.width = unit(1.5, "cm"),
+    legend.key.height = unit(0.5, "cm"),
+    legend.position = "top"
+  )
+```
+
+The result of this code is a great-looking heatmap that higlights areas of Portland with more unimproved corners.
+
+```{r}
+#| echo: false
+ggplot() +
+  geom_sf(data = portland_boundaries) +
+  geom_sf(
+    data = unimproved_corners_grid_pct,
+    aes(fill = pct),
+    color = "white"
+  ) +
+  labs(fill = NULL, title = "Percentage of unimproved corners in Portland") +
+  scale_fill_viridis_c(
+    option = "E",
+    na.value = "gray90",
+    limits = c(0, 1),
+    labels = percent_format()
+  ) +
+  theme_void() +
+  theme(
+    plot.title = element_text(
+      hjust = 0.5,
+      face = "bold",
+      margin = margin(b = 10, unit = "pt")
+    ),
+    legend.key.width = unit(1.5, "cm"),
+    legend.key.height = unit(0.5, "cm"),
+    legend.position = "top"
+  )
+```
+
+## Summing up
+
+As you've seen the process of making a heatmap in ggplot is a bit involved so let's summarize:
+
+1. Import data on improved corners and data on the boundaries of Portland
+1. Create a grid map based on the boundaries data
+1. Join data on improved corners with the grid map
+1. Calculate the percentage of unimproved corners in each grid cell
+1. Map the resulting data, with cells with higher percentages of unimproved corners in different colors
+
+While I've given an example on making a heatmap of unimproved corners in Portland, you can use this process to make heatmaps for any outcome in any location. Good luck making your own heatmaps!
+
