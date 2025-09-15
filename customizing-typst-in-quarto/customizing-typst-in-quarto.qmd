@@ -78,9 +78,134 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry.
 
 In order to add a footer, we need to `set` rules that, [as explained in the previous blog post](#), change the behavior of a given function.
 
-In particular, we want to change the `footer` argument, as it's the one that defined the content inside the footer.
+In particular, we want to change the `footer` argument, as it's the one that defined the content inside the footer. To make it simple, let's just put some very simple text in it:
 
+```{.typ filename="typst-template.typ"}
+#let article(
+  title: none,
+  date: none,
+  body,
+) = {
 
+  set page(footer: [Text in the footer])
+
+  align(center)[#text(size: 30pt, title)]
+  align(right)[#date]
+
+  body
+}
+```
+
+![](example-2.png)
+
+With this simple new line, now **all pages** have a footer with "Text in footer" written.
+
+Now let's see how to make an actually good looking footer.
+
+```{.typ filename="typst-template.typ"}
+#let article(
+  title: none,
+  date: none,
+  body,
+) = {
+  
+  set page(footer: {
+    rect(
+      width: 100%,
+      height: 0.7in,
+      outset: (x: 20%),
+      fill: rgb("#68ACE5"),
+      align(center + horizon)[#grid(
+          columns: (1fr, 1fr),
+          align(left)[#text(title, fill: white, font: "Roboto")],
+          align(right)[#text(date, fill: white, font: "Roboto")],
+        )
+      ],
+    )
+  })
+
+  align(center)[#text(size: 30pt, title)]
+  align(right)[#date]
+
+  body
+}
+```
+
+![](example-3.png)
+
+This code might look complex at first but it's definitely not. Let's read it step by step. The footer is just:
+
+- a blue rectangle (`rect()`) that cover full width of a 0.7 inches height that grow
+- inside that rectangle, there is a grid (`grid()`) with 2 columns of the same width (`columns: (1fr, 1fr)`)
+- one column is a text, left-aligned, with the title. The other one is right-aligned, with the date.
+
+Now what if we want to create a custom header? Well, it's **exactly the same thing**. The only thing we need to change is the `footer` argument and use `header` instead.
+
+## Image
+
+Now let's see how we can add an image, such as a logo, at the top of the first page.
+
+```{.typ filename="typst-template.typ"}
+#let article(
+  title: none,
+  date: none,
+  body,
+) = {
+
+  align(left)[#text(size: 30pt, title)]
+  align(left)[#date]
+  place(right + top, image("oregon.svg", height: 1.4in), dy: -0.5in)
+
+  body
+}
+```
+
+![](example-4.png)
+
+Here we combine the `place()` function with the `image()` function.
+
+`place()` is useful to define the location of an element that is independent of other elements. A good usage is typically to add a single logo image at the top of a report.
+
+`image()` just requires a path to an image file on your computer, but here we also specify its height (width is automatically adjusted).
+
+## Columns
+
+#### Columns
+
+Columns are something not well supported with Quarto yet. But we can approximate the behavior by using `layout` instead.
+
+With a Quarto document that looks like this:
+
+````qmd
+---
+title: "Hello typst"
+format:
+   typst:
+      template-partials:
+         - typst-template.typ
+         - typst-show.typ
+execute:
+  echo: false
+---
+
+::: {layout="[[1,1], [1]]"}
+```{{r}}
+print("Top left cell")
+```
+
+```{{r}}
+print("Top right cell")
+```
+
+```{{r}}
+print("Bottom cell")
+```
+:::
+````
+
+![](example-5.png)
+
+This will not be detailed in depth here as **this isn't specific to Typst**. You can learn more about it [here](https://quarto.org/docs/authoring/figures.html).
 
 ## What's next?
 

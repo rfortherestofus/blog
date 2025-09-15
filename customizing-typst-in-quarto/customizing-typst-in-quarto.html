@@ -168,7 +168,126 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry.</code
 <section id="footer" class="level2">
 <h2 class="anchored" data-anchor-id="footer">Footer</h2>
 <p>In order to add a footer, we need to <code>set</code> rules that, <a href="#">as explained in the previous blog post</a>, change the behavior of a given function.</p>
-<p>In particular, we want to change the <code>footer</code> argument, as it’s the one that defined the content inside the footer.</p>
+<p>In particular, we want to change the <code>footer</code> argument, as it’s the one that defined the content inside the footer. To make it simple, let’s just put some very simple text in it:</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>typst-template.typ</strong></pre>
+</div>
+<div class="sourceCode" id="cb4" data-filename="typst-template.typ"><pre class="sourceCode typ code-with-copy"><code class="sourceCode typst"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">#let</span> <span class="va">article</span><span class="op">(</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  title<span class="op">:</span> <span class="bu">none</span><span class="op">,</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  date<span class="op">:</span> <span class="bu">none</span><span class="op">,</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  body<span class="op">,</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="op">)</span> <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="kw">set</span> <span class="va">page</span><span class="op">(</span>footer<span class="op">:</span> <span class="op">[</span>Text in the footer<span class="op">])</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  align<span class="op">(</span>center<span class="op">)[</span><span class="kw">#</span>text<span class="op">(</span>size<span class="op">:</span> <span class="fl">30pt</span><span class="op">,</span> title<span class="op">)]</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  align<span class="op">(</span>right<span class="op">)[</span><span class="kw">#</span>date<span class="op">]</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  body</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><img src="example-2.png" class="img-fluid"></p>
+<p>With this simple new line, now <strong>all pages</strong> have a footer with “Text in footer” written.</p>
+<p>Now let’s see how to make an actually good looking footer.</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>typst-template.typ</strong></pre>
+</div>
+<div class="sourceCode" id="cb5" data-filename="typst-template.typ"><pre class="sourceCode typ code-with-copy"><code class="sourceCode typst"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">#let</span> <span class="va">article</span><span class="op">(</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  title<span class="op">:</span> <span class="bu">none</span><span class="op">,</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  date<span class="op">:</span> <span class="bu">none</span><span class="op">,</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  body<span class="op">,</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="op">)</span> <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="kw">set</span> <span class="va">page</span><span class="op">(</span>footer<span class="op">:</span> <span class="op">{</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    rect<span class="op">(</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>      width<span class="op">:</span> <span class="fl">100%</span><span class="op">,</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>      height<span class="op">:</span> <span class="fl">0.7in</span><span class="op">,</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>      outset<span class="op">:</span> <span class="op">(</span>x: <span class="fl">20%</span><span class="op">),</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>      fill<span class="op">:</span> rgb<span class="op">(</span><span class="st">"#68ACE5"</span><span class="op">),</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>      align<span class="op">(</span>center <span class="op">+</span> horizon<span class="op">)[</span><span class="kw">#</span>grid<span class="op">(</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>          columns<span class="op">:</span> <span class="op">(</span><span class="fl">1fr</span><span class="op">,</span> <span class="fl">1fr</span><span class="op">),</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>          align<span class="op">(</span>left<span class="op">)[</span><span class="kw">#</span>text<span class="op">(</span>title<span class="op">,</span> fill<span class="op">:</span> white<span class="op">,</span> font<span class="op">:</span> <span class="st">"Roboto"</span><span class="op">)],</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>          align<span class="op">(</span>right<span class="op">)[</span><span class="kw">#</span>text<span class="op">(</span>date<span class="op">,</span> fill<span class="op">:</span> white<span class="op">,</span> font<span class="op">:</span> <span class="st">"Roboto"</span><span class="op">)],</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>        <span class="op">)</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>      <span class="op">],</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    <span class="op">)</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>  <span class="op">})</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>  align<span class="op">(</span>center<span class="op">)[</span><span class="kw">#</span>text<span class="op">(</span>size<span class="op">:</span> <span class="fl">30pt</span><span class="op">,</span> title<span class="op">)]</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>  align<span class="op">(</span>right<span class="op">)[</span><span class="kw">#</span>date<span class="op">]</span></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>  body</span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><img src="example-3.png" class="img-fluid"></p>
+<p>This code might look complex at first but it’s definitely not. Let’s read it step by step. The footer is just:</p>
+<ul>
+<li>a blue rectangle (<code>rect()</code>) that cover full width of a 0.7 inches height that grow</li>
+<li>inside that rectangle, there is a grid (<code>grid()</code>) with 2 columns of the same width (<code>columns: (1fr, 1fr)</code>)</li>
+<li>one column is a text, left-aligned, with the title. The other one is right-aligned, with the date.</li>
+</ul>
+<p>Now what if we want to create a custom header? Well, it’s <strong>exactly the same thing</strong>. The only thing we need to change is the <code>footer</code> argument and use <code>header</code> instead.</p>
+</section>
+<section id="image" class="level2">
+<h2 class="anchored" data-anchor-id="image">Image</h2>
+<p>Now let’s see how we can add an image, such as a logo, at the top of the first page.</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>typst-template.typ</strong></pre>
+</div>
+<div class="sourceCode" id="cb6" data-filename="typst-template.typ"><pre class="sourceCode typ code-with-copy"><code class="sourceCode typst"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">#let</span> <span class="va">article</span><span class="op">(</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  title<span class="op">:</span> <span class="bu">none</span><span class="op">,</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  date<span class="op">:</span> <span class="bu">none</span><span class="op">,</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  body<span class="op">,</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="op">)</span> <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  align<span class="op">(</span>left<span class="op">)[</span><span class="kw">#</span>text<span class="op">(</span>size<span class="op">:</span> <span class="fl">30pt</span><span class="op">,</span> title<span class="op">)]</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  align<span class="op">(</span>left<span class="op">)[</span><span class="kw">#</span>date<span class="op">]</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  place<span class="op">(</span>right <span class="op">+</span> top<span class="op">,</span> image<span class="op">(</span><span class="st">"oregon.svg"</span><span class="op">,</span> height<span class="op">:</span> <span class="fl">1.4in</span><span class="op">),</span> dy<span class="op">:</span> <span class="op">-</span><span class="fl">0.5in</span><span class="op">)</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>  body</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><img src="example-4.png" class="img-fluid"></p>
+<p>Here we combine the <code>place()</code> function with the <code>image()</code> function.</p>
+<p><code>place()</code> is useful to define the location of an element that is independent of other elements. A good usage is typically to add a single logo image at the top of a report.</p>
+<p><code>image()</code> just requires a path to an image file on your computer, but here we also specify its height (width is automatically adjusted).</p>
+</section>
+<section id="columns" class="level2">
+<h2 class="anchored" data-anchor-id="columns">Columns</h2>
+<section id="columns-1" class="level4">
+<h4 class="anchored" data-anchor-id="columns-1">Columns</h4>
+<p>Columns are something not well supported with Quarto yet. But we can approximate the behavior by using <code>layout</code> instead.</p>
+<p>With a Quarto document that looks like this:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode markdown qmd code-with-copy"><code class="sourceCode markdown"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Hello typst"</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co">   typst:</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co">      template-partials:</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co">         - typst-template.typ</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co">         - typst-show.typ</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="an">execute:</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="co">  echo: false</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>::: {layout="[<span class="co">[</span><span class="ot">1,1</span><span class="co">]</span>, <span class="co">[</span><span class="ot">1</span><span class="co">]</span>]"}</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="st">"Top left cell"</span>)</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="st">"Top right cell"</span>)</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="st">"Bottom cell"</span>)</span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>:::</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><img src="example-5.png" class="img-fluid"></p>
+<p>This will not be detailed in depth here as <strong>this isn’t specific to Typst</strong>. You can learn more about it <a href="https://quarto.org/docs/authoring/figures.html">here</a>.</p>
+</section>
 </section>
 <section id="whats-next" class="level2">
 <h2 class="anchored" data-anchor-id="whats-next">What’s next?</h2>
