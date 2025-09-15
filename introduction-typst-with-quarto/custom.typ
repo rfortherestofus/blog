@@ -1,1 +1,4 @@
-#set text(size: 15pt, fill: red, font: "Bitter")
+#set text(size: 15pt, fill: red)
+
+$title$
+$body$

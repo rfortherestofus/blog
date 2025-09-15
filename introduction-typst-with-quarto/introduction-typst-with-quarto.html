@@ -120,18 +120,67 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">typst</span><span class="kw">:</span></span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">toc</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span><span class="co">                  # add a table of contents</span></span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">section-numbering</span><span class="kw">:</span><span class="at"> 1.1.a</span><span class="co">   # format for section numbering</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">columns</span><span class="kw">:</span><span class="at"> </span><span class="dv">2</span><span class="co">                 # number of columns in the paper</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">columns</span><span class="kw">:</span><span class="at"> </span><span class="dv">2</span><span class="co">                 # number of columns in the paper</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">margin</span><span class="kw">:</span><span class="co">                    # control margins </span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">x</span><span class="kw">:</span><span class="at"> 1.25in</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">y</span><span class="kw">:</span><span class="at"> 1.25in</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>You can learn more about available options <a href="https://quarto.org/docs/output-formats/typst.html">here</a>. But with those options we are limited in customization options.</p>
-<p>If we want to have more control over the style, we need to write Typst code, and it’s probably simpler than you think.</p>
+<p>If we want to have <strong>more control over the style</strong>, we need to write Typst code, and it’s probably simpler than you think.</p>
 </section>
-<section id="typst-customization" class="level2">
-<h2 class="anchored" data-anchor-id="typst-customization">Typst customization</h2>
+<section id="basic-typst-syntax" class="level2">
+<h2 class="anchored" data-anchor-id="basic-typst-syntax">Basic typst syntax</h2>
+<section id="set-rules" class="level3">
+<h3 class="anchored" data-anchor-id="set-rules"><code>set</code> rules</h3>
+<p>The easiest way to customize a typst report is to use <code>set</code> rules. <code>set</code> rules change the behavior of a given typst function. Let’s take an example.</p>
+<p>If I write:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode typ code-with-copy"><code class="sourceCode typst"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">#set</span> <span class="va">text</span><span class="op">(</span>font<span class="op">:</span> <span class="st">"Roboto"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>This will change <strong>all texts</strong> to use the Roboto font. Now If I write:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode typ code-with-copy"><code class="sourceCode typst"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">#set</span> <span class="va">text</span><span class="op">(</span>font<span class="op">:</span> <span class="st">"Roboto"</span><span class="op">,</span> fill<span class="op">:</span> red<span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>It will change all texts font AND make text red.</p>
+<p>This works because in typst <code>text()</code> is the function used to write text. That also means that this works with all arguments inside the <code>text()</code> function. For instance, you can find them <a href="https://typst.app/docs/reference/text/text/">here</a>.</p>
+<p>Now with Quarto, we can just write plain markdown and everything will be translated to valid typst code.</p>
+<p>To add typst code inside a Quarto document, we need to include a chunk code like this:</p>
+<pre class="qmd"><code>---
+title: "Hello Typst!"
+format: typst
+---
+
+```{=typst}
+#set text(font: "Roboto", fill: red)
+```
+
+## Section A
+
+Lorem Ipsum is simply dummy text of the printing and typesetting industry.</code></pre>
+<p><img src="example-1.png" class="img-fluid"></p>
+<p>Here we used an example with the <code>text()</code> function and just two of its arguments. But this works with many other things: headings, tables, footers/headers, lists, and many more.</p>
+<p>Now let’s say we want to change how bullet points look like. For this, we need to use a <code>set</code> rule on the <code>list()</code> function.</p>
+<p>We change the default marker to be 3 horizontal triangles:</p>
+<pre class="qmd"><code>---
+title: "Hello Typst!"
+format: typst
+---
+
+```{=typst}
+#set text(font: "Roboto", fill: red)
+#set list(marker: "‣‣‣")
+```
+
+## Section A
+
+Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+
+- first bullet point
+- second bullet point
+- last bullet point</code></pre>
+<p><img src="example-2.png" class="img-fluid"></p>
+<p><code>set</code> rules are very powerful and very easy to use. Very often you’ll only need them to achieve what you want.</p>
+<p>A good workflow is to find on the <a href="https://typst.app/docs/">typst documentation</a> the name of the function you want to change (such as <code>text()</code>, <code>list()</code>, etc) and see what arguments (and to which value) should you change.</p>
+</section>
 </section>
 <section id="whats-next" class="level2">
 <h2 class="anchored" data-anchor-id="whats-next">What’s next?</h2>
-<p>Now that you have the overwiew of how to work with Quarto and Typst, the next step is to learn more about Typst.</p>
-<p>There is a great <a href="https://typst.app/docs/">documentation website</a>, a large community and a <a href="https://forum.typst.app/">forum</a> where you can ask questions.</p>
-<p>Typst is not fundamentally hard, but you need to spend some time working with it and reading the documentation. Also note that LLMs such as ChatGPT are <strong>pretty bad</strong> at Typst so it’s advised to not rely on them too much.</p>
+<p>Now that you have the overwiew of how to work with Quarto and Typst, the next step is to learn how to create <a href="#link-to-next-blog-post">Typst templates</a>.</p>
 </section>
 
 </main>
