@@ -102,20 +102,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="typst-quarto">Typst &amp; Quarto</h2>
 <p>In the previous <a href="#">blog post</a>, we explained the basics of:</p>
 <ul>
-<li>how to customize typst from Quarto yaml header</li>
+<li>how to customize typst from the Quarto yaml header</li>
 <li>how to use typst <code>set</code> rules for custom styling</li>
 </ul>
-<p>Here we’ll go over how to do advanced customization such as:</p>
+<p>Here we will go over how to do advanced customization such as:</p>
 <ul>
-<li>adding a footer/header</li>
-<li>use columns in specific areas of the report</li>
+<li>adding a footer or header</li>
+<li>using columns in specific areas of the report</li>
 </ul>
-<p>For this, we’ll need to create a typst template.</p>
+<p>For this, we need to create a typst template.</p>
 </section>
 <section id="typst-template" class="level2">
 <h2 class="anchored" data-anchor-id="typst-template">Typst template</h2>
-<p>To create a template, we need to create 2 files: <code>typst-show.typ</code> and <code>typst-template.typ</code>.</p>
-<p><code>typst-template.typ</code> is the most important one. It defines the template (which is just a function) that control the layout and style of the report. Here let starts with:</p>
+<p>To create a template, we need to create two files: <code>typst-show.typ</code> and <code>typst-template.typ</code>.</p>
+<p><code>typst-template.typ</code> is the most important one. It defines the template (which is just a function) that controls the layout and style of the report. Here let us start with:</p>
 <div class="code-with-filename">
 <div class="code-with-filename-file">
 <pre><strong>typst-template.typ</strong></pre>
@@ -131,11 +131,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  body</span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Here we define an <code>article()</code> function with 3 arguments:</p>
+<p>Here we define an <code>article()</code> function with three arguments:</p>
 <ul>
-<li><code>title</code>: default to none</li>
-<li><code>date</code>: default to none</li>
-<li><code>body</code>: no default, because it represents all the content from our Quarto document (charts, code, markdown content, etc).</li>
+<li><code>title</code>: defaults to none</li>
+<li><code>date</code>: defaults to none</li>
+<li><code>body</code>: no default, because it represents all the content from our Quarto document (charts, code, markdown content, etc.)</li>
 </ul>
 <p><code>typst-show.typ</code> should look like this:</p>
 <div class="code-with-filename">
@@ -149,7 +149,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Here we are just “calling” our <code>article()</code> function from the template file.</p>
-<p>Then, our Quarto document should explicitly mention those files with the <code>template-partials</code> flag:</p>
+<p>Then, our Quarto document should explicitly mention these files with the <code>template-partials</code> flag:</p>
 <pre class="qmd"><code>---
 title: Hello Typst!
 date: September 2025
@@ -167,8 +167,8 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry.</code
 </section>
 <section id="footer" class="level2">
 <h2 class="anchored" data-anchor-id="footer">Footer</h2>
-<p>In order to add a footer, we need to <code>set</code> rules that, <a href="#">as explained in the previous blog post</a>, change the behavior of a given function.</p>
-<p>In particular, we want to change the <code>footer</code> argument, as it’s the one that defined the content inside the footer. To make it simple, let’s just put some very simple text in it:</p>
+<p>To add a footer, we need <code>set</code> rules that, <a href="#">as explained in the previous blog post</a>, change the behavior of a given function.</p>
+<p>In particular, we want to change the <code>footer</code> argument, as it is the one that defines the content inside the footer. To make it simple, let us just put some very simple text in it:</p>
 <div class="code-with-filename">
 <div class="code-with-filename-file">
 <pre><strong>typst-template.typ</strong></pre>
@@ -189,7 +189,7 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry.</code
 </div>
 <p><img src="example-2.png" class="img-fluid"></p>
 <p>With this simple new line, now <strong>all pages</strong> have a footer with “Text in footer” written.</p>
-<p>Now let’s see how to make an actually good looking footer.</p>
+<p>Now let us see how to make a good looking footer.</p>
 <div class="code-with-filename">
 <div class="code-with-filename-file">
 <pre><strong>typst-template.typ</strong></pre>
@@ -222,17 +222,17 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry.</code
 <span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><img src="example-3.png" class="img-fluid"></p>
-<p>This code might look complex at first but it’s definitely not. Let’s read it step by step. The footer is just:</p>
+<p>This code might look complex at first but it is not. Let us read it step by step. The footer is just:</p>
 <ul>
-<li>a blue rectangle (<code>rect()</code>) that cover full width of a 0.7 inches height that grow</li>
-<li>inside that rectangle, there is a grid (<code>grid()</code>) with 2 columns of the same width (<code>columns: (1fr, 1fr)</code>)</li>
-<li>one column is a text, left-aligned, with the title. The other one is right-aligned, with the date.</li>
+<li>a blue rectangle (<code>rect()</code>) that covers the full width with a height of 0.7 inches</li>
+<li>inside that rectangle, there is a grid (<code>grid()</code>) with two columns of the same width (<code>columns: (1fr, 1fr)</code>)</li>
+<li>one column is text, left aligned, with the title. The other one is right aligned, with the date.</li>
 </ul>
-<p>Now what if we want to create a custom header? Well, it’s <strong>exactly the same thing</strong>. The only thing we need to change is the <code>footer</code> argument and use <code>header</code> instead.</p>
+<p>Now what if we want to create a custom header? Well, it is <strong>exactly the same thing</strong>. The only thing we need to change is the <code>footer</code> argument and use <code>header</code> instead.</p>
 </section>
 <section id="image" class="level2">
 <h2 class="anchored" data-anchor-id="image">Image</h2>
-<p>Now let’s see how we can add an image, such as a logo, at the top of the first page.</p>
+<p>Now let us see how we can add an image, such as a logo, at the top of the first page.</p>
 <div class="code-with-filename">
 <div class="code-with-filename-file">
 <pre><strong>typst-template.typ</strong></pre>
@@ -252,14 +252,14 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry.</code
 </div>
 <p><img src="example-4.png" class="img-fluid"></p>
 <p>Here we combine the <code>place()</code> function with the <code>image()</code> function.</p>
-<p><code>place()</code> is useful to define the location of an element that is independent of other elements. A good usage is typically to add a single logo image at the top of a report.</p>
+<p><code>place()</code> is useful to define the location of an element that is independent of other elements. A typical usage is adding a single logo image at the top of a report.</p>
 <p><code>image()</code> just requires a path to an image file on your computer, but here we also specify its height (width is automatically adjusted).</p>
 </section>
 <section id="columns" class="level2">
 <h2 class="anchored" data-anchor-id="columns">Columns</h2>
 <section id="columns-1" class="level4">
 <h4 class="anchored" data-anchor-id="columns-1">Columns</h4>
-<p>Columns are something not well supported with Quarto yet. But we can approximate the behavior by using <code>layout</code> instead.</p>
+<p>Columns are not well supported in Quarto yet. But we can approximate the behavior by using <code>layout</code> instead.</p>
 <p>With a Quarto document that looks like this:</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode markdown qmd code-with-copy"><code class="sourceCode markdown"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Hello typst"</span></span>
@@ -286,12 +286,12 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry.</code
 <span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>:::</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p><img src="example-5.png" class="img-fluid"></p>
-<p>This will not be detailed in depth here as <strong>this isn’t specific to Typst</strong>. You can learn more about it <a href="https://quarto.org/docs/authoring/figures.html">here</a>.</p>
+<p>This will not be detailed in depth here as <strong>this is not specific to Typst</strong>. You can learn more about it <a href="https://quarto.org/docs/authoring/figures.html">here</a>.</p>
 </section>
 </section>
-<section id="whats-next" class="level2">
-<h2 class="anchored" data-anchor-id="whats-next">What’s next?</h2>
-<p>Now that you have the overview of how to work with Quarto and Typst, the next step is to learn how to create <a href="#link-to-next-blog-post">Typst templates</a>.</p>
+<section id="what-is-next" class="level2">
+<h2 class="anchored" data-anchor-id="what-is-next">What is next?</h2>
+<p>Now that you have an overview of how to work with Quarto and Typst, the next step is to learn how to create <a href="#link-to-next-blog-post">Typst templates</a>.</p>
 </section>
 
 </main>
