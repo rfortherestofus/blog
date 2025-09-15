@@ -1,14 +1,14 @@
 ---
-title: Using typst and Quarto
+title: Introduction to typst and Quarto
 ---
 
 ## What is Typst
 
 Typst is a modern language made to generate PDFs. In short, it's a successor to LaTeX, but with some very important differences:
 
-- It's much simpler to use
-- You can easily [add logic](https://typst.app/docs/reference/scripting/) (think of `if`/`for` statements, create functions, define variables, etc)
-- It's super fast: you can generate reports almost instantly
+* Its syntax is much lighter
+* You can easily [add logic](https://typst.app/docs/reference/scripting/) (think of `if`/`for` statements, create functions, define variables, etc)
+* It's super fast: you can generate reports almost instantly
 
 And it's fully supported by Quarto.
 
@@ -19,11 +19,11 @@ If you want to create a PDF using Typst from Quarto, all you have to do is put t
 ```yaml
 title: "Hello Typst!"
 format: typst
-````
+```
 
-Then the rest of your document will be converted to PDF when rendering.
+Then the rest of your document will be converted to PDF, using typst, when rendering.
 
-Quarto also offers you the option to customize the output file. For example:
+Quarto also gives you the option to customize the output file. For example:
 
 ```yaml
 title: "Hello Typst!"
@@ -37,13 +37,11 @@ format:
       y: 1.25in
 ```
 
-You can learn more about available options [here](https://quarto.org/docs/output-formats/typst.html). But with those options we are limited in customization options.
+You can learn more about available options [here](https://quarto.org/docs/output-formats/typst.html). But with those options we are limited in customization.
 
 If we want to have **more control over the style**, we need to write Typst code, and it's probably simpler than you think.
 
-## Basic typst syntax
-
-### `set` rules
+## Writing typst: `set` rules is all you need
 
 The easiest way to customize a typst report is to use `set` rules. `set` rules change the behavior of a given typst function. Let's take an example.
 
@@ -53,19 +51,19 @@ If I write:
 #set text(font: "Roboto")
 ```
 
-This will change **all texts** to use the Roboto font. Now If I write:
+This will change **all text** to use the Roboto font. Now if I write:
 
 ```typ
 #set text(font: "Roboto", fill: red)
 ```
 
-It will change all texts font AND make text red.
+It will change all text font and make text red.
 
-This works because in typst `text()` is the function used to write text. That also means that this works with all arguments inside the `text()` function. For instance, you can find them [here](https://typst.app/docs/reference/text/text/).
+By default, all text in typst is black and uses the “libertinus” font (similar to "Times New Roman"). But thanks to the `set` rules, we can change this default behavior to achieve the desired style.
 
-Now with Quarto, we can just write plain markdown and everything will be translated to valid typst code.
+This works because in typst `text()` is the function used to write text. That also means it works with all arguments inside the `text()` function. For instance, you can find them [here](https://typst.app/docs/reference/text/text/).
 
-To add typst code inside a Quarto document, we need to include a chunk code like this:
+Now, how do we write typst code in Quarto? We need to include a typst code block like this:
 
 ````qmd
 ---
@@ -84,11 +82,11 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry.
 
 ![](example-1.png)
 
-Here we used an example with the `text()` function and just two of its arguments. But this works with many other things: headings, tables, footers/headers, lists, and many more.
+Here we used an example with the `text()` function and just two of its arguments. But this works with many other things: headings, tables, footers and headers, lists, and many more.
 
-Now let's say we want to change how bullet points look like. For this, we need to use a `set` rule on the `list()` function.
+Now let's say we want to change how bullet points look. For this, we need to use a `set` rule on the `list()` function.
 
-We change the default marker to be 3 horizontal triangles:
+We change the default marker to be three horizontal triangles:
 
 ````qmd
 ---
@@ -114,8 +112,8 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry.
 
 `set` rules are very powerful and very easy to use. Very often you'll only need them to achieve what you want.
 
-A good workflow is to find on the [typst documentation](https://typst.app/docs/) the name of the function you want to change (such as `text()`, `list()`, etc) and see what arguments (and to which value) should you change.
+A good workflow is to check in the [typst documentation](https://typst.app/docs/) the name of the function you want to change (such as `text()`, `list()`, etc) and see what arguments (and to which value) you should change.
 
 ## What's next?
 
-Now that you have the overwiew of how to work with Quarto and Typst, the next step is to learn how to create [Typst templates](#link-to-next-blog-post).
+Now that you have the overview of how to work with Quarto and Typst, the next step is to learn how to create [Typst templates](#link-to-next-blog-post).
