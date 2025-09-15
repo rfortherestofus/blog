@@ -116,4 +116,4 @@ A good workflow is to check in the [typst documentation](https://typst.app/docs/
 
 ## What's next?
 
-Now that you have the overview of how to work with Quarto and Typst, the next step is to learn how to create [Typst templates](#link-to-next-blog-post).
+Now that you have the overview of how to work with Quarto and Typst, the next step is to learn how to create [Typst templates](#).

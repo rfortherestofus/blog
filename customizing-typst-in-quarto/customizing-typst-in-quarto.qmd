@@ -1,0 +1,87 @@
+---
+title: Customizing typst in Quarto
+---
+
+## Typst & Quarto
+
+In the previous [blog post](#), we explained the basics of:
+
+- how to customize typst from Quarto yaml header
+- how to use typst `set` rules for custom styling
+
+Here we'll go over how to do advanced customization such as:
+
+- adding a footer/header
+- use columns in specific areas of the report
+
+For this, we'll need to create a typst template.
+
+## Typst template
+
+To create a template, we need to create 2 files: `typst-show.typ` and `typst-template.typ`.
+
+`typst-template.typ` is the most important one. It defines the template (which is just a function) that control the layout and style of the report. Here let starts with:
+
+```{.typ filename="typst-template.typ"}
+#let article(
+  title: none,
+  date: none,
+  body,
+) = {
+  align(center)[#text(size: 30pt, title)]
+  align(right)[#date]
+
+  body
+}
+
+```
+
+Here we define an `article()` function with 3 arguments:
+
+- `title`: default to none
+- `date`: default to none
+- `body`: no default, because it represents all the content from our Quarto document (charts, code, markdown content, etc).
+
+`typst-show.typ` should look like this:
+
+```{.typ filename="typst-show.typ"}
+#show: body => article(
+  title: [$title$],
+  date: [$date$],
+  body,
+)
+```
+
+Here we are just "calling" our `article()` function from the template file.
+
+Then, our Quarto document should explicitly mention those files with the `template-partials` flag:
+
+````qmd
+---
+title: Hello Typst!
+date: September 2025
+format:
+   typst:
+      template-partials: 
+         - typst-show.typ
+         - typst-template.typ
+---
+
+## Section A
+
+Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+````
+
+![](example-1.png)
+
+## Footer
+
+In order to add a footer, we need to `set` rules that, [as explained in the previous blog post](#), change the behavior of a given function.
+
+In particular, we want to change the `footer` argument, as it's the one that defined the content inside the footer.
+
+
+
+## What's next?
+
+Now that you have the overview of how to work with Quarto and Typst, the next step is to learn how to create [Typst templates](#link-to-next-blog-post).

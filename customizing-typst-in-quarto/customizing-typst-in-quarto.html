@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Introduction to typst and Quarto</title>
+<title>Customizing typst in Quarto</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -58,17 +58,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </style>
 
 
-<script src="introduction-typst-with-quarto_files/libs/clipboard/clipboard.min.js"></script>
-<script src="introduction-typst-with-quarto_files/libs/quarto-html/quarto.js" type="module"></script>
-<script src="introduction-typst-with-quarto_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="introduction-typst-with-quarto_files/libs/quarto-html/popper.min.js"></script>
-<script src="introduction-typst-with-quarto_files/libs/quarto-html/tippy.umd.min.js"></script>
-<script src="introduction-typst-with-quarto_files/libs/quarto-html/anchor.min.js"></script>
-<link href="introduction-typst-with-quarto_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="introduction-typst-with-quarto_files/libs/quarto-html/quarto-syntax-highlighting-e1a5c8363afafaef2c763b6775fbf3ca.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="introduction-typst-with-quarto_files/libs/bootstrap/bootstrap.min.js"></script>
-<link href="introduction-typst-with-quarto_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="introduction-typst-with-quarto_files/libs/bootstrap/bootstrap-81267100e462c21b3d6c0d5bf76a3417.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="customizing-typst-in-quarto_files/libs/clipboard/clipboard.min.js"></script>
+<script src="customizing-typst-in-quarto_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="customizing-typst-in-quarto_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="customizing-typst-in-quarto_files/libs/quarto-html/popper.min.js"></script>
+<script src="customizing-typst-in-quarto_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="customizing-typst-in-quarto_files/libs/quarto-html/anchor.min.js"></script>
+<link href="customizing-typst-in-quarto_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="customizing-typst-in-quarto_files/libs/quarto-html/quarto-syntax-highlighting-e1a5c8363afafaef2c763b6775fbf3ca.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="customizing-typst-in-quarto_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="customizing-typst-in-quarto_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="customizing-typst-in-quarto_files/libs/bootstrap/bootstrap-81267100e462c21b3d6c0d5bf76a3417.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 
 
 </head>
@@ -81,7 +81,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Introduction to typst and Quarto</h1>
+<h1 class="title">Customizing typst in Quarto</h1>
 </div>
 
 
@@ -98,82 +98,77 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="what-is-typst" class="level2">
-<h2 class="anchored" data-anchor-id="what-is-typst">What is Typst</h2>
-<p>Typst is a modern language made to generate PDFs. In short, it’s a successor to LaTeX, but with some very important differences:</p>
+<section id="typst-quarto" class="level2">
+<h2 class="anchored" data-anchor-id="typst-quarto">Typst &amp; Quarto</h2>
+<p>In the previous <a href="#">blog post</a>, we explained the basics of:</p>
 <ul>
-<li>Its syntax is much lighter</li>
-<li>You can easily <a href="https://typst.app/docs/reference/scripting/">add logic</a> (think of <code>if</code>/<code>for</code> statements, create functions, define variables, etc)</li>
-<li>It’s super fast: you can generate reports almost instantly</li>
+<li>how to customize typst from Quarto yaml header</li>
+<li>how to use typst <code>set</code> rules for custom styling</li>
 </ul>
-<p>And it’s fully supported by Quarto.</p>
+<p>Here we’ll go over how to do advanced customization such as:</p>
+<ul>
+<li>adding a footer/header</li>
+<li>use columns in specific areas of the report</li>
+</ul>
+<p>For this, we’ll need to create a typst template.</p>
 </section>
-<section id="using-typst-in-quarto" class="level2">
-<h2 class="anchored" data-anchor-id="using-typst-in-quarto">Using typst in Quarto</h2>
-<p>If you want to create a PDF using Typst from Quarto, all you have to do is put this in the YAML header of your Quarto file:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">title</span><span class="kw">:</span><span class="at"> </span><span class="st">"Hello Typst!"</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">format</span><span class="kw">:</span><span class="at"> typst</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Then the rest of your document will be converted to PDF, using typst, when rendering.</p>
-<p>Quarto also gives you the option to customize the output file. For example:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">title</span><span class="kw">:</span><span class="at"> </span><span class="st">"Hello Typst!"</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">format</span><span class="kw">:</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">typst</span><span class="kw">:</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">toc</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span><span class="co">                  # add a table of contents</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">section-numbering</span><span class="kw">:</span><span class="at"> 1.1.a</span><span class="co">   # format for section numbering</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">columns</span><span class="kw">:</span><span class="at"> </span><span class="dv">2</span><span class="co">                 # number of columns in the paper</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">margin</span><span class="kw">:</span><span class="co">                    # control margins </span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">x</span><span class="kw">:</span><span class="at"> 1.25in</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">y</span><span class="kw">:</span><span class="at"> 1.25in</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>You can learn more about available options <a href="https://quarto.org/docs/output-formats/typst.html">here</a>. But with those options we are limited in customization.</p>
-<p>If we want to have <strong>more control over the style</strong>, we need to write Typst code, and it’s probably simpler than you think.</p>
-</section>
-<section id="writing-typst-set-rules-is-all-you-need" class="level2">
-<h2 class="anchored" data-anchor-id="writing-typst-set-rules-is-all-you-need">Writing typst: <code>set</code> rules is all you need</h2>
-<p>The easiest way to customize a typst report is to use <code>set</code> rules. <code>set</code> rules change the behavior of a given typst function. Let’s take an example.</p>
-<p>If I write:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode typ code-with-copy"><code class="sourceCode typst"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">#set</span> <span class="va">text</span><span class="op">(</span>font<span class="op">:</span> <span class="st">"Roboto"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>This will change <strong>all text</strong> to use the Roboto font. Now if I write:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode typ code-with-copy"><code class="sourceCode typst"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">#set</span> <span class="va">text</span><span class="op">(</span>font<span class="op">:</span> <span class="st">"Roboto"</span><span class="op">,</span> fill<span class="op">:</span> red<span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>It will change all text font and make text red.</p>
-<p>By default, all text in typst is black and uses the “libertinus” font (similar to “Times New Roman”). But thanks to the <code>set</code> rules, we can change this default behavior to achieve the desired style.</p>
-<p>This works because in typst <code>text()</code> is the function used to write text. That also means it works with all arguments inside the <code>text()</code> function. For instance, you can find them <a href="https://typst.app/docs/reference/text/text/">here</a>.</p>
-<p>Now, how do we write typst code in Quarto? We need to include a typst code block like this:</p>
+<section id="typst-template" class="level2">
+<h2 class="anchored" data-anchor-id="typst-template">Typst template</h2>
+<p>To create a template, we need to create 2 files: <code>typst-show.typ</code> and <code>typst-template.typ</code>.</p>
+<p><code>typst-template.typ</code> is the most important one. It defines the template (which is just a function) that control the layout and style of the report. Here let starts with:</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>typst-template.typ</strong></pre>
+</div>
+<div class="sourceCode" id="cb1" data-filename="typst-template.typ"><pre class="sourceCode typ code-with-copy"><code class="sourceCode typst"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">#let</span> <span class="va">article</span><span class="op">(</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  title<span class="op">:</span> <span class="bu">none</span><span class="op">,</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  date<span class="op">:</span> <span class="bu">none</span><span class="op">,</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  body<span class="op">,</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="op">)</span> <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  align<span class="op">(</span>center<span class="op">)[</span><span class="kw">#</span>text<span class="op">(</span>size<span class="op">:</span> <span class="fl">30pt</span><span class="op">,</span> title<span class="op">)]</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  align<span class="op">(</span>right<span class="op">)[</span><span class="kw">#</span>date<span class="op">]</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  body</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Here we define an <code>article()</code> function with 3 arguments:</p>
+<ul>
+<li><code>title</code>: default to none</li>
+<li><code>date</code>: default to none</li>
+<li><code>body</code>: no default, because it represents all the content from our Quarto document (charts, code, markdown content, etc).</li>
+</ul>
+<p><code>typst-show.typ</code> should look like this:</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>typst-show.typ</strong></pre>
+</div>
+<div class="sourceCode" id="cb2" data-filename="typst-show.typ"><pre class="sourceCode typ code-with-copy"><code class="sourceCode typst"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">#show</span><span class="op">:</span> body =&gt; article(</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  title: [<span class="ss">$title$</span>],</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  date: [<span class="ss">$date$</span>],</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  body,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Here we are just “calling” our <code>article()</code> function from the template file.</p>
+<p>Then, our Quarto document should explicitly mention those files with the <code>template-partials</code> flag:</p>
 <pre class="qmd"><code>---
-title: "Hello Typst!"
-format: typst
+title: Hello Typst!
+date: September 2025
+format:
+   typst:
+      template-partials: 
+         - typst-show.typ
+         - typst-template.typ
 ---
-
-```{=typst}
-#set text(font: "Roboto", fill: red)
-```
 
 ## Section A
 
 Lorem Ipsum is simply dummy text of the printing and typesetting industry.</code></pre>
 <p><img src="example-1.png" class="img-fluid"></p>
-<p>Here we used an example with the <code>text()</code> function and just two of its arguments. But this works with many other things: headings, tables, footers and headers, lists, and many more.</p>
-<p>Now let’s say we want to change how bullet points look. For this, we need to use a <code>set</code> rule on the <code>list()</code> function.</p>
-<p>We change the default marker to be three horizontal triangles:</p>
-<pre class="qmd"><code>---
-title: "Hello Typst!"
-format: typst
----
-
-```{=typst}
-#set text(font: "Roboto", fill: red)
-#set list(marker: "‣‣‣")
-```
-
-## Section A
-
-Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-
-- first bullet point
-- second bullet point
-- last bullet point</code></pre>
-<p><img src="example-2.png" class="img-fluid"></p>
-<p><code>set</code> rules are very powerful and very easy to use. Very often you’ll only need them to achieve what you want.</p>
-<p>A good workflow is to check in the <a href="https://typst.app/docs/">typst documentation</a> the name of the function you want to change (such as <code>text()</code>, <code>list()</code>, etc) and see what arguments (and to which value) you should change.</p>
+</section>
+<section id="footer" class="level2">
+<h2 class="anchored" data-anchor-id="footer">Footer</h2>
+<p>In order to add a footer, we need to <code>set</code> rules that, <a href="#">as explained in the previous blog post</a>, change the behavior of a given function.</p>
+<p>In particular, we want to change the <code>footer</code> argument, as it’s the one that defined the content inside the footer.</p>
 </section>
 <section id="whats-next" class="level2">
 <h2 class="anchored" data-anchor-id="whats-next">What’s next?</h2>

@@ -2,42 +2,6 @@
 title: Using typst and Quarto
 ---
 
-## What is Typst
-
-Typst is a modern language made to generate PDFs. In short, it's a successor to LaTeX, but with some very important differences:
-
-- It's much simpler to use
-- You can easily [add logic](https://typst.app/docs/reference/scripting/) (think of `if`/`for` statements, create functions, define variables, etc)
-- It's super fast: you can generate reports almost instantly
-
-And it's fully supported by Quarto.
-
-## Using typst in Quarto
-
-If you want to create a PDF using Typst from Quarto, all you have to do is put this in the YAML header of your Quarto file:
-
-```yaml
-title: "Hello Typst!"
-format: typst
-````
-
-Then the rest of your document will be converted to PDF when rendering.
-
-Quarto also offers you the option to customize the output file. For example:
-
-```yaml
-title: "Hello Typst!"
-format:
-  typst:
-    toc: true                  # add a table of contents
-    section-numbering: 1.1.a   # format for section numbering
-    columns: 2                 # number of columns in the paper
-```
-
-You can learn more about available options [here](https://quarto.org/docs/output-formats/typst.html). But with those options we are limited in customization options.
-
-If we want to have full control over the output, we need to create a Typst template.
-
 ## Typst templates
 
 A Typst template is just a function that takes arguments such as a title, a list of authors or anything else we want.
