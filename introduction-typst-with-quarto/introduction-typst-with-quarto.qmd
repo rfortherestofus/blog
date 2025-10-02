@@ -6,7 +6,7 @@ title: Introduction to typst and Quarto
 
 Typst is a modern language made to generate PDFs. In short, it's a successor to LaTeX, but with some very important differences:
 
-* Its syntax is much lighter
+* Its syntax is much lighter and flexible
 * You can easily [add logic](https://typst.app/docs/reference/scripting/) (think of `if`/`for` statements, create functions, define variables, etc)
 * It's super fast: you can generate reports almost instantly
 
@@ -65,7 +65,7 @@ This works because in typst `text()` is the function used to write text. That al
 
 Now, how do we write typst code in Quarto? We need to include a typst code block like this:
 
-````qmd
+````md
 ---
 title: "Hello Typst!"
 format: typst
@@ -80,7 +80,7 @@ format: typst
 Lorem Ipsum is simply dummy text of the printing and typesetting industry.
 ````
 
-![](example-1.png)
+
 
 Here we used an example with the `text()` function and just two of its arguments. But this works with many other things: headings, tables, footers and headers, lists, and many more.
 
@@ -88,7 +88,7 @@ Now let's say we want to change how bullet points look. For this, we need to use
 
 We change the default marker to be three horizontal triangles:
 
-````qmd
+````md
 ---
 title: "Hello Typst!"
 format: typst

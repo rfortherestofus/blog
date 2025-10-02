@@ -1,0 +1,265 @@
+---
+title: Connect variables between R and Typst
+---
+
+## Typst & Quarto
+
+This blog post is 3rd of blog post series on Typst and Quarto. Check out the first two if not already:
+
+- [Introduction to typst with Quarto](#)
+- [Customization in typst and Quarto](#)
+
+Here we'll explain:
+
+* how to connect variables between R and Typst
+* and how to make your reports dynamic
+
+## Pass variables from R to Typst
+
+Let's start with a simple typst
+
+```{.typ filename="typst-template.typ"}
+#let article(
+  title: none,
+  date: none,
+  body,
+) = {
+  align(center)[#text(size: 30pt, title)]
+  align(right)[#date]
+
+  body
+}
+```
+
+Here we define an `article()` function with three arguments:
+
+* `title`: defaults to none
+* `date`: defaults to none
+* `body`: no default, because it represents all the content from our Quarto document (charts, code, markdown content, etc.)
+
+`typst-show.typ` should look like this:
+
+```{.typ filename="typst-show.typ"}
+#show: body => article(
+  title: [$title$],
+  date: [$date$],
+  body,
+)
+```
+
+Here we are just "calling" our `article()` function from the template file.
+
+Then, our Quarto document should explicitly mention these files with the `template-partials` flag:
+
+````md
+---
+title: Hello Typst!
+date: September 2025
+format:
+   typst:
+      template-partials: 
+         - typst-show.typ
+         - typst-template.typ
+---
+
+## Section A
+
+Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+````
+
+![](example-1.png)
+
+What if we want to add an author parameter? We just have to add it as an argument of our typst template:
+
+```{.typ filename="typst-template.typ"}
+#let article(
+  title: none,
+  date: none,
+  author: none,
+  body,
+) = {
+  align(center)[#text(size: 30pt, title)]
+  align(right)[#date]
+  align(right)[Author: #author]
+
+  body
+}
+```
+
+```{.typ filename="typst-show.typ"}
+#show: body => article(
+  title: [$title$],
+  date: [$date$],
+  author: [$author$],
+  body,
+)
+```
+
+
+````md
+---
+title: Hello Typst!
+date: September 2025
+author: Julia
+format:
+   typst:
+      template-partials: 
+         - typst-show.typ
+         - typst-template.typ
+---
+
+## Section A
+
+Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+````
+
+![](example-2.png)
+
+## Change output depending on the value of the parameter
+
+Right now, no matter the autor name, it will displayed `Author: *author*`.
+
+But since typst has scripting capabilities (think of `if`/`for` statements, etc), we can handle special cases easily.
+
+Here, we'll add `"(founder)"` after the author name if the author is Julia, nothing otherwise. The only thing we need to change is how we handle the author parameter input in our typst template:
+
+```{.typ filename="typst-template.typ"}
+#let article(
+  title: none,
+  date: none,
+  author: none,
+  body,
+) = {
+  let full_author = if author.text == "Julia" {
+    author + " (founder)"
+  } else {
+    author
+  }
+
+  align(center)[#text(size: 30pt, title)]
+  align(right)[#date]
+  align(right)[Author: #full_author]
+
+  body
+}
+```
+
+Now, depending on whether we write `author: Antonio` or `author: Julia` at the top of our Quarto document, we'll get different results:
+
+:::: {.columns}
+
+::: {.column width="50%"}
+![](./example-3.png)
+:::
+
+::: {.column width="50%"}
+![](./example-4.png)
+:::
+
+::::
+
+This example is just about changing a text string, but this can work with much more: different images, different positionning, different alignments, etc.
+
+For example, if we have a `state` parameter that is supposed to a U.S. state, we could dynamically display the state flag with the following code (assuming we have the flag images):
+
+```typ
+let state_flag = "assets/flags/" + state + ".svg"
+#image(state_flag, height: 0.7in)
+```
+
+## Define and reuse functions
+
+In typst, we can define function that makes super easy to reuse styling block.
+
+For example, let's say we want in our report a highly styled text, but we don't want to define its style multiple times?
+
+First, we define a `cool-label()` function with the style we want. It only requires to accept a string argument:
+
+```typ
+#let cool-label(string) = {
+  align(center)[#box(
+    fill: rgb("#fa9e35"),
+    inset: 12pt,
+    align(center + horizon)[#text(string, style: "italic", font: "Bitter", size: 24pt, fill: white)],
+  )]
+}
+
+#let article(
+  title: none,
+  date: none,
+  body,
+) = {
+  align(center)[#text(size: 30pt, title)]
+  align(right)[#date]
+
+  body
+}
+```
+
+We can now call `cool-label()` inside our Quarto document:
+
+````md
+---
+title: Hello Typst!
+date: September 2025
+format:
+   typst:
+      template-partials: 
+         - typst-show.typ
+         - typst-template.typ
+---
+
+Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+
+```{=typst}
+#cool-label("Hello world")
+```
+
+Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+
+```{=typst}
+#cool-label("14%")
+```
+````
+
+![](./example-6.png)
+
+This allows to easily separate the styling logic from the content of the report.
+
+## Dynamic content in typst
+
+Our `cool-label()` calls here hardcode their input, in the sense that we litteraly write the value of the input.
+
+But what if we want this value to be passed from R? This would make sure we don't write the wrong thing and remove any manual work!
+
+That's possible with a specific Quarto syntax that evaluates our input dynamically:
+
+````md
+---
+title: Hello Typst!
+date: September 2025
+format:
+   typst:
+      template-partials: 
+         - typst-show.typ
+         - typst-template.typ
+---
+
+Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+
+```{{r}}
+values <- c(12, 15, 35, 6)
+avg <- mean(values)
+```
+
+```{=typst}
+#cool-label("`r avg`")
+#cool-label("The average is `r avg`%")
+```
+````
+
+![](./example-7.png)
+
+## What is next?
+
+Now that you have an overview of how to work with Quarto and Typst, the next step is to learn how to create [Typst templates](#link-to-next-blog-post).

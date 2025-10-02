@@ -20,6 +20,15 @@ For this, we need to create a typst template.
 
 To create a template, we need to create two files: `typst-show.typ` and `typst-template.typ`.
 
+Our project should be organized as such:
+
+```
+my_project/
+├── report.qmd          # Quarto document
+├── typst-show.typ      # Layer between Quarto and Typst
+└── typst-template.typ  # Function of the template
+```
+
 `typst-template.typ` is the most important one. It defines the template (which is just a function) that controls the layout and style of the report. Here let us start with:
 
 ```{.typ filename="typst-template.typ"}
@@ -55,7 +64,7 @@ Here we are just "calling" our `article()` function from the template file.
 
 Then, our Quarto document should explicitly mention these files with the `template-partials` flag:
 
-````qmd
+````md
 ---
 title: Hello Typst!
 date: September 2025
@@ -72,6 +81,8 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry.
 ````
 
 ![](example-1.png)
+
+We can recognize here the centered title as well as the right-aligned date from our typst template.
 
 ## Footer
 
@@ -175,7 +186,7 @@ Columns are not well supported in Quarto yet. But we can approximate the behavio
 
 With a Quarto document that looks like this:
 
-````qmd
+````md
 ---
 title: "Hello typst"
 format:
@@ -208,4 +219,4 @@ This will not be detailed in depth here as **this is not specific to Typst**. Yo
 
 ## What is next?
 
-Now that you have an overview of how to work with Quarto and Typst, the next step is to learn how to create [Typst templates](#link-to-next-blog-post).
+Now that you have an overview of how to work with Quarto and Typst, the next step is to learn how to [connect R and Typst](#) for dynamic reporting.
