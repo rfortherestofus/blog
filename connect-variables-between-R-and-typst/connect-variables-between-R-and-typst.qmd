@@ -4,19 +4,19 @@ title: Connect variables between R and Typst
 
 ## Typst & Quarto
 
-This blog post is 3rd of blog post series on Typst and Quarto. Check out the first two if not already:
+This blog post is the 3rd of a blog post series on Typst and Quarto. Check out the first two if you have not already:
 
-- [Introduction to typst with Quarto](#)
-- [Customization in typst and Quarto](#)
+- [Introduction to Typst with Quarto](#)
+- [Customization in Typst and Quarto](#)
 
-Here we'll explain:
+Here we will explain:
 
 * how to connect variables between R and Typst
 * and how to make your reports dynamic
 
 ## Pass variables from R to Typst
 
-Let's start with a simple typst
+Let's start with a simple Typst:
 
 ```{.typ filename="typst-template.typ"}
 #let article(
@@ -29,7 +29,6 @@ Let's start with a simple typst
 
   body
 }
-```
 
 Here we define an `article()` function with three arguments:
 
@@ -69,7 +68,7 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry.
 
 ![](example-1.png)
 
-What if we want to add an author parameter? We just have to add it as an argument of our typst template:
+What if we want to add an author parameter? We just have to add it as an argument of our Typst template:
 
 ```{.typ filename="typst-template.typ"}
 #let article(
@@ -95,7 +94,6 @@ What if we want to add an author parameter? We just have to add it as an argumen
 )
 ```
 
-
 ````md
 ---
 title: Hello Typst!
@@ -117,11 +115,11 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry.
 
 ## Change output depending on the value of the parameter
 
-Right now, no matter the autor name, it will displayed `Author: *author*`.
+Right now, no matter the author name, it will display `Author: *author*`.
 
-But since typst has scripting capabilities (think of `if`/`for` statements, etc), we can handle special cases easily.
+But since Typst has scripting capabilities (think of `if`/`for` statements, etc.), we can handle special cases easily.
 
-Here, we'll add `"(founder)"` after the author name if the author is Julia, nothing otherwise. The only thing we need to change is how we handle the author parameter input in our typst template:
+Here, we will add `"(founder)"` after the author name if the author is Julia, nothing otherwise. The only thing we need to change is how we handle the author parameter input in our Typst template:
 
 ```{.typ filename="typst-template.typ"}
 #let article(
@@ -144,7 +142,7 @@ Here, we'll add `"(founder)"` after the author name if the author is Julia, noth
 }
 ```
 
-Now, depending on whether we write `author: Antonio` or `author: Julia` at the top of our Quarto document, we'll get different results:
+Now, depending on whether we write `author: Antonio` or `author: Julia` at the top of our Quarto document, we will get different results:
 
 :::: {.columns}
 
@@ -158,9 +156,9 @@ Now, depending on whether we write `author: Antonio` or `author: Julia` at the t
 
 ::::
 
-This example is just about changing a text string, but this can work with much more: different images, different positionning, different alignments, etc.
+This example is just about changing a text string, but this can work with much more: different images, different positioning, different alignments, etc.
 
-For example, if we have a `state` parameter that is supposed to a U.S. state, we could dynamically display the state flag with the following code (assuming we have the flag images):
+For example, if we have a `state` parameter that is supposed to be a U.S. state, we could dynamically display the state flag with the following code (assuming we have the flag images):
 
 ```typ
 let state_flag = "assets/flags/" + state + ".svg"
@@ -169,11 +167,11 @@ let state_flag = "assets/flags/" + state + ".svg"
 
 ## Define and reuse functions
 
-In typst, we can define function that makes super easy to reuse styling block.
+In Typst, we can define a function that makes it super easy to reuse a styling block.
 
-For example, let's say we want in our report a highly styled text, but we don't want to define its style multiple times?
+For example, let's say we want in our report a highly styled text, but we don't want to define its style multiple times.
 
-First, we define a `cool-label()` function with the style we want. It only requires to accept a string argument:
+First, we define a `cool-label()` function with the style we want. It only needs to accept a string argument:
 
 ```typ
 #let cool-label(string) = {
@@ -224,15 +222,15 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry.
 
 ![](./example-6.png)
 
-This allows to easily separate the styling logic from the content of the report.
+This allows us to easily separate the styling logic from the content of the report.
 
-## Dynamic content in typst
+## Dynamic content in Typst
 
-Our `cool-label()` calls here hardcode their input, in the sense that we litteraly write the value of the input.
+Our `cool-label()` calls here hardcode their input, in the sense that we literally write the value of the input.
 
-But what if we want this value to be passed from R? This would make sure we don't write the wrong thing and remove any manual work!
+But what if we want this value to be passed from R? This would ensure we do not write the wrong thing and remove any manual work.
 
-That's possible with a specific Quarto syntax that evaluates our input dynamically:
+That is possible with a specific Quarto syntax that evaluates our input dynamically:
 
 ````md
 ---
@@ -260,6 +258,26 @@ avg <- mean(values)
 
 ![](./example-7.png)
 
-## What is next?
+## Real world example
 
-Now that you have an overview of how to work with Quarto and Typst, the next step is to learn how to create [Typst templates](#link-to-next-blog-post).
+If you would like to see concrete, real-life examples of how Quarto + Typst + R are used, [check out the vaccination reports produced for John Hopkins](https://github.com/claritydatastudio/state-immunization-reports/).
+
+## Tips for a good development workflow
+
+In order to work comfortably with Typst and Quarto, you need to have a good editor and extensions. Here are the recommendations:
+
+- Use either VS Code or Positron (RStudio does not support typst as well as those two)
+- Install the following VSCode/Positron extensions:
+  - [Typst LSP](https://open-vsx.org/extension/nvarner/typst-lsp)
+  - [Tinymist Typst](https://open-vsx.org/extension/myriad-dreamin/tinymist)
+  - [vscode-pdf](https://open-vsx.org/extension/tomoki1207/pdf)
+
+You will have a language server (get function definitions, autocomplete, etc directly from the editor) and a code formatter (make sure your code is clean everytime you save.)
+
+## What's next?
+
+Now that you have the overwiew of how to work with Quarto and Typst, the next step is to learn more about Typst.
+
+There is a great [documentation website](https://typst.app/docs/), a large community and a [forum](https://forum.typst.app/) where you can ask questions.
+
+Typst is not fundamentally hard, but you need to spend some time working with it and reading the documentation. Also note that LLMs such as ChatGPT are **pretty bad** at Typst so it's advised to not rely on them too much.
