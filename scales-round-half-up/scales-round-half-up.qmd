@@ -1,0 +1,206 @@
+---
+title: "Scales Round Half Up"
+author: David Keyes
+date: 2024-11-09
+toc: false
+format: gfm
+execute: 
+  warning: false
+  message: false
+knitr:
+  opts_chunk:
+    collapse: true
+    comment: "#>"
+    dev: "ragg_png"
+    dev.args: { scaling: 1 }
+    dpi: 300
+    out.width: 80%
+    fig.asp: 0.56
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+library(tidyverse)
+library(scales)
+```
+
+```{r}
+dtap_coverage <-
+  read_csv("https://raw.githubusercontent.com/rfortherestofus/state-immunization-reports/refs/heads/main/data-clean/dtap_coverage_final.csv") |>
+  select(geography, birth_year_birth_cohort, estimate_percent) |>
+  set_names("state", "year", "percent_vaccinated")
+```
+  
+```{r}
+dtap_coverage |>
+  filter(percent_vaccinated %in% c(75.5, 90.5))
+```
+
+```{r}
+dtap_coverage |>
+  filter(percent_vaccinated %in% c(75.5, 90.5)) |>
+  mutate(percent_vaccinated_rounded = round(percent_vaccinated))
+```
+
+```{r}
+dtap_coverage_arizona <-
+  dtap_coverage |>
+  filter(year == 2020) |>
+  filter(state %in% c("Arizona", "Colorado", "California", "United States")) |>
+  mutate(state = fct(state, levels = c("United States", "California", "Colorado", "Arizona"))) |>
+  mutate(percent_vaccinated_rounded = round(percent_vaccinated))
+
+dtap_coverage_arizona |>
+  mutate(focus_state = if_else(state == "Arizona", "Y", "N")) |> 
+  ggplot(
+    aes(
+      x = percent_vaccinated,
+      y = state,
+      fill = focus_state,
+      color = focus_state
+    )
+  ) +
+  geom_col(
+    color = "#012d72",
+    linewidth = 1
+  ) +
+  geom_text(
+    aes(
+      x = 3,
+      label = state
+    ),
+    hjust = 0
+  ) +
+  geom_text(
+    aes(label = percent_vaccinated_rounded),
+    hjust = 2,
+    fontface = "bold"
+  ) +
+  scale_fill_manual(
+    values = c(
+      "Y" = "#012d72",
+      "N" = "white"
+    )
+  ) +
+  scale_color_manual(
+    values = c(
+      "Y" = "white",
+      "N" = "black"
+    )
+  ) +
+  theme_void() +
+  theme(legend.position = "none")
+```
+
+
+
+
+```{r}
+75.5 |>
+  round()
+```
+
+```{r}
+12.5 |>
+  round()
+```
+
+```{r}
+library(janitor)
+```
+
+```{r}
+11.5 |>
+  round_half_up()
+```
+
+```{r}
+12.5 |>
+  round_half_up()
+```
+
+
+```{r}
+library(scales)
+```
+
+
+```{r}
+0.115 |>
+  percent()
+```
+
+```{r}
+0.125 |> percent()
+```
+
+
+```{r}
+0.115 |>
+  round_half_up(digits = 2) |>
+  percent()
+```
+
+```{r}
+0.125 |>
+  round_half_up(digits = 2) |>
+  percent()
+```
+
+# Make function
+
+
+```{r}
+percent_half_up <- function(x) {
+  x |>
+    round_half_up(digits = 2) |>
+    percent()
+}
+```
+
+
+```{r}
+0.115 |>
+  percent_half_up()
+```
+
+```{r}
+0.115 |>
+  percent()
+```
+
+```{r}
+0.125 |>
+  percent_half_up()
+```
+
+```{r}
+0.125 |>
+  percent()
+```
+
+
+# Deal with values > 1
+
+```{r}
+12.5 |>
+  percent_half_up()
+```
+
+```{r}
+percent_half_up <- function(x) {
+  if (x > 1) {
+    stop("Please enter a value less than 1")
+  }
+
+  x |>
+    round_half_up(digits = 2) |>
+    percent()
+}
+```
+
+```{r}
+12.5 |>
+  percent_half_up()
+```
