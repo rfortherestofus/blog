@@ -1,6 +1,7 @@
 ---
 title: Status of Childhood Immunization in Alabama
 date: September 2025
+date-format: "MMMM YYYY"
 format:
    typst:
       template-partials: 
@@ -49,16 +50,18 @@ Source: NCSL, SchoolVaxView
 
 ## Public Health Spending
 
-Low levels of public health spending are thought to contribute to
-suboptimal immunization rates. Nationally, Alabama ranks 18th in
-public health spending.
+Low levels of public health spending are thought to contribute to suboptimal immunization rates. Nationally,Alabama ranks 18th in public health spending.
 
 ## Universal Vaccine Purchasing
 
-In states with Universal Purchase programs, the state government
-purchases all recommended vaccines for all children, regardless of
-insurance status. These initiatives can help to address disparities in
-vaccine coverage and support equitable vaccine access.
+In states with Universal Purchase programs, the state government purchases all recommended vaccines for all children, regardless of insurance status. These initiatives can help to address disparities in vaccine coverage and support equitable vaccine access.
+
+```{=typst}
+status-box(
+   top-box-text: "Universal Purchaser?", 
+   bottom-box-text: "No"
+   )
+```
 
 ## Support for Immunization
 

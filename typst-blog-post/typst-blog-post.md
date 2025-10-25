@@ -230,7 +230,80 @@ You’ll see that while we’ve changed the font family for both paragraph text 
 
 Our show rule tells Typst to just target headings. From there, we again use a set rule to specify the font, size, and weight.
 
+At this point, all of headings are the exact same size. But we likely want to have level 2 headings be larger than level 3 headings and so on. To do this, we need to alter our heading syntax a bit, using instead what Typst calls a [show rule with function](https://typst.app/docs/reference/styling/#show-rules). Our `typst-template.typ` file now looks like this:
+
+``` typ
+#let report(
+  title: none,
+  date: none,
+  content,
+) = {
+  set page(
+    paper: "us-letter",
+    margin: (top: 0.5in, bottom: 1in, x: 0.75in),
+  )
+  set text(
+    lang: "en",
+    region: "US",
+    font: "Lato",
+    size: 11pt,
+  )
+  show heading: it => {
+    let sizes = (
+      "1": 18pt, // Heading level 1
+      "2": 16pt, // Heading level 2
+      "3": 14pt, // Heading level 3
+      "4": 12pt, // Heading level 4
+    )
+    let level = str(it.level)
+    let size = sizes.at(level)
+
+    set text(
+      size: size,
+      fill: rgb("#002D72"),
+      font: "Bitter",
+      weight: "bold",
+    )
+    it
+  }
+
+  content
+}
+```
+
+The code now uses the show rule with function with the parameter `heading_properties`. The line `show heading: it =>` defines what Typst calls an [unnamed function](https://typst.app/docs/reference/foundations/function/#unnamed). The `it` here is the function’s parameter. Within the function, we begin by defining the sizes in what Typst calls a [dictionary](https://typst.app/docs/reference/foundations/dictionary/) (kind of like a named list in R TODO check if this is right):
+
+``` typ
+let sizes = (
+  "1": 18pt, // Heading level 1
+  "2": 16pt, // Heading level 2
+  "3": 14pt, // Heading level 3
+  "4": 12pt, // Heading level 4
+)
+```
+
+We then tell Typst to pull the level from the sizes using the code `let level = str(it.level)`. Next, we define `size` with this code: `let size = sizes.at(level)`. We then use the `size` variable we have created in setting the properties of the headings (we’ve also adjusted the color here to be blue):
+
+``` typ
+set text(
+    size: size,
+    fill: rgb("#002D72"),
+    font: "Bitter",
+    weight: "bold",
+  )
+```
+
+Finally, within our unnamed function, we return `it`, which contains all of the properties of our headings. We can see the changes when we render:
+
+\[TODO: Add screenshot\]
+
 #### Header and footer
+
+We’ve dealt with paragraph and heading text. Next, let’s customize our report’s footer. In the reports we made, we added the report title as well as the date in the footer:
+
+\[TODO: Add screenshot\]
+
+To do this
 
 #### Custom elements (e.g. blue lines, flags, status-boxes)
 
