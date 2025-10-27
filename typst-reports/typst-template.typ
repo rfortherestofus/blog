@@ -2,6 +2,16 @@
   line(length: 100%, stroke: 2pt + rgb("#68ACE5"))
 }
 
+#let source(source_text) = {
+  align(right)[
+    #text(
+      source_text,
+      font: "Bitter",
+      size: 9pt,
+      style: "italic",
+    )]
+}
+
 #let status-box(top-box-text: "", bottom-box-text: "") = {
   let top_box = box(
     width: 100%,
@@ -19,8 +29,7 @@
     fill: white,
     inset: 6pt,
     align(center + horizon)[
-      #text(fill: black, size: 14pt)
-      [#bottom-box-text]
+      #text(fill: black, size: 14pt)[#bottom-box-text]
     ],
   )
 
@@ -73,13 +82,13 @@
   )
   show heading: it => {
     let sizes = (
-      "1": 18pt, // Heading level 1
-      "2": 16pt, // Heading level 2
-      "3": 14pt, // Heading level 3
-      "4": 12pt, // Heading level 4
+      "1": 16pt, // Heading level 1
+      "2": 10pt, // Heading level 2
     )
     let level = str(it.level)
     let size = sizes.at(level)
+    let alignment = if level == "2" { center } else { left }
+    let formatted_heading = if level == "2" { it } else { upper(it) }
 
     set text(
       size: size,
@@ -87,7 +96,7 @@
       font: "Bitter",
       weight: "bold",
     )
-    it
+    align(alignment)[#formatted_heading]
   }
 
   image("logo.png", width: 4in)

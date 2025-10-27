@@ -20,15 +20,24 @@ This brief illustrates the current status of childhood immunization in Alabama a
 
 Maintaining sufficient vaccination coverage is critical for establishing community protection. The charts below demonstrate how coverage for two critical vaccines has changed over time in Alabama and how it compares to neighboring states, national rates, and Healthy People 2030 (HP2030) targets.
 
+<div style="background-color: #F8F8F8;">
+
 ### Proportion of 2-year-olds fully protected with DTaP vaccines
 
+
+:::{layout-ncol=2}
 ![](dtap-over-time.svg)
 
 ![](dtap-comparison.svg)
+:::
 
 In 2023, more 2-year-olds were fully vaccinated against diphtheria, tetanus, and pertussis (received all four doses of DTaP) in Alabama compared to the previous year. Coverage in Alabama is below the HP2030 target of 90%.
 
-Source: ChildVaxView
+```{=typst}
+#source("Source: ChildVaxView")
+```
+
+</div>
 
 ### Proportion of kindergartners protected with MMR vaccines
 
