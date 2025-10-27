@@ -12,7 +12,7 @@ In the last couple years, we’ve moved to [Typst](https://quarto.org/docs/outpu
 
 [The Typst website has great documentation](https://typst.app/docs/), but it mostly covers how to write directly in Typst, rather than working in Quarto and rendering with Typst. People often ask me how we make reports with Typst, but I don’t have anywhere to point them to.
 
-So, along with consultant [Joseph Barbier](https://barbierjoseph.com/) (who has become a true expert in this area), here is an extended tutorial on making high-quality PDFs using Quarto and Typst. We’ll recreate most elements of the [childhood immunization reports made for the Johns Hopkins University International Vaccine Access Center.](https://publichealth.jhu.edu/ivac/monitoring-childhood-immunization-at-the-state-level).
+So, in conjunction with consultant [Joseph Barbier](https://barbierjoseph.com/) (who has become a true expert in this area), here is an extended tutorial on making high-quality PDFs using Quarto and Typst. We’ll recreate most elements of the [childhood immunization reports made for the Johns Hopkins University International Vaccine Access Center.](https://publichealth.jhu.edu/ivac/monitoring-childhood-immunization-at-the-state-level).
 
 \[TODO: Add screenshot of reports\]
 
@@ -63,7 +63,7 @@ On rendering, we can see our updated PDF:
 
 \[TODO: Add screenshot\]
 
-YAML options get us started, but they don’t let us do things like set different fonts and fonts for text. To do that, let’s take a quick detour away from Typst and to `brand.yml`.
+YAML options get us started, but they don’t let us do things like set different fonts for headings and paragraph text. To do that, let’s take a quick detour away from Typst and to `brand.yml`.
 
 ## `brand.yml`
 
@@ -72,10 +72,14 @@ The next step on our PDF customization journey takes us to [brand.yml](https://p
 Let’s create a `_brand.yml` file. This file will allow us to use custom fonts (Bitter and Lato, which is close to the actual font, known as Gentian, used for the reports). Additionally, we will set the color of the headings to be a navy blue.
 
 ``` yaml
-TODO: add fonts: Lato and Bitter
+TODO: add brand.yml and add fonts: Lato and Bitter
 ```
 
-This gets us a decent part of the way there. But see how all of the headings are the same size? That’s not ideal and `_brand.yml` doesn’t give us any tools to fix this. It also doesn’t allow us to make customizations to the header or the footer of our report. Overall, `_brand.yml` is great if you want to make some simple customizations to a PDF document, but if we want to make a truly unique report, we’ll need to create a custom Typst template.
+This gets us a decent part of the way there.
+
+\[TODO: Add screenshot\]
+
+But see how all of the headings are the same size? That’s not ideal and `_brand.yml` doesn’t give us any tools to fix this. It also doesn’t allow us to make customizations to the header or the footer of our report. Overall, `_brand.yml` is great if you want to make some simple customizations to a PDF document, but if we want to make a truly unique report, we’ll need to create a custom Typst template.
 
 ## Create a custom Typst template
 
@@ -226,9 +230,13 @@ You’ll see that while we’ve changed the font family for both paragraph text 
 }
 ```
 
-Our show rule tells Typst to just target headings. From there, we again use a set rule to specify the font, size, and weight.
+Our show rule `show heading` tells Typst to just target headings. From there, we again use a set rule to specify the font, size, and weight.
 
-At this point, all of headings are the exact same size. But we likely want to have level 2 headings be larger than level 3 headings and so on. To do this, we need to alter our heading syntax a bit, using instead what Typst calls a [show rule with function](https://typst.app/docs/reference/styling/#show-rules). Our `typst-template.typ` file now looks like this:
+At this point, all of headings are the exact same size. But we likely want to have level 1 headings be larger than level 2 headings and so on. Looking at our report, we also want to have level 1 headings be written in uppercase. And, we want to have level 2 headings be centered rather than left-aligned.
+
+\[TODO: Add screenshot show headings for charts and regular headings\]
+
+To do all of this, we need to alter our heading syntax a bit, using instead what Typst calls a [show rule with function](https://typst.app/docs/reference/styling/#show-rules). Our `typst-template.typ` file now looks like this:
 
 ``` typ
 #let report(
@@ -248,13 +256,13 @@ At this point, all of headings are the exact same size. But we likely want to ha
   )
   show heading: it => {
     let sizes = (
-      "1": 18pt, // Heading level 1
-      "2": 16pt, // Heading level 2
-      "3": 14pt, // Heading level 3
-      "4": 12pt, // Heading level 4
+      "1": 16pt, // Heading level 1
+      "2": 10pt, // Heading level 2
     )
     let level = str(it.level)
     let size = sizes.at(level)
+    let formatted_heading = if level == "2" { it } else { upper(it) }
+    let alignment = if level == "2" { center } else { left }
 
     set text(
       size: size,
@@ -262,7 +270,7 @@ At this point, all of headings are the exact same size. But we likely want to ha
       font: "Bitter",
       weight: "bold",
     )
-    it
+    align(alignment)[#formatted_heading]
   }
 
   content
@@ -273,54 +281,47 @@ The code now uses the show rule with function with the parameter `heading_proper
 
 ``` typ
 let sizes = (
-  "1": 18pt, // Heading level 1
-  "2": 16pt, // Heading level 2
-  "3": 14pt, // Heading level 3
-  "4": 12pt, // Heading level 4
+  "1": 16pt, // Heading level 1
+  "2": 10pt, // Heading level 2
 )
 ```
 
-We then tell Typst to pull the level from the sizes using the code `let level = str(it.level)`. Next, we define `size` with this code: `let size = sizes.at(level)`. We then use the `size` variable we have created in setting the properties of the headings (we’ve also adjusted the color here to be blue):
+We then tell Typst to pull the level from the sizes using the code `let level = str(it.level)`. Next, we define `size` with this code: `let size = sizes.at(level)`. We then use the `size` variable we have created in setting the properties of the headings (we’ve also adjusted the color here to be a dark blue):
 
 ``` typ
 set text(
-    size: size,
-    fill: rgb("#002D72"),
-    font: "Bitter",
-    weight: "bold",
-  )
+  size: size,
+  fill: rgb("#002D72"),
+  font: "Bitter",
+  weight: "bold",
+)
 ```
 
-Finally, within our unnamed function, we return `it`, which contains all of the properties of our headings. We can see the changes when we render:
-
-\[TODO: Add screenshot\]
-
-In the reports we made, the headings are all upper case. To make this change, we can add the `upper()` function just before returning `it`, as follows:
+To make level 1 headings uppercase, we use this syntax:
 
 ``` typ
-show heading: it => {
-    let sizes = (
-      "1": 18pt, // Heading level 1
-      "2": 16pt, // Heading level 2
-      "3": 14pt, // Heading level 3
-      "4": 12pt, // Heading level 4
-    )
-    let level = str(it.level)
-    let size = sizes.at(level)
-
-    set text(
-      size: size,
-      fill: rgb("#002D72"),
-      font: "Bitter",
-      weight: "bold",
-    )
-    upper(it)
-  }
+let formatted_heading = if level == "1" { upper(it) } else { it }
 ```
 
-Now when we render, our headings are all upper case:
+This tells Typst to create a new variable called `formatted_heading`. If the heading being formatted is level 1, it is transformed to uppercase. All other headings remain in whatever case they are written in the Quarto document.
+
+We set alignment with this line:
+
+``` typ
+let alignment = if level == "2" { center } else { left }
+```
+
+This syntax tells Typst to center level 2 headings and left-align all other headings. We then use the `alignment` variable when returning the `formatted_heading` with this code:
+
+``` typ
+align(alignment)[#formatted_heading]
+```
+
+We can now render and see our updated headings:
 
 \[TODO: Add screenshot\]
+
+One important thing to note here is that Typst - TODO: Mention how Typst makes headings go up one level
 
 #### Header and footer
 
@@ -829,10 +830,14 @@ You can see here how our `source()` function has one argument (`source_text`). T
 To use this `source()` function in our Quarto document, we create a Typst code chunk, as follows:
 
     ```{=typst}
-    #source("Source: CDC NIS-Child 2023")
+    #source("Source: ChildVaxView")
     ```
 
-By c TODO: Explain why =typst not just typst
+By creating a Typst code chunk, we tell Quarto to treat what is in the chunk as Typst code. So, when Quarto renders the document, it knows to use Typst to render this chunk and `#source("Source: ChildVaxView")` gets turned into nicely formatted source text:
+
+\[TODO: Add screenshot\]
+
+TODO: Explain why =typst not just typst
 
 You can also make more complicated custom functions. For instance, we use what we called “status boxes” throughout the report to show the status of various items:
 
@@ -882,41 +887,62 @@ We create these gray boxes using a bit of HTML and CSS as follows:
 ![](dtap-over-time.svg)
 
 ![](dtap-comparison.svg)
-</div>
+
+In 2023, more 2-year-olds were fully vaccinated against diphtheria, tetanus, and pertussis (received all four doses of DTaP) in Alabama compared to the previous year. Coverage in Alabama is below the HP2030 target of 90%.
+
+```{=typst}
+#source("Source: ChildVaxView")
 ```
 
-The `div` element allows us to create a section with a light gray background color. We then add our images within that section.
+</div>
 
-TODO: Make sure we actually get the gray bg working
 
-## Columns
+    The `div` element allows us to create a section with a light gray background color. We then add our text and images within that section.
 
-You’ll notice that in the childhood immunization reports, we often use two columns to display images side-by-side:
+    - TODO: Make sure we actually get the gray bg working
 
-\[TODO: Add screenshot\]
+    ## Columns
 
-Quarto does not allow us to create columns directly in Typst ([it is a known limitation at the moment](https://quarto.org/docs/output-formats/typst.html#known-limitations)). However, we can achieve the same effect using the `layout-ncol` attribute in Quarto. Here is an example of how to do this:
+    You'll notice that in the childhood immunization reports, we often use two columns to display images side-by-side:
 
-``` html
-<div style="background-color: #F8F8F8; padding: 100px">
+    [TODO: Add screenshot]
 
-### Proportion of 2-year-olds fully protected with DTaP vaccines
+    Quarto does not allow us to create columns directly in Typst ([it is a known limitation at the moment](https://quarto.org/docs/output-formats/typst.html#known-limitations)). However, we can achieve the same effect using the `layout-ncol` attribute in Quarto. Here is an example of how to do this:
 
-:::{layout-ncol=2}
-![](dtap-over-time.svg)
 
-![](dtap-comparison.svg)
+    ::: {.cell}
+
+    ````{.html .cell-code}
+    <div style="background-color: #F8F8F8;">
+
+    ### Proportion of 2-year-olds fully protected with DTaP vaccines
+
+    :::{layout-ncol=2}
+    ![](dtap-over-time.svg)
+
+    ![](dtap-comparison.svg)
+    :::
+
+    In 2023, more 2-year-olds were fully vaccinated against diphtheria, tetanus, and pertussis (received all four doses of DTaP) in Alabama compared to the previous year. Coverage in Alabama is below the HP2030 target of 90%.
+
+    ```{=typst}
+    #source("Source: ChildVaxView")
+
 :::
 
 </div>
-```
+
+\`\`\`
 
 The `layout-ncol=2` attribute tells Quarto to create two columns for the content within the div. When we render, we can see our images side-by-side:
 
 \[TODO: Add screenshot\]
 
-- TODO: show how to make custom chart title
-- TODO: show to how to make custom below chart text
+- TODO: Figure out if we can add padding to the entire div rather than to individual elements within it
+
+If we can’t do this, then:
+
+- TODO: show how to make custom chart title, but we actually do this above in heading section
 - TODO: Add custom source info
 
 ## Tools to Use

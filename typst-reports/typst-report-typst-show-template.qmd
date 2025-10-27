@@ -34,7 +34,7 @@ Maintaining sufficient vaccination coverage is critical for establishing communi
 In 2023, more 2-year-olds were fully vaccinated against diphtheria, tetanus, and pertussis (received all four doses of DTaP) in Alabama compared to the previous year. Coverage in Alabama is below the HP2030 target of 90%.
 
 ```{=typst}
-#source("Source: ChildVaxView")
+#source_text("Source: ChildVaxView")
 ```
 
 </div>

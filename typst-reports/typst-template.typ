@@ -1,11 +1,9 @@
-#let blueline() = {
-  line(length: 100%, stroke: 2pt + rgb("#68ACE5"))
-}
+#let blueline() = { line(length: 100%, stroke: 2pt + rgb("#68ACE5")) }
 
-#let source(source_text) = {
+#let source_text(source_info) = {
   align(right)[
     #text(
-      source_text,
+      source_info,
       font: "Bitter",
       size: 9pt,
       style: "italic",
@@ -80,24 +78,7 @@
     font: "Lato",
     size: 11pt,
   )
-  show heading: it => {
-    let sizes = (
-      "1": 16pt, // Heading level 1
-      "2": 10pt, // Heading level 2
-    )
-    let level = str(it.level)
-    let size = sizes.at(level)
-    let alignment = if level == "2" { center } else { left }
-    let formatted_heading = if level == "2" { it } else { upper(it) }
 
-    set text(
-      size: size,
-      fill: rgb("#002D72"),
-      font: "Bitter",
-      weight: "bold",
-    )
-    align(alignment)[#formatted_heading]
-  }
 
   image("logo.png", width: 4in)
 
