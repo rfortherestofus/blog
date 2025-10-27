@@ -1,0 +1,7 @@
+typography:
+  base: 
+    family: Lato
+    size: 11pt
+  headings: 
+    family: Bitter
+    color: "#002D72"

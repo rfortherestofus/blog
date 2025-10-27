@@ -2,7 +2,7 @@
 David Keyes
 2025-10-27
 
-In our consulting work as [Clarity Data Studio](https://claritydatastudio.com/), we make a lot of PDFs, like the [recent reports looking at childhood immunization made for the Johns Hopkins University International Vaccine Access Center.](https://publichealth.jhu.edu/ivac/monitoring-childhood-immunization-at-the-state-level)
+In our consulting work at [Clarity Data Studio](https://claritydatastudio.com/), we make a lot of PDFs, like the [recent reports looking at childhood immunization made for the Johns Hopkins University International Vaccine Access Center.](https://publichealth.jhu.edu/ivac/monitoring-childhood-immunization-at-the-state-level)
 
 \[TODO: add screenshots\]
 
@@ -69,10 +69,16 @@ YAML options get us started, but they don’t let us do things like set differen
 
 The next step on our PDF customization journey takes us to [brand.yml](https://posit-dev.github.io/brand-yml/). This tool, created by Posit developer Garrick Aden-Buie ([I spoke with him about it in June 2025](https://rfortherestofus.com/2025/06/podcast-episode-27)), allows you to create a single `_brand.yml` file that controls the look and feel of files rendered from Quarto docs (this goes beyond the scope of this blog post, but you can use a single `_brand.yml` file to make multiple formats follow your brand guidelines).
 
-Let’s create a `_brand.yml` file. This file will allow us to use custom fonts (Bitter and Lato, which is close to the actual font, known as Gentian, used for the reports). Additionally, we will set the color of the headings to be a navy blue.
+Let’s create a `_brand.yml` file. This file will allow us to use custom fonts (Bitter and Lato, which is close to the actual font, known as Gentian, used for the reports). Additionally, we will set the color of the headings to be a navy blue (#002D72).
 
 ``` yaml
-TODO: add brand.yml and add fonts: Lato and Bitter
+typography:
+  base: 
+    family: Lato
+    size: 11pt
+  headings: 
+    family: Bitter
+    color: "#002D72"
 ```
 
 This gets us a decent part of the way there.
@@ -277,7 +283,7 @@ To do all of this, we need to alter our heading syntax a bit, using instead what
 }
 ```
 
-The code now uses the show rule with function with the parameter `heading_properties`. The line `show heading: it =>` defines what Typst calls an [unnamed function](https://typst.app/docs/reference/foundations/function/#unnamed). The `it` here is the function’s parameter. Within the function, we begin by defining the sizes in what Typst calls a [dictionary](https://typst.app/docs/reference/foundations/dictionary/) (kind of like a named list in R TODO check if this is right):
+The code now uses the show rule with function with the parameter `heading_properties`. The line `show heading: it =>` defines what Typst calls an [unnamed function](https://typst.app/docs/reference/foundations/function/#unnamed). The `it` here is the function’s parameter. Within the function, we begin by defining the sizes in what Typst calls a [dictionary](https://typst.app/docs/reference/foundations/dictionary/):
 
 ``` typ
 let sizes = (
@@ -286,7 +292,7 @@ let sizes = (
 )
 ```
 
-We then tell Typst to pull the level from the sizes using the code `let level = str(it.level)`. Next, we define `size` with this code: `let size = sizes.at(level)`. We then use the `size` variable we have created in setting the properties of the headings (we’ve also adjusted the color here to be a dark blue):
+We then tell Typst to pull the level from the sizes using the code `let level = str(it.level)`. Next, we define `size` with this code: `let size = sizes.at(level)`. Next, we use the `size` variable we have created in setting the properties of the headings (we’ve also adjusted the color here to be a navy blue, \#002D72):
 
 ``` typ
 set text(
@@ -321,7 +327,7 @@ We can now render and see our updated headings:
 
 \[TODO: Add screenshot\]
 
-One important thing to note here is that Typst - TODO: Mention how Typst makes headings go up one level
+One important thing to note here is that Quarto shifts Typst headings up one level on rendering ([see details in the `shift-heading-levels-by` argument on the Quarto docs page](https://quarto.org/docs/reference/formats/typst.html#numbering)). That is, if you have a level 1 heading in your Quarto document, it will be treated as a level 2 heading in Typst. If you look at the Quarto document code we use, the level 2 headings are styled by what we defined as level 1 headings in our `typst-template.typ` file.
 
 #### Header and footer
 
@@ -493,13 +499,13 @@ Our full `typst-template.typ` file now looks like this:
   )
   show heading: it => {
     let sizes = (
-      "1": 18pt, // Heading level 1
-      "2": 16pt, // Heading level 2
-      "3": 14pt, // Heading level 3
-      "4": 12pt, // Heading level 4
+      "1": 16pt, // Heading level 1
+      "2": 10pt, // Heading level 2
     )
     let level = str(it.level)
     let size = sizes.at(level)
+    let formatted_heading = if level == "1" { upper(it) } else { it }
+    let alignment = if level == "2" { center } else { left }
 
     set text(
       size: size,
@@ -507,7 +513,7 @@ Our full `typst-template.typ` file now looks like this:
       font: "Bitter",
       weight: "bold",
     )
-    upper(it)
+    align(alignment)[#formatted_heading]
   }
 
   content
@@ -588,13 +594,13 @@ To add the logo, we use the `image()` function. Adding `image("logo.png", width:
   )
   show heading: it => {
     let sizes = (
-      "1": 18pt, // Heading level 1
-      "2": 16pt, // Heading level 2
-      "3": 14pt, // Heading level 3
-      "4": 12pt, // Heading level 4
+      "1": 16pt, // Heading level 1
+      "2": 10pt, // Heading level 2
     )
     let level = str(it.level)
     let size = sizes.at(level)
+    let formatted_heading = if level == "1" { upper(it) } else { it }
+    let alignment = if level == "2" { center } else { left }
 
     set text(
       size: size,
@@ -602,7 +608,7 @@ To add the logo, we use the `image()` function. Adding `image("logo.png", width:
       font: "Bitter",
       weight: "bold",
     )
-    upper(it)
+    align(alignment)[#formatted_heading]
   }
 
   image("logo.png", width: 4in)
@@ -635,21 +641,21 @@ To add the Alabama flag, we can again use the `image()` function. If we add it b
 
 ``` typ
 grid(
-    columns: (80%, 15%, 5%),
-    align(left)[
-      #text(
-        upper(title),
-        font: "Bitter",
-        size: 20pt,
-        fill: rgb("#002D72"),
-        weight: "bold",
-      )
-    ],
-    align(right)[
-      #image("flag.svg")
-    ],
-    align(right)[],
-  )
+  columns: (80%, 15%, 5%),
+  align(left)[
+    #text(
+      upper(title),
+      font: "Bitter",
+      size: 20pt,
+      fill: rgb("#002D72"),
+      weight: "bold",
+    )
+  ],
+  align(right)[
+    #image("flag.svg")
+  ],
+  align(right)[],
+)
 ```
 
 The code creates three columns: the first takes up 80% and has the title. The second takes up 15% and adds the flag. The third column takes up 5% but has no content (it just adds a bit of padding on the right of the flag).
@@ -707,13 +713,13 @@ And our full `typst-template.typ` code looks like this:
   )
   show heading: it => {
     let sizes = (
-      "1": 18pt, // Heading level 1
-      "2": 16pt, // Heading level 2
-      "3": 14pt, // Heading level 3
-      "4": 12pt, // Heading level 4
+      "1": 16pt, // Heading level 1
+      "2": 10pt, // Heading level 2
     )
     let level = str(it.level)
     let size = sizes.at(level)
+    let formatted_heading = if level == "1" { upper(it) } else { it }
+    let alignment = if level == "2" { center } else { left }
 
     set text(
       size: size,
@@ -721,7 +727,7 @@ And our full `typst-template.typ` code looks like this:
       font: "Bitter",
       weight: "bold",
     )
-    upper(it)
+    align(alignment)[#formatted_heading]
   }
 
   image("logo.png", width: 4in)
@@ -747,7 +753,7 @@ And our full `typst-template.typ` code looks like this:
 }
 ```
 
-TODO: Figure out why you need \# inside grid, but not outside of it
+TODO: Explain why you need \# inside grid, but not outside of it. See https://3mw.albert-rapp.de/p/creating-beautiful-pdf-reports-with-typst-and-quarto
 
 #### Custom functions (e.g. blue lines, status-boxes)
 
@@ -756,9 +762,7 @@ In the report we made, there are blue lines above and below the grid with the ti
 To do this, we add the following code at the top of our `typst-template.typ` file.
 
 ``` typ
-#let blueline() = {
-  line(length: 100%, stroke: 2pt + rgb("#68ACE5"))
-}
+#let blueline() = { line(length: 100%, stroke: 2pt + rgb("#68ACE5")) }
 ```
 
 We can then use the custom `blueline()` function lower down in our `typst-template.typ` file. We put `blueline()` above and below the grid with the title and flag as follows:
@@ -805,19 +809,17 @@ This brief illustrates the current status of childhood immunization in Alabama a
 ```
 ````
 
-The `blueline()` function is relatively simple. It takes no arguments, just drawing a blue line wherever it is called. You can make more complicated functions as well.
-
-A slightly more complicated example is the `source()` function we used throughout the report to add source information below charts:
+The `blueline()` function is relatively simple. It takes no arguments, just drawing a blue line wherever it is called. A slightly more complicated example is the `source_text()` function we used throughout the report to add source information below charts:
 
 \[TODO: Add screenshot\]
 
 To create this function, we add the following code at the top of our `typst-template.typ` file:
 
 ``` typ
-#let source(source_text) = {
+#let source_text(source_info) = {
   align(right)[
     #text(
-      source_text,
+      source_info,
       font: "Bitter",
       size: 9pt,
       style: "italic",
@@ -825,19 +827,17 @@ To create this function, we add the following code at the top of our `typst-temp
 }
 ```
 
-You can see here how our `source()` function has one argument (`source_text`). This argument allows us to use the function to style source text while changing the exact content of the source information.
+You can see here how our `source()` function has one argument (`source_info`). This argument allows us to use the function to style source text while changing the exact content of the source information.
 
-To use this `source()` function in our Quarto document, we create a Typst code chunk, as follows:
+To use this `source_text()` function in our Quarto document, we create a Typst code chunk, as follows (adding `=typst` tells Quarto to treat is as Typst code):
 
     ```{=typst}
-    #source("Source: ChildVaxView")
+    #source_text("Source: ChildVaxView")
     ```
 
-By creating a Typst code chunk, we tell Quarto to treat what is in the chunk as Typst code. So, when Quarto renders the document, it knows to use Typst to render this chunk and `#source("Source: ChildVaxView")` gets turned into nicely formatted source text:
+By creating a Typst code chunk, we tell Quarto to treat what is in the chunk as Typst code. So, when Quarto renders the document, it knows to use Typst to render this chunk and `#source_text("Source: ChildVaxView")` gets turned into nicely formatted source text:
 
 \[TODO: Add screenshot\]
-
-TODO: Explain why =typst not just typst
 
 You can also make more complicated custom functions. For instance, we use what we called “status boxes” throughout the report to show the status of various items:
 
@@ -897,9 +897,7 @@ In 2023, more 2-year-olds were fully vaccinated against diphtheria, tetanus, and
 </div>
 
 
-    The `div` element allows us to create a section with a light gray background color. We then add our text and images within that section.
-
-    - TODO: Make sure we actually get the gray bg working
+    The `div` element allows us to create a section with a light gray background color (it's actually not visible yet, but will become visible in a minute). We then add our text and images within that section. 
 
     ## Columns
 
@@ -934,18 +932,27 @@ In 2023, more 2-year-olds were fully vaccinated against diphtheria, tetanus, and
 
 \`\`\`
 
-The `layout-ncol=2` attribute tells Quarto to create two columns for the content within the div. When we render, we can see our images side-by-side:
+The `layout-ncol=2` attribute tells Quarto to create two columns for the content within it. When we render, we can see our images side-by-side:
 
 \[TODO: Add screenshot\]
 
-- TODO: Figure out if we can add padding to the entire div rather than to individual elements within it
-
-If we can’t do this, then:
-
-- TODO: show how to make custom chart title, but we actually do this above in heading section
-- TODO: Add custom source info
+The formatting isn’t perfect here (we might want to add some padding within the gray box, for example), but it’s a good start.
 
 ## Tools to Use
+
+There are three tools that help a lot when creating custom Typst templates. These are extensions that work only in Positron, but do not work in RStudio (this is the first time I’ve really felt like Positron has a clear advantage over RStudio).
+
+The first extension is [Typst LSP](https://open-vsx.org/extension/nvarner/typst-lsp). This extension allows you to see helpful tooltips when writing Typst code. For instance, when I write `set page(`, I get a tooltip that shows me all of the possible arguments I can use with the `page()` function:
+
+\[TODO: Add screenshot\]
+
+This is helpful because I’m a relative Typst newbie and don’t have all of the functions and their arguments memorized yet.
+
+A second extension to use is [Tinymist Typst](https://open-vsx.org/extension/myriad-dreamin/tinymist). I use this extension to automatically format my Typst code, keeping things neat, tidy, and easy to read.
+
+\[TODO: Add screenshot\]
+
+Finally, if you want to view rendered PDFs directly in Positron, you can use the [vscode-pdf](https://open-vsx.org/extension/tomoki1207/pdf) extension.
 
 ## Conclusion
 
@@ -953,4 +960,4 @@ This is really only scratching the surface of what is possible with Typst and Qu
 
 [With Posit’s recent announcement of their support of Typst](https://posit.co/blog/posit-and-typst/), its path forward seems secure. And Typst is making great strides. Its [recent 0.14 release adds support for many accessibility features](https://typst.app/blog/2025/typst-0.14/), which is a requirement for many who make PDFs.
 
-Good luck making your own reports in Typst. If you want support in creating reports in Quarto and Typst, feel free to reach out [Clarity Data Studio](https://claritydatastudio.com/).
+Good luck making your own reports in Typst. And if you want support in creating reports in Quarto and Typst, feel free to reach out [Clarity Data Studio](https://claritydatastudio.com/).
