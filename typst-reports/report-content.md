@@ -1,15 +1,3 @@
----
-title: Status of Childhood Immunization in Alabama
-date: September 2025
-format:
-  typst:
-    mainfont: "Comic Sans MS"
-    papersize: us-letter
-    margin:
-      x: 2in
-      y: 2in
----
-
 This brief illustrates the current status of childhood immunization in Alabama and is intended to inform state-level policy decisions and priorities. Takeaways include:
 
 - State-level immunization coverage in Alabama for MMR vaccination is above national levels.

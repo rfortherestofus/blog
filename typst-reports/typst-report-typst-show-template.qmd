@@ -66,7 +66,7 @@ Low levels of public health spending are thought to contribute to suboptimal imm
 In states with Universal Purchase programs, the state government purchases all recommended vaccines for all children, regardless of insurance status. These initiatives can help to address disparities in vaccine coverage and support equitable vaccine access.
 
 ```{=typst}
-status-box(
+#status-box(
    top-box-text: "Universal Purchaser?", 
    bottom-box-text: "No"
    )

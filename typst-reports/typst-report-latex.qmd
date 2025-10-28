@@ -1,5 +1,6 @@
 ---
 title: Status of Childhood Immunization in Alabama
+date: September 2025
 format: pdf
 ---
 
