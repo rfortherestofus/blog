@@ -56,7 +56,7 @@ render_and_save_png <- function(
   pdf_path |>
     pdf_convert(format = "png", dpi = dpi, pages = page_number) |>
     image_read() |>
-    image_shadow() |>
+    # image_shadow() |>
     image_write(output_path)
 
   return(invisible(output_path))

@@ -1,0 +1,1297 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.31">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="David Keyes">
+<meta name="dcterms.date" content="2025-10-28">
+
+<title>How to Make High-Quality PDFs with Quarto and Typst</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="typst-blog-post_files/libs/clipboard/clipboard.min.js"></script>
+<script src="typst-blog-post_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="typst-blog-post_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="typst-blog-post_files/libs/quarto-html/popper.min.js"></script>
+<script src="typst-blog-post_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="typst-blog-post_files/libs/quarto-html/anchor.min.js"></script>
+<link href="typst-blog-post_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="typst-blog-post_files/libs/quarto-html/quarto-syntax-highlighting-e1a5c8363afafaef2c763b6775fbf3ca.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="typst-blog-post_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="typst-blog-post_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="typst-blog-post_files/libs/bootstrap/bootstrap-81267100e462c21b3d6c0d5bf76a3417.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#create-a-quarto-document-using-typst" id="toc-create-a-quarto-document-using-typst" class="nav-link active" data-scroll-target="#create-a-quarto-document-using-typst">Create a Quarto document using Typst</a></li>
+  <li><a href="#customize-our-document-by-tweaking-yaml-options" id="toc-customize-our-document-by-tweaking-yaml-options" class="nav-link" data-scroll-target="#customize-our-document-by-tweaking-yaml-options">Customize our document by tweaking YAML options</a></li>
+  <li><a href="#brand.yml" id="toc-brand.yml" class="nav-link" data-scroll-target="#brand.yml"><code>brand.yml</code></a></li>
+  <li><a href="#create-a-custom-typst-template" id="toc-create-a-custom-typst-template" class="nav-link" data-scroll-target="#create-a-custom-typst-template">Create a custom Typst template</a></li>
+  <li><a href="#create-typst-template-partial-files" id="toc-create-typst-template-partial-files" class="nav-link" data-scroll-target="#create-typst-template-partial-files">Create Typst template partial files</a></li>
+  <li><a href="#set-page-properties" id="toc-set-page-properties" class="nav-link" data-scroll-target="#set-page-properties">Set page properties</a></li>
+  <li><a href="#set-text-style" id="toc-set-text-style" class="nav-link" data-scroll-target="#set-text-style">Set text style</a></li>
+  <li><a href="#style-the-header-and-footer" id="toc-style-the-header-and-footer" class="nav-link" data-scroll-target="#style-the-header-and-footer">Style the header and footer</a></li>
+  <li><a href="#add-content-to-the-front-of-the-report" id="toc-add-content-to-the-front-of-the-report" class="nav-link" data-scroll-target="#add-content-to-the-front-of-the-report">Add content to the front of the report</a></li>
+  <li><a href="#add-custom-functions-to-the-typst-template" id="toc-add-custom-functions-to-the-typst-template" class="nav-link" data-scroll-target="#add-custom-functions-to-the-typst-template">Add custom functions to the Typst template</a></li>
+  <li><a href="#additional-custom-elements" id="toc-additional-custom-elements" class="nav-link" data-scroll-target="#additional-custom-elements">Additional custom elements</a></li>
+  <li><a href="#lay-content-out-with-columns" id="toc-lay-content-out-with-columns" class="nav-link" data-scroll-target="#lay-content-out-with-columns">Lay content out with columns</a></li>
+  <li><a href="#tools-to-help-you-make-custom-typst-templates" id="toc-tools-to-help-you-make-custom-typst-templates" class="nav-link" data-scroll-target="#tools-to-help-you-make-custom-typst-templates">Tools to help you make custom Typst templates</a></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="typst-blog-post.md"><i class="bi bi-file-code"></i>Github (GFM)</a></li></ul></div></nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">How to Make High-Quality PDFs with Quarto and Typst</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>David Keyes </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">October 28, 2025</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>In our consulting work at <a href="https://claritydatastudio.com/">Clarity Data Studio</a>, we make a lot of PDFs, like the <a href="https://publichealth.jhu.edu/ivac/monitoring-childhood-immunization-at-the-state-level">recent reports looking at childhood immunization made for the Johns Hopkins University International Vaccine Access Center.</a></p>
+<p><img src="state-immunization-report-alabama.png" class="img-fluid"></p>
+<p>Many clients come to us for support making highly-branded PDF reports, something I spoke about in my 2024 posit::conf talk <a href="https://www.youtube.com/watch?v=bp1SMhLoz_M&amp;list=PL9HYL-VRX0oSFkdF4fJeY63eGDvgofcbn&amp;index=30&amp;t=1s&amp;ab_channel=PositPBC">Report Design in R: Small Tweaks that Make a Big Difference</a>.</p>
+<p>In the last couple years, we’ve moved to <a href="https://quarto.org/docs/output-formats/typst.html">Typst</a> almost exclusively for making PDFs. Of the two promises that Typst makes (powerful and easy to learn), we agree with the first. The second, however, a bit less so.</p>
+<p><a href="https://typst.app/docs/">The Typst website has great documentation</a>, but it mostly covers how to write directly in Typst, rather than working in Quarto and rendering with Typst. People often ask me how we make reports with Typst, but I don’t have anywhere to point them to.</p>
+<p>So, in conjunction with consultant <a href="https://barbierjoseph.com/">Joseph Barbier</a> (who has become a true expert in creating custom Typst templates), here is an extended tutorial on making high-quality PDFs using Quarto and Typst. We’ll recreate most elements of the <a href="https://publichealth.jhu.edu/ivac/monitoring-childhood-immunization-at-the-state-level">childhood immunization reports made for the Johns Hopkins University International Vaccine Access Center.</a>.</p>
+<p>Let’s get started!</p>
+<section id="create-a-quarto-document-using-typst" class="level2">
+<h2 class="anchored" data-anchor-id="create-a-quarto-document-using-typst">Create a Quarto document using Typst</h2>
+<p>To begin, we’ll create a Quarto document. I’ll add a bunch of the content from the childhood immunization report for Alabama so we have something to work with.</p>
+<p>Initially, when creating a PDF report in Quarto, you might be tempted to use YAML with <code>format: pdf</code>, like so:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">title</span><span class="kw">:</span><span class="at"> Status of Childhood Immunization in Alabama</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">date</span><span class="kw">:</span><span class="at"> September 2025</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">format</span><span class="kw">:</span><span class="at"> pdf</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>With <code>format: pdf</code>, Quarto will use LaTeX to render your PDF. Instead, we’ll use <code>format: typst</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">title</span><span class="kw">:</span><span class="at"> Status of Childhood Immunization in Alabama</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">date</span><span class="kw">:</span><span class="at"> September 2025</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">format</span><span class="kw">:</span><span class="at"> typst</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>If you render your report, it looks quite plain:</p>
+<p><img src="typst-report-typst.png" class="img-fluid"></p>
+</section>
+<section id="customize-our-document-by-tweaking-yaml-options" class="level2">
+<h2 class="anchored" data-anchor-id="customize-our-document-by-tweaking-yaml-options">Customize our document by tweaking YAML options</h2>
+<p>If you look at the <a href="https://quarto.org/docs/output-formats/typst.html">Quarto docs</a>, you’ll see that you can make additional tweaks within the YAML. You can set properties like the font (I’ll change it to something very obviously different), page size and margins:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">title</span><span class="kw">:</span><span class="at"> Status of Childhood Immunization in Alabama</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">date</span><span class="kw">:</span><span class="at"> September 2025</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">format</span><span class="kw">:</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">typst</span><span class="kw">:</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">mainfont</span><span class="kw">:</span><span class="at"> </span><span class="st">"Comic Sans MS"</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">papersize</span><span class="kw">:</span><span class="at"> us-letter</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">margin</span><span class="kw">:</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">x</span><span class="kw">:</span><span class="at"> 2in</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">y</span><span class="kw">:</span><span class="at"> 2in</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>On rendering, we can see our updated PDF:</p>
+<p><img src="typst-report-typst-yaml-options.png" class="img-fluid"></p>
+<p>YAML options get us started, but they don’t let us do things like set different fonts for headings and paragraph text. To do that, let’s take a quick detour away from Typst and to <code>brand.yml</code>.</p>
+</section>
+<section id="brand.yml" class="level2">
+<h2 class="anchored" data-anchor-id="brand.yml"><code>brand.yml</code></h2>
+<p>The next step on our PDF customization journey takes us to <a href="https://posit-dev.github.io/brand-yml/">brand.yml</a>.</p>
+<p><img src="brandyml-website.png" class="img-fluid"></p>
+<p>This tool, created by Posit developer Garrick Aden-Buie (<a href="https://rfortherestofus.com/2025/06/podcast-episode-27">I spoke with him about it in June 2025</a>), allows you to create a single <code>_brand.yml</code> file that controls the look and feel of files rendered from Quarto docs (this goes beyond the scope of this blog post, but you can use a single <code>_brand.yml</code> file to make multiple formats follow your brand guidelines).</p>
+<p>Let’s create a <code>_brand.yml</code> file. This file will allow us to use custom fonts (Bitter and Lato, which is close to the actual font, known as Gentian, used for the reports). Additionally, we will set the color of the headings to be a navy blue (#002D72).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">typography</span><span class="kw">:</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">base</span><span class="kw">:</span><span class="at"> </span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">family</span><span class="kw">:</span><span class="at"> Lato</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">size</span><span class="kw">:</span><span class="at"> 11pt</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">headings</span><span class="kw">:</span><span class="at"> </span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">family</span><span class="kw">:</span><span class="at"> Bitter</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">color</span><span class="kw">:</span><span class="at"> </span><span class="st">"#002D72"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>This gets us a decent part of the way there.</p>
+<p><img src="typst-report-brandyml.png" class="img-fluid"></p>
+<p>But see how all of the headings are the same size? That’s not ideal and <code>_brand.yml</code> doesn’t give us any tools to fix this. It also doesn’t allow us to make customizations to the header or the footer of our report. Overall, <code>_brand.yml</code> is great if you want to make some simple customizations to a PDF document, but if we want to make a truly unique report, we’ll need to create a custom Typst template.</p>
+</section>
+<section id="create-a-custom-typst-template" class="level2">
+<h2 class="anchored" data-anchor-id="create-a-custom-typst-template">Create a custom Typst template</h2>
+<p>In order to make a custom Typst template, we’ll begin by deleting the <code>_brand.yml</code> file. Instead, we’ll create two files, known as template partials:</p>
+<ul>
+<li><code>typst-show.typ</code></li>
+<li><code>typst-template.typ</code></li>
+</ul>
+<p>The <code>typst-show.typ</code> file connects Quarto and Typst, enabling us to pass variables from the former to the latter. We’ll see this show up when doing things like adding the title in the footer of the report:</p>
+<p><img src="report-footer.png" class="img-fluid"></p>
+<p>The <code>typst-template.typ</code> file is where we will define our custom template. We’ll use it to do things like set text styles, design headers and footers, and more.</p>
+<p>We also need to tell our Quarto document to use these files, which we can do by adjusting our YAML:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">title</span><span class="kw">:</span><span class="at"> Status of Childhood Immunization in Alabama</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">date</span><span class="kw">:</span><span class="at"> September 2025</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">format</span><span class="kw">:</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="at">   </span><span class="fu">typst</span><span class="kw">:</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">template-partials</span><span class="kw">:</span><span class="at"> </span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="at">         </span><span class="kw">-</span><span class="at"> typst-show.typ</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="at">         </span><span class="kw">-</span><span class="at"> typst-template.typ</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="create-typst-template-partial-files" class="level2">
+<h2 class="anchored" data-anchor-id="create-typst-template-partial-files">Create Typst template partial files</h2>
+<p>We’ll begin by creating a <code>typst-show.typ</code> file, adding this content:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode typ code-with-copy"><code class="sourceCode typst"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">#show</span><span class="op">:</span> body =&gt; report(</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  title: [<span class="ss">$title$</span>],</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  date: [<span class="ss">$date$</span>],</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  body,</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The Typst syntax (<a href="https://typst.app/docs/reference/syntax/">detailed in great depth on the Typst website</a>) tells Typst to take the <code>title</code> (“Status of Childhood Immunization in Alabama”) and <code>date</code> (“September 2025”) data from Quarto and pass them to Typst. You’ll see that <code>title</code> and <code>date</code> are wrapped within a function we create called <code>report()</code> (<a href="https://typst.app/docs/reference/foundations/function/">Typst has functions just like R does</a>). This function is how we’ll create our template, which we’ll do in the <code>typst-template.typ</code> file.</p>
+<p>The <code>typst-template.typ</code> file defines our template. We’ll use it to do things like define our paper size, margins and text styles, add headers and footers, and more.</p>
+<p>We’ll begin by adding the following code to our <code>typst-template.typ</code> file:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode typ code-with-copy"><code class="sourceCode typst"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">#let</span> <span class="va">report</span><span class="op">(</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  title<span class="op">:</span> <span class="bu">none</span><span class="op">,</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  date<span class="op">:</span> <span class="bu">none</span><span class="op">,</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  content<span class="op">,</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="op">)</span> <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  content</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>This again allows us to define a Typst function we call <code>report()</code> with three arguments: <code>title</code>, <code>date</code>, and <code>content</code>. The <code>title</code> and <code>date</code> arguments will take data from our Quarto doc (passed through by the <code>typst-show.typ</code> file). The <code>content</code> argument allows us to pass all content from our Quarto document to the template.</p>
+<p>We can render our report again and see what it looks like:</p>
+<p><img src="typst-report-typst-basic.png" class="img-fluid"></p>
+<p>Nothing looks terribly different, though you’ll likely see that the title and date are no longer there (we’ll add them back soon). For now, though, let’s begin by customizing the look and feel of the report.</p>
+</section>
+<section id="set-page-properties" class="level2">
+<h2 class="anchored" data-anchor-id="set-page-properties">Set page properties</h2>
+<p>We can begin by adjusting the paper size and margins of our report. We’ll use what’s known as a <a href="https://typst.app/docs/reference/styling/#set-rules">set rule</a> in Typst. The set rule allows us to define the styling of some element. We want to style the report as a whole, which we do using the <code>page()</code> function:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode typ code-with-copy"><code class="sourceCode typst"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">#let</span> <span class="va">report</span><span class="op">(</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  title<span class="op">:</span> <span class="bu">none</span><span class="op">,</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  date<span class="op">:</span> <span class="bu">none</span><span class="op">,</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  content<span class="op">,</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="op">)</span> <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="kw">set</span> <span class="va">page</span><span class="op">(</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    paper<span class="op">:</span> <span class="st">"us-letter"</span><span class="op">,</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    margin<span class="op">:</span> <span class="op">(</span>top: <span class="fl">0.5in</span><span class="op">,</span> bottom: <span class="fl">1in</span><span class="op">,</span> x: <span class="fl">2in</span><span class="op">),</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  <span class="op">)</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>  content</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>You can see that I’ve defined the paper size with the <code>paper</code> argument to be “us-letter” (i.e.&nbsp;8.5 by 11 inches). You can choose <a href="https://typst.app/docs/reference/layout/page/#parameters-paper">any number of preset options for paper sizes</a> or use the <code>height</code> and <code>width</code> arguments to manually specify the size.</p>
+<p>I’ve also defined the margins, setting the top and bottom margins to a reasonable 0.5 inches and 1 inch respectively. I’ve made the margins on the side (that is, the <code>x</code> margins) be 2 inches in order to make this change obvious when rendering:</p>
+<p><img src="typst-report-typst-paper.png" class="img-fluid"></p>
+<p>Now that we’ve adjusted the overall page properties, it’s time to adjust the text style.</p>
+</section>
+<section id="set-text-style" class="level2">
+<h2 class="anchored" data-anchor-id="set-text-style">Set text style</h2>
+<p>Before we adjust the text style, we’ll begin by making our margins a bit more reasonable. Then, to set the text style, we’ll also use a set rule. In this case, we’ll combine the set rule with the <code>text()</code> function. Our updated <code>typst-template.typ</code> file now looks like this:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode typ code-with-copy"><code class="sourceCode typst"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">#let</span> <span class="va">report</span><span class="op">(</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  title<span class="op">:</span> <span class="bu">none</span><span class="op">,</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  date<span class="op">:</span> <span class="bu">none</span><span class="op">,</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  content<span class="op">,</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="op">)</span> <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="kw">set</span> <span class="va">page</span><span class="op">(</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    paper<span class="op">:</span> <span class="st">"us-letter"</span><span class="op">,</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    margin<span class="op">:</span> <span class="op">(</span>top: <span class="fl">0.5in</span><span class="op">,</span> bottom: <span class="fl">1in</span><span class="op">,</span> x: <span class="fl">0.75in</span><span class="op">),</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  <span class="op">)</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  <span class="kw">set</span> <span class="va">text</span><span class="op">(</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    lang<span class="op">:</span> <span class="st">"en"</span><span class="op">,</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>    region<span class="op">:</span> <span class="st">"US"</span><span class="op">,</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>    font<span class="op">:</span> <span class="st">"Lato"</span><span class="op">,</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>    size<span class="op">:</span> <span class="fl">11pt</span><span class="op">,</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>  <span class="op">)</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>  content</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>You can see how, within the <code>text()</code> function, we’ve set both the language (English), the region (US), the font family to use (Lato), and the size (11pt). The font family and size will be visible when we render again:</p>
+<p><img src="typst-report-typst-text.png" class="img-fluid"></p>
+<p>You’ll see that while we’ve changed the font family for both paragraph text and headings in our rendered report, we haven’t changed the size of headings (i.e.&nbsp;the headings still use their default sizes, not 11pt). In order to target headings, we need to use what’s known as a <a href="https://typst.app/docs/reference/styling/#show-rules">show rule</a>. Our <code>typst-template.typ</code> file now looks like this:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode typ code-with-copy"><code class="sourceCode typst"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">#let</span> <span class="va">report</span><span class="op">(</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  title<span class="op">:</span> <span class="bu">none</span><span class="op">,</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  date<span class="op">:</span> <span class="bu">none</span><span class="op">,</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  content<span class="op">,</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="op">)</span> <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="kw">set</span> <span class="va">page</span><span class="op">(</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    paper<span class="op">:</span> <span class="st">"us-letter"</span><span class="op">,</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    margin<span class="op">:</span> <span class="op">(</span>top: <span class="fl">0.5in</span><span class="op">,</span> bottom: <span class="fl">1in</span><span class="op">,</span> x: <span class="fl">0.75in</span><span class="op">),</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  <span class="op">)</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>  <span class="kw">set</span> <span class="va">text</span><span class="op">(</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    lang<span class="op">:</span> <span class="st">"en"</span><span class="op">,</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    region<span class="op">:</span> <span class="st">"US"</span><span class="op">,</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    font<span class="op">:</span> <span class="st">"Lato"</span><span class="op">,</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>    size<span class="op">:</span> <span class="fl">11pt</span><span class="op">,</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>  <span class="op">)</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>  <span class="kw">show</span> heading<span class="op">:</span> <span class="kw">set</span> <span class="va">text</span><span class="op">(</span></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>    font<span class="op">:</span> <span class="st">"Bitter"</span><span class="op">,</span></span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>    fill<span class="op">:</span> rgb<span class="op">(</span><span class="st">"#002D72"</span><span class="op">),</span></span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>    size<span class="op">:</span> <span class="fl">20pt</span><span class="op">,</span></span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>    weight<span class="op">:</span> <span class="st">"bold"</span><span class="op">,</span></span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>  <span class="op">)</span></span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>  content</span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Our show rule <code>show heading</code> tells Typst to just target headings. From there, we again use a set rule to specify the font, color, size, and weight. At this point, all of the headings are still the exact same size:</p>
+<p><img src="typst-report-typst-headings-basic.png" class="img-fluid"></p>
+<p>But we likely want to have level 1 headings be larger than level 2 headings and so on. Looking at our report, we also want to have level 1 headings be written in uppercase. And, we want to have level 2 headings be centered rather than left-aligned.</p>
+<p><img src="report-headings.png" class="img-fluid"></p>
+<p>To do all of this, we need to alter our heading syntax a bit, using instead what Typst calls a <a href="https://typst.app/docs/reference/styling/#show-rules">show rule with function</a>. Our <code>typst-template.typ</code> file now looks like this:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode typ code-with-copy"><code class="sourceCode typst"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">#let</span> <span class="va">report</span><span class="op">(</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  title<span class="op">:</span> <span class="bu">none</span><span class="op">,</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  date<span class="op">:</span> <span class="bu">none</span><span class="op">,</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  content<span class="op">,</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="op">)</span> <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="kw">set</span> <span class="va">page</span><span class="op">(</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    paper<span class="op">:</span> <span class="st">"us-letter"</span><span class="op">,</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    margin<span class="op">:</span> <span class="op">(</span>top: <span class="fl">0.5in</span><span class="op">,</span> bottom: <span class="fl">1in</span><span class="op">,</span> x: <span class="fl">0.75in</span><span class="op">),</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>  <span class="op">)</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>  <span class="kw">set</span> <span class="va">text</span><span class="op">(</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>    lang<span class="op">:</span> <span class="st">"en"</span><span class="op">,</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>    region<span class="op">:</span> <span class="st">"US"</span><span class="op">,</span></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>    font<span class="op">:</span> <span class="st">"Lato"</span><span class="op">,</span></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>    size<span class="op">:</span> <span class="fl">11pt</span><span class="op">,</span></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>  <span class="op">)</span></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>  <span class="kw">show</span> heading<span class="op">:</span> it <span class="op">=&gt;</span> <span class="op">{</span></span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> <span class="va">sizes</span> <span class="op">=</span> <span class="op">(</span></span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>      <span class="st">"1"</span>: <span class="fl">16pt</span><span class="op">,</span> <span class="co">// Heading level 1</span></span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>      <span class="st">"2"</span>: <span class="fl">10pt</span><span class="op">,</span> <span class="co">// Heading level 2</span></span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>    <span class="op">)</span></span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> <span class="va">level</span> <span class="op">=</span> str<span class="op">(</span>it<span class="op">.</span>level<span class="op">)</span></span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> <span class="va">size</span> <span class="op">=</span> sizes<span class="op">.</span>at<span class="op">(</span>level<span class="op">)</span></span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> <span class="va">formatted_heading</span> <span class="op">=</span> <span class="cf">if</span> level <span class="op">==</span> <span class="st">"2"</span> <span class="op">{</span> it <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span> upper<span class="op">(</span>it<span class="op">)</span> <span class="op">}</span></span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> <span class="va">alignment</span> <span class="op">=</span> <span class="cf">if</span> level <span class="op">==</span> <span class="st">"2"</span> <span class="op">{</span> center <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span> left <span class="op">}</span></span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a>    <span class="kw">set</span> <span class="va">text</span><span class="op">(</span></span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a>      font<span class="op">:</span> <span class="st">"Bitter"</span><span class="op">,</span></span>
+<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a>      fill<span class="op">:</span> rgb<span class="op">(</span><span class="st">"#002D72"</span><span class="op">),</span></span>
+<span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a>      size<span class="op">:</span> size<span class="op">,</span></span>
+<span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a>      weight<span class="op">:</span> <span class="st">"bold"</span><span class="op">,</span></span>
+<span id="cb11-31"><a href="#cb11-31" aria-hidden="true" tabindex="-1"></a>    <span class="op">)</span></span>
+<span id="cb11-32"><a href="#cb11-32" aria-hidden="true" tabindex="-1"></a>    align<span class="op">(</span>alignment<span class="op">)[</span><span class="kw">#</span>formatted_heading<span class="op">]</span></span>
+<span id="cb11-33"><a href="#cb11-33" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb11-34"><a href="#cb11-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-35"><a href="#cb11-35" aria-hidden="true" tabindex="-1"></a>  content</span>
+<span id="cb11-36"><a href="#cb11-36" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The code now uses the show rule with function with the parameter <code>heading_properties</code>. The line <code>show heading: it =&gt;</code> defines what Typst calls an <a href="https://typst.app/docs/reference/foundations/function/#unnamed">unnamed function</a>. The <code>it</code> here is the function’s parameter. Within the function, we begin by defining the sizes in what Typst calls a <a href="https://typst.app/docs/reference/foundations/dictionary/">dictionary</a>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode typ code-with-copy"><code class="sourceCode typst"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>let sizes = (</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  "1": 16pt, <span class="co">// Heading level 1</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  "2": 10pt, <span class="co">// Heading level 2</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We then tell Typst to pull the level from the sizes using the code <code>let level = str(it.level)</code>. Next, we define <code>size</code> with this code: <code>let size = sizes.at(level)</code>. Next, we use the <code>size</code> variable we have created in setting the properties of the headings (we’ve also adjusted the color here to be a navy blue, #002D72):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode typ code-with-copy"><code class="sourceCode typst"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>set text(</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  size: size,</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  fill: rgb("<span class="kw">#</span><span class="dv">002</span>D72"),</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  font: "Bitter",</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  weight: "bold",</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>To make level 1 headings uppercase, we use this syntax:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode typ code-with-copy"><code class="sourceCode typst"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>let formatted_heading = if level == "1" { upper(it) } else { it }</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>This tells Typst to create a new variable called <code>formatted_heading</code>. If the heading being formatted is level 1, it is transformed to uppercase. All other headings remain in whatever case they are written in the Quarto document.</p>
+<p>We set alignment with this line:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode typ code-with-copy"><code class="sourceCode typst"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>let alignment = if level == "2" { center } else { left }</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>This syntax tells Typst to center level 2 headings and left-align all other headings. We then use the <code>alignment</code> variable when returning the <code>formatted_heading</code> with this code:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode typ code-with-copy"><code class="sourceCode typst"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>align(alignment)[<span class="kw">#</span>formatted_heading]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We can now render and see our updated headings:</p>
+<p><img src="typst-report-typst-headings-complex.png" class="img-fluid"></p>
+<p>One important thing to note here is that Quarto shifts Typst headings up one level on rendering (<a href="https://quarto.org/docs/reference/formats/typst.html#numbering">see details in the <code>shift-heading-levels-by</code> argument on the Quarto docs page</a>). That is, if you have a level 1 heading in your Quarto document, it will be treated as a level 2 heading in Typst. If you look at the Quarto document code we use, the level 2 headings are styled by what we defined as level 1 headings in our <code>typst-template.typ</code> file.</p>
+</section>
+<section id="style-the-header-and-footer" class="level2">
+<h2 class="anchored" data-anchor-id="style-the-header-and-footer">Style the header and footer</h2>
+<p>We’ve dealt with paragraph and heading text. Next, let’s customize our report’s footer. In the reports we made, we added the report title as well as the date in the footer:</p>
+<p><img src="report-footer.png" class="img-fluid"></p>
+<p>To do this, we use the <code>footer</code> parameter within the <code>page()</code> function. To start, let’s add the light blue rectangle in the footer. We do this as follows (our <code>typst-template.typ</code> file is getting long so this is only the relevant portion):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode typ code-with-copy"><code class="sourceCode typst"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a> set page(</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    paper: "us-letter",</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    margin: (top: 0.5in, bottom: 1in, x: 0.75in),</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    footer: {</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>      rect(</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>        width: 100%,</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>        height: 0.75in,</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>        outset: (x: 15%),</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>        fill: rgb("<span class="kw">#</span><span class="dv">68</span>ACE5"),</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>    },</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Adding the <code>rect()</code> function with <code>footer</code> gives us, not surprisngly, a rectangle. We set its width, height, and the <code>outset</code> argument, which ensures that the blue rectangle goes all the way to the horizontal edge of the page. The rectangle’s color is set with <code>fill: rgb("#68ACE5")</code> (in order to use hex values in Typst, you have to wrap them in the <code>rgb()</code> function).</p>
+<p>Rendering at this point, you can see our footer starting to take shape:</p>
+<p><img src="typst-report-typst-footer.png" class="img-fluid"></p>
+<p>Now, we need to add some content to the footer. We do this as follows:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode typ code-with-copy"><code class="sourceCode typst"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>set page(</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    paper: "us-letter",</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    margin: (top: 0.5in, bottom: 1in, x: 0.75in),</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    footer: {</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>      rect(</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>        width: 100%,</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>        height: 0.75in,</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>        outset: (x: 15%),</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>        fill: rgb("<span class="kw">#</span><span class="dv">68</span>ACE5"),</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>        block([</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>          <span class="kw">#</span>grid<span class="op">(</span></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>            columns<span class="op">:</span> <span class="op">(</span><span class="fl">75%</span><span class="op">,</span> <span class="fl">25%</span><span class="op">),</span></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>            align<span class="op">(</span>left<span class="op">)[</span></span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>              <span class="kw">#</span>text<span class="op">(</span></span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>                upper<span class="op">(</span>title<span class="op">),</span></span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>                font<span class="op">:</span> <span class="st">"Bitter"</span><span class="op">,</span></span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>                fill<span class="op">:</span> white<span class="op">,</span></span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>                weight<span class="op">:</span> <span class="st">"bold"</span><span class="op">,</span></span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>              <span class="op">)</span></span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a>            <span class="op">],</span></span>
+<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a>            align<span class="op">(</span>right<span class="op">)[</span></span>
+<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a>              <span class="kw">#</span>text<span class="op">(</span></span>
+<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a>                upper<span class="op">(</span>date<span class="op">),</span></span>
+<span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a>                font<span class="op">:</span> <span class="st">"Bitter"</span><span class="op">,</span></span>
+<span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a>                fill<span class="op">:</span> white<span class="op">,</span></span>
+<span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a>                weight<span class="op">:</span> <span class="st">"bold"</span><span class="op">,</span></span>
+<span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a>              <span class="op">)</span></span>
+<span id="cb18-28"><a href="#cb18-28" aria-hidden="true" tabindex="-1"></a>            <span class="op">],</span></span>
+<span id="cb18-29"><a href="#cb18-29" aria-hidden="true" tabindex="-1"></a>          <span class="op">)</span></span>
+<span id="cb18-30"><a href="#cb18-30" aria-hidden="true" tabindex="-1"></a>        ]),</span>
+<span id="cb18-31"><a href="#cb18-31" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb18-32"><a href="#cb18-32" aria-hidden="true" tabindex="-1"></a>    },</span>
+<span id="cb18-33"><a href="#cb18-33" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The <code>block()</code> function allows us to add content. Within the block, we specify that we are creating a grid, with two columns: the first 75% of the total width and the second 25%. Then, we add our content. The first column is aligned to the left. The <code>#text()</code> function allows us to add content. The line <code>upper(title)</code> takes the title variable (reminder: this was passed in by the <code>typst-show.typ</code> file), make it uppercase with the <code>upper()</code> function. We also set its font (Bitter), color (white), and weight (bold). We do something very similar for the second column, adding the date there.</p>
+<p>Rendering again, we can see how things look:</p>
+<p><img src="typst-report-typst-footer-content.png" class="img-fluid"></p>
+<p>There are two main issues now:</p>
+<ol type="1">
+<li><p>The text runs right up against the top of the rectangle.</p></li>
+<li><p>The date should be formatted as “September 2025” rather than “2025-09-01”.</p></li>
+</ol>
+<p>To fix the padding issue, we’ll use the <code>pad()</code> function. Adding it before we use the <code>block()</code> function, we can see our updated Typst code:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode typ code-with-copy"><code class="sourceCode typst"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>set page(</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    paper: "us-letter",</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    margin: (top: 0.5in, bottom: 1in, x: 0.75in),</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    footer: {</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>      rect(</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>        width: 100%,</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>        height: 0.75in,</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>        outset: (x: 15%),</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>        fill: rgb("<span class="kw">#</span><span class="dv">68</span>ACE5"),</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>        pad(top: 16pt, block([</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>          <span class="kw">#</span>grid<span class="op">(</span></span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>            columns<span class="op">:</span> <span class="op">(</span><span class="fl">75%</span><span class="op">,</span> <span class="fl">25%</span><span class="op">),</span></span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>            align<span class="op">(</span>left<span class="op">)[</span></span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>              <span class="kw">#</span>text<span class="op">(</span></span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>                upper<span class="op">(</span>title<span class="op">),</span></span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>                font<span class="op">:</span> <span class="st">"Bitter"</span><span class="op">,</span></span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>                fill<span class="op">:</span> white<span class="op">,</span></span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>                weight<span class="op">:</span> <span class="st">"bold"</span><span class="op">,</span></span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>              <span class="op">)</span></span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>            <span class="op">],</span></span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>            align<span class="op">(</span>right<span class="op">)[</span></span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a>              <span class="kw">#</span>text<span class="op">(</span></span>
+<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a>                upper<span class="op">(</span>date<span class="op">),</span></span>
+<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a>                font<span class="op">:</span> <span class="st">"Bitter"</span><span class="op">,</span></span>
+<span id="cb19-25"><a href="#cb19-25" aria-hidden="true" tabindex="-1"></a>                fill<span class="op">:</span> white<span class="op">,</span></span>
+<span id="cb19-26"><a href="#cb19-26" aria-hidden="true" tabindex="-1"></a>                weight<span class="op">:</span> <span class="st">"bold"</span><span class="op">,</span></span>
+<span id="cb19-27"><a href="#cb19-27" aria-hidden="true" tabindex="-1"></a>              <span class="op">)</span></span>
+<span id="cb19-28"><a href="#cb19-28" aria-hidden="true" tabindex="-1"></a>            <span class="op">],</span></span>
+<span id="cb19-29"><a href="#cb19-29" aria-hidden="true" tabindex="-1"></a>          <span class="op">)</span></span>
+<span id="cb19-30"><a href="#cb19-30" aria-hidden="true" tabindex="-1"></a>        ])),</span>
+<span id="cb19-31"><a href="#cb19-31" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb19-32"><a href="#cb19-32" aria-hidden="true" tabindex="-1"></a>    },</span>
+<span id="cb19-33"><a href="#cb19-33" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The 16pt padding now puts the footer text in the vertical middle of the blue rectangle.</p>
+<p><img src="typst-report-typst-footer-content-padding.png" class="img-fluid"></p>
+<p>To fix the date formatting, we actually need to return to the YAML of our Quarto document and add the line <code>date-format: "MMMM YYYY"</code> as follows:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">title</span><span class="kw">:</span><span class="at"> Status of Childhood Immunization in Alabama</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="fu">date</span><span class="kw">:</span><span class="at"> September 2025</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="fu">date-format</span><span class="kw">:</span><span class="at"> </span><span class="st">"MMMM YYYY"</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="fu">format</span><span class="kw">:</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="at">   </span><span class="fu">typst</span><span class="kw">:</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">template-partials</span><span class="kw">:</span><span class="at"> </span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="at">         </span><span class="kw">-</span><span class="at"> typst-show.typ</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a><span class="at">         </span><span class="kw">-</span><span class="at"> typst-template.typ</span></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>This addition causes Quarto to pass the date to Typst as “September 2025,” which gives us exactly what we need when rendering.</p>
+<p><img src="typst-report-typst-footer-date-formatting.png" class="img-fluid"></p>
+<p>The <code>page()</code> function in Typst has a parameter for adding content to the header as well. Conveniently named <code>header</code>, it follows the same syntax as <code>footer</code>, making it straightforward to add content in the header as well.</p>
+</section>
+<section id="add-content-to-the-front-of-the-report" class="level2">
+<h2 class="anchored" data-anchor-id="add-content-to-the-front-of-the-report">Add content to the front of the report</h2>
+<p>Often, when we make reports, we add a cover page. For the childhood vaccination reports, however, the client just wanted their logo at the top of the first page. Let’s discuss how to add that. In the process we’ll also add in the report title, which you may recall, is no longer on the report since we created our custom template.</p>
+<p>To add the logo, we use the <code>image()</code> function. Adding <code>image("logo.png", width: 4in)</code> at the bottom of the <code>page()</code> function adds the logo to the top of the first page of the report. Here is the updated <code>typst-template.typ</code> file:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode typ code-with-copy"><code class="sourceCode typst"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="kw">#let</span> <span class="va">report</span><span class="op">(</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  title<span class="op">:</span> <span class="bu">none</span><span class="op">,</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  date<span class="op">:</span> <span class="bu">none</span><span class="op">,</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  content<span class="op">,</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="op">)</span> <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>  <span class="kw">set</span> <span class="va">page</span><span class="op">(</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>    paper<span class="op">:</span> <span class="st">"us-letter"</span><span class="op">,</span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>    margin<span class="op">:</span> <span class="op">(</span>top: <span class="fl">0.5in</span><span class="op">,</span> bottom: <span class="fl">1in</span><span class="op">,</span> x: <span class="fl">0.75in</span><span class="op">),</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>    footer<span class="op">:</span> <span class="op">{</span></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>      rect<span class="op">(</span></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>        width<span class="op">:</span> <span class="fl">100%</span><span class="op">,</span></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>        height<span class="op">:</span> <span class="fl">0.75in</span><span class="op">,</span></span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>        outset<span class="op">:</span> <span class="op">(</span>x: <span class="fl">15%</span><span class="op">),</span></span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>        fill<span class="op">:</span> rgb<span class="op">(</span><span class="st">"#68ACE5"</span><span class="op">),</span></span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>        pad<span class="op">(</span>top<span class="op">:</span> <span class="fl">16pt</span><span class="op">,</span> block<span class="op">([</span></span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>          <span class="kw">#</span>grid<span class="op">(</span></span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>            columns<span class="op">:</span> <span class="op">(</span><span class="fl">75%</span><span class="op">,</span> <span class="fl">25%</span><span class="op">),</span></span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>            align<span class="op">(</span>left<span class="op">)[</span></span>
+<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a>              <span class="kw">#</span>text<span class="op">(</span></span>
+<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a>                upper<span class="op">(</span>title<span class="op">),</span></span>
+<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a>                font<span class="op">:</span> <span class="st">"Bitter"</span><span class="op">,</span></span>
+<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a>                fill<span class="op">:</span> white<span class="op">,</span></span>
+<span id="cb21-23"><a href="#cb21-23" aria-hidden="true" tabindex="-1"></a>                weight<span class="op">:</span> <span class="st">"bold"</span><span class="op">,</span></span>
+<span id="cb21-24"><a href="#cb21-24" aria-hidden="true" tabindex="-1"></a>              <span class="op">)</span></span>
+<span id="cb21-25"><a href="#cb21-25" aria-hidden="true" tabindex="-1"></a>            <span class="op">],</span></span>
+<span id="cb21-26"><a href="#cb21-26" aria-hidden="true" tabindex="-1"></a>            align<span class="op">(</span>right<span class="op">)[</span></span>
+<span id="cb21-27"><a href="#cb21-27" aria-hidden="true" tabindex="-1"></a>              <span class="kw">#</span>text<span class="op">(</span></span>
+<span id="cb21-28"><a href="#cb21-28" aria-hidden="true" tabindex="-1"></a>                upper<span class="op">(</span>date<span class="op">),</span></span>
+<span id="cb21-29"><a href="#cb21-29" aria-hidden="true" tabindex="-1"></a>                font<span class="op">:</span> <span class="st">"Bitter"</span><span class="op">,</span></span>
+<span id="cb21-30"><a href="#cb21-30" aria-hidden="true" tabindex="-1"></a>                fill<span class="op">:</span> white<span class="op">,</span></span>
+<span id="cb21-31"><a href="#cb21-31" aria-hidden="true" tabindex="-1"></a>                weight<span class="op">:</span> <span class="st">"bold"</span><span class="op">,</span></span>
+<span id="cb21-32"><a href="#cb21-32" aria-hidden="true" tabindex="-1"></a>              <span class="op">)</span></span>
+<span id="cb21-33"><a href="#cb21-33" aria-hidden="true" tabindex="-1"></a>            <span class="op">],</span></span>
+<span id="cb21-34"><a href="#cb21-34" aria-hidden="true" tabindex="-1"></a>          <span class="op">)</span></span>
+<span id="cb21-35"><a href="#cb21-35" aria-hidden="true" tabindex="-1"></a>        <span class="op">])),</span></span>
+<span id="cb21-36"><a href="#cb21-36" aria-hidden="true" tabindex="-1"></a>      <span class="op">)</span></span>
+<span id="cb21-37"><a href="#cb21-37" aria-hidden="true" tabindex="-1"></a>    <span class="op">},</span></span>
+<span id="cb21-38"><a href="#cb21-38" aria-hidden="true" tabindex="-1"></a>  <span class="op">)</span></span>
+<span id="cb21-39"><a href="#cb21-39" aria-hidden="true" tabindex="-1"></a>  <span class="kw">set</span> <span class="va">text</span><span class="op">(</span></span>
+<span id="cb21-40"><a href="#cb21-40" aria-hidden="true" tabindex="-1"></a>    lang<span class="op">:</span> <span class="st">"en"</span><span class="op">,</span></span>
+<span id="cb21-41"><a href="#cb21-41" aria-hidden="true" tabindex="-1"></a>    region<span class="op">:</span> <span class="st">"US"</span><span class="op">,</span></span>
+<span id="cb21-42"><a href="#cb21-42" aria-hidden="true" tabindex="-1"></a>    font<span class="op">:</span> <span class="st">"Lato"</span><span class="op">,</span></span>
+<span id="cb21-43"><a href="#cb21-43" aria-hidden="true" tabindex="-1"></a>    size<span class="op">:</span> <span class="fl">11pt</span><span class="op">,</span></span>
+<span id="cb21-44"><a href="#cb21-44" aria-hidden="true" tabindex="-1"></a>  <span class="op">)</span></span>
+<span id="cb21-45"><a href="#cb21-45" aria-hidden="true" tabindex="-1"></a>  <span class="kw">show</span> heading<span class="op">:</span> it <span class="op">=&gt;</span> <span class="op">{</span></span>
+<span id="cb21-46"><a href="#cb21-46" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> <span class="va">sizes</span> <span class="op">=</span> <span class="op">(</span></span>
+<span id="cb21-47"><a href="#cb21-47" aria-hidden="true" tabindex="-1"></a>      <span class="st">"1"</span>: <span class="fl">16pt</span><span class="op">,</span> <span class="co">// Heading level 1</span></span>
+<span id="cb21-48"><a href="#cb21-48" aria-hidden="true" tabindex="-1"></a>      <span class="st">"2"</span>: <span class="fl">10pt</span><span class="op">,</span> <span class="co">// Heading level 2</span></span>
+<span id="cb21-49"><a href="#cb21-49" aria-hidden="true" tabindex="-1"></a>    <span class="op">)</span></span>
+<span id="cb21-50"><a href="#cb21-50" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> <span class="va">level</span> <span class="op">=</span> str<span class="op">(</span>it<span class="op">.</span>level<span class="op">)</span></span>
+<span id="cb21-51"><a href="#cb21-51" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> <span class="va">size</span> <span class="op">=</span> sizes<span class="op">.</span>at<span class="op">(</span>level<span class="op">)</span></span>
+<span id="cb21-52"><a href="#cb21-52" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> <span class="va">formatted_heading</span> <span class="op">=</span> <span class="cf">if</span> level <span class="op">==</span> <span class="st">"1"</span> <span class="op">{</span> upper<span class="op">(</span>it<span class="op">)</span> <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span> it <span class="op">}</span></span>
+<span id="cb21-53"><a href="#cb21-53" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> <span class="va">alignment</span> <span class="op">=</span> <span class="cf">if</span> level <span class="op">==</span> <span class="st">"2"</span> <span class="op">{</span> center <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span> left <span class="op">}</span></span>
+<span id="cb21-54"><a href="#cb21-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-55"><a href="#cb21-55" aria-hidden="true" tabindex="-1"></a>    <span class="kw">set</span> <span class="va">text</span><span class="op">(</span></span>
+<span id="cb21-56"><a href="#cb21-56" aria-hidden="true" tabindex="-1"></a>      size<span class="op">:</span> size<span class="op">,</span></span>
+<span id="cb21-57"><a href="#cb21-57" aria-hidden="true" tabindex="-1"></a>      fill<span class="op">:</span> rgb<span class="op">(</span><span class="st">"#002D72"</span><span class="op">),</span></span>
+<span id="cb21-58"><a href="#cb21-58" aria-hidden="true" tabindex="-1"></a>      font<span class="op">:</span> <span class="st">"Bitter"</span><span class="op">,</span></span>
+<span id="cb21-59"><a href="#cb21-59" aria-hidden="true" tabindex="-1"></a>      weight<span class="op">:</span> <span class="st">"bold"</span><span class="op">,</span></span>
+<span id="cb21-60"><a href="#cb21-60" aria-hidden="true" tabindex="-1"></a>    <span class="op">)</span></span>
+<span id="cb21-61"><a href="#cb21-61" aria-hidden="true" tabindex="-1"></a>    align<span class="op">(</span>alignment<span class="op">)[</span><span class="kw">#</span>formatted_heading<span class="op">]</span></span>
+<span id="cb21-62"><a href="#cb21-62" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb21-63"><a href="#cb21-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-64"><a href="#cb21-64" aria-hidden="true" tabindex="-1"></a>  image<span class="op">(</span><span class="st">"logo.png"</span><span class="op">,</span> width<span class="op">:</span> <span class="fl">4in</span><span class="op">)</span></span>
+<span id="cb21-65"><a href="#cb21-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-66"><a href="#cb21-66" aria-hidden="true" tabindex="-1"></a>  content</span>
+<span id="cb21-67"><a href="#cb21-67" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>And here is the rendered report:</p>
+<p><img src="typst-report-typst-logo.png" class="img-fluid"></p>
+<p>Next, let’s add the title and the Alabama state flag. We can add the title by adding this code right below the code to add the logo:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode typ code-with-copy"><code class="sourceCode typst"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>text(</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  upper(title),</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  font: "Bitter",</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  size: 20pt,</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>  fill: rgb("<span class="kw">#</span><span class="dv">002</span>D72"),</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>  weight: "bold",</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>When we render, we’ve got the title right below the logo:</p>
+<p><img src="typst-report-typst-logo-title.png" class="img-fluid"></p>
+<p>To add the Alabama flag, we can again use the <code>image()</code> function. If we add it below the <code>text()</code> function that added the title, the flag will show up below the title. In order to put them into two columns, we use the <code>grid()</code> function that we used when making the footer.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode typ code-with-copy"><code class="sourceCode typst"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>grid(</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  columns: (80%, 15%, 5%),</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  align(left)[</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">#</span>text<span class="op">(</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>      upper<span class="op">(</span>title<span class="op">),</span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>      font<span class="op">:</span> <span class="st">"Bitter"</span><span class="op">,</span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>      size<span class="op">:</span> <span class="fl">20pt</span><span class="op">,</span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>      fill<span class="op">:</span> rgb<span class="op">(</span><span class="st">"#002D72"</span><span class="op">),</span></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>      weight<span class="op">:</span> <span class="st">"bold"</span><span class="op">,</span></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">)</span></span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>  ],</span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>  align(right)[</span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>    <span class="kw">#</span>image<span class="op">(</span><span class="st">"flag.svg"</span><span class="op">)</span></span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>  ],</span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>  align(right)[],</span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The code creates three columns: the first takes up 80% and has the title. The second takes up 15% and adds the flag. The third column takes up 5% but has no content (it just adds a bit of padding on the right of the flag).</p>
+<p>Our rendered report now looks like this:</p>
+<p><img src="typst-report-typst-logo-title-flag.png" class="img-fluid"></p>
+<p>And our full <code>typst-template.typ</code> code looks like this:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode typ code-with-copy"><code class="sourceCode typst"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="kw">#let</span> <span class="va">report</span><span class="op">(</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  title<span class="op">:</span> <span class="bu">none</span><span class="op">,</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  date<span class="op">:</span> <span class="bu">none</span><span class="op">,</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  content<span class="op">,</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="op">)</span> <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>  <span class="kw">set</span> <span class="va">page</span><span class="op">(</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>    paper<span class="op">:</span> <span class="st">"us-letter"</span><span class="op">,</span></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>    margin<span class="op">:</span> <span class="op">(</span>top: <span class="fl">0.5in</span><span class="op">,</span> bottom: <span class="fl">1in</span><span class="op">,</span> x: <span class="fl">0.75in</span><span class="op">),</span></span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>    footer<span class="op">:</span> <span class="op">{</span></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>      rect<span class="op">(</span></span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>        width<span class="op">:</span> <span class="fl">100%</span><span class="op">,</span></span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>        height<span class="op">:</span> <span class="fl">0.75in</span><span class="op">,</span></span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>        outset<span class="op">:</span> <span class="op">(</span>x: <span class="fl">15%</span><span class="op">),</span></span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a>        fill<span class="op">:</span> rgb<span class="op">(</span><span class="st">"#68ACE5"</span><span class="op">),</span></span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a>        pad<span class="op">(</span>top<span class="op">:</span> <span class="fl">16pt</span><span class="op">,</span> block<span class="op">([</span></span>
+<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a>          <span class="kw">#</span>grid<span class="op">(</span></span>
+<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a>            columns<span class="op">:</span> <span class="op">(</span><span class="fl">75%</span><span class="op">,</span> <span class="fl">25%</span><span class="op">),</span></span>
+<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a>            align<span class="op">(</span>left<span class="op">)[</span></span>
+<span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a>              <span class="kw">#</span>text<span class="op">(</span></span>
+<span id="cb24-20"><a href="#cb24-20" aria-hidden="true" tabindex="-1"></a>                upper<span class="op">(</span>title<span class="op">),</span></span>
+<span id="cb24-21"><a href="#cb24-21" aria-hidden="true" tabindex="-1"></a>                font<span class="op">:</span> <span class="st">"Bitter"</span><span class="op">,</span></span>
+<span id="cb24-22"><a href="#cb24-22" aria-hidden="true" tabindex="-1"></a>                fill<span class="op">:</span> white<span class="op">,</span></span>
+<span id="cb24-23"><a href="#cb24-23" aria-hidden="true" tabindex="-1"></a>                weight<span class="op">:</span> <span class="st">"bold"</span><span class="op">,</span></span>
+<span id="cb24-24"><a href="#cb24-24" aria-hidden="true" tabindex="-1"></a>              <span class="op">)</span></span>
+<span id="cb24-25"><a href="#cb24-25" aria-hidden="true" tabindex="-1"></a>            <span class="op">],</span></span>
+<span id="cb24-26"><a href="#cb24-26" aria-hidden="true" tabindex="-1"></a>            align<span class="op">(</span>right<span class="op">)[</span></span>
+<span id="cb24-27"><a href="#cb24-27" aria-hidden="true" tabindex="-1"></a>              <span class="kw">#</span>text<span class="op">(</span></span>
+<span id="cb24-28"><a href="#cb24-28" aria-hidden="true" tabindex="-1"></a>                upper<span class="op">(</span>date<span class="op">),</span></span>
+<span id="cb24-29"><a href="#cb24-29" aria-hidden="true" tabindex="-1"></a>                font<span class="op">:</span> <span class="st">"Bitter"</span><span class="op">,</span></span>
+<span id="cb24-30"><a href="#cb24-30" aria-hidden="true" tabindex="-1"></a>                fill<span class="op">:</span> white<span class="op">,</span></span>
+<span id="cb24-31"><a href="#cb24-31" aria-hidden="true" tabindex="-1"></a>                weight<span class="op">:</span> <span class="st">"bold"</span><span class="op">,</span></span>
+<span id="cb24-32"><a href="#cb24-32" aria-hidden="true" tabindex="-1"></a>              <span class="op">)</span></span>
+<span id="cb24-33"><a href="#cb24-33" aria-hidden="true" tabindex="-1"></a>            <span class="op">],</span></span>
+<span id="cb24-34"><a href="#cb24-34" aria-hidden="true" tabindex="-1"></a>          <span class="op">)</span></span>
+<span id="cb24-35"><a href="#cb24-35" aria-hidden="true" tabindex="-1"></a>        <span class="op">])),</span></span>
+<span id="cb24-36"><a href="#cb24-36" aria-hidden="true" tabindex="-1"></a>      <span class="op">)</span></span>
+<span id="cb24-37"><a href="#cb24-37" aria-hidden="true" tabindex="-1"></a>    <span class="op">},</span></span>
+<span id="cb24-38"><a href="#cb24-38" aria-hidden="true" tabindex="-1"></a>  <span class="op">)</span></span>
+<span id="cb24-39"><a href="#cb24-39" aria-hidden="true" tabindex="-1"></a>  <span class="kw">set</span> <span class="va">text</span><span class="op">(</span></span>
+<span id="cb24-40"><a href="#cb24-40" aria-hidden="true" tabindex="-1"></a>    lang<span class="op">:</span> <span class="st">"en"</span><span class="op">,</span></span>
+<span id="cb24-41"><a href="#cb24-41" aria-hidden="true" tabindex="-1"></a>    region<span class="op">:</span> <span class="st">"US"</span><span class="op">,</span></span>
+<span id="cb24-42"><a href="#cb24-42" aria-hidden="true" tabindex="-1"></a>    font<span class="op">:</span> <span class="st">"Lato"</span><span class="op">,</span></span>
+<span id="cb24-43"><a href="#cb24-43" aria-hidden="true" tabindex="-1"></a>    size<span class="op">:</span> <span class="fl">11pt</span><span class="op">,</span></span>
+<span id="cb24-44"><a href="#cb24-44" aria-hidden="true" tabindex="-1"></a>  <span class="op">)</span></span>
+<span id="cb24-45"><a href="#cb24-45" aria-hidden="true" tabindex="-1"></a>  <span class="kw">show</span> heading<span class="op">:</span> it <span class="op">=&gt;</span> <span class="op">{</span></span>
+<span id="cb24-46"><a href="#cb24-46" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> <span class="va">sizes</span> <span class="op">=</span> <span class="op">(</span></span>
+<span id="cb24-47"><a href="#cb24-47" aria-hidden="true" tabindex="-1"></a>      <span class="st">"1"</span>: <span class="fl">16pt</span><span class="op">,</span> <span class="co">// Heading level 1</span></span>
+<span id="cb24-48"><a href="#cb24-48" aria-hidden="true" tabindex="-1"></a>      <span class="st">"2"</span>: <span class="fl">10pt</span><span class="op">,</span> <span class="co">// Heading level 2</span></span>
+<span id="cb24-49"><a href="#cb24-49" aria-hidden="true" tabindex="-1"></a>    <span class="op">)</span></span>
+<span id="cb24-50"><a href="#cb24-50" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> <span class="va">level</span> <span class="op">=</span> str<span class="op">(</span>it<span class="op">.</span>level<span class="op">)</span></span>
+<span id="cb24-51"><a href="#cb24-51" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> <span class="va">size</span> <span class="op">=</span> sizes<span class="op">.</span>at<span class="op">(</span>level<span class="op">)</span></span>
+<span id="cb24-52"><a href="#cb24-52" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> <span class="va">formatted_heading</span> <span class="op">=</span> <span class="cf">if</span> level <span class="op">==</span> <span class="st">"1"</span> <span class="op">{</span> upper<span class="op">(</span>it<span class="op">)</span> <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span> it <span class="op">}</span></span>
+<span id="cb24-53"><a href="#cb24-53" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> <span class="va">alignment</span> <span class="op">=</span> <span class="cf">if</span> level <span class="op">==</span> <span class="st">"2"</span> <span class="op">{</span> center <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span> left <span class="op">}</span></span>
+<span id="cb24-54"><a href="#cb24-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-55"><a href="#cb24-55" aria-hidden="true" tabindex="-1"></a>    <span class="kw">set</span> <span class="va">text</span><span class="op">(</span></span>
+<span id="cb24-56"><a href="#cb24-56" aria-hidden="true" tabindex="-1"></a>      size<span class="op">:</span> size<span class="op">,</span></span>
+<span id="cb24-57"><a href="#cb24-57" aria-hidden="true" tabindex="-1"></a>      fill<span class="op">:</span> rgb<span class="op">(</span><span class="st">"#002D72"</span><span class="op">),</span></span>
+<span id="cb24-58"><a href="#cb24-58" aria-hidden="true" tabindex="-1"></a>      font<span class="op">:</span> <span class="st">"Bitter"</span><span class="op">,</span></span>
+<span id="cb24-59"><a href="#cb24-59" aria-hidden="true" tabindex="-1"></a>      weight<span class="op">:</span> <span class="st">"bold"</span><span class="op">,</span></span>
+<span id="cb24-60"><a href="#cb24-60" aria-hidden="true" tabindex="-1"></a>    <span class="op">)</span></span>
+<span id="cb24-61"><a href="#cb24-61" aria-hidden="true" tabindex="-1"></a>    align<span class="op">(</span>alignment<span class="op">)[</span><span class="kw">#</span>formatted_heading<span class="op">]</span></span>
+<span id="cb24-62"><a href="#cb24-62" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb24-63"><a href="#cb24-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-64"><a href="#cb24-64" aria-hidden="true" tabindex="-1"></a>  image<span class="op">(</span><span class="st">"logo.png"</span><span class="op">,</span> width<span class="op">:</span> <span class="fl">4in</span><span class="op">)</span></span>
+<span id="cb24-65"><a href="#cb24-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-66"><a href="#cb24-66" aria-hidden="true" tabindex="-1"></a>  grid<span class="op">(</span></span>
+<span id="cb24-67"><a href="#cb24-67" aria-hidden="true" tabindex="-1"></a>    columns<span class="op">:</span> <span class="op">(</span><span class="fl">80%</span><span class="op">,</span> <span class="fl">15%</span><span class="op">,</span> <span class="fl">5%</span><span class="op">),</span></span>
+<span id="cb24-68"><a href="#cb24-68" aria-hidden="true" tabindex="-1"></a>    align<span class="op">(</span>left<span class="op">)[</span></span>
+<span id="cb24-69"><a href="#cb24-69" aria-hidden="true" tabindex="-1"></a>      <span class="kw">#</span>text<span class="op">(</span></span>
+<span id="cb24-70"><a href="#cb24-70" aria-hidden="true" tabindex="-1"></a>        upper<span class="op">(</span>title<span class="op">),</span></span>
+<span id="cb24-71"><a href="#cb24-71" aria-hidden="true" tabindex="-1"></a>        font<span class="op">:</span> <span class="st">"Bitter"</span><span class="op">,</span></span>
+<span id="cb24-72"><a href="#cb24-72" aria-hidden="true" tabindex="-1"></a>        size<span class="op">:</span> <span class="fl">20pt</span><span class="op">,</span></span>
+<span id="cb24-73"><a href="#cb24-73" aria-hidden="true" tabindex="-1"></a>        fill<span class="op">:</span> rgb<span class="op">(</span><span class="st">"#002D72"</span><span class="op">),</span></span>
+<span id="cb24-74"><a href="#cb24-74" aria-hidden="true" tabindex="-1"></a>        weight<span class="op">:</span> <span class="st">"bold"</span><span class="op">,</span></span>
+<span id="cb24-75"><a href="#cb24-75" aria-hidden="true" tabindex="-1"></a>      <span class="op">)</span></span>
+<span id="cb24-76"><a href="#cb24-76" aria-hidden="true" tabindex="-1"></a>    <span class="op">],</span></span>
+<span id="cb24-77"><a href="#cb24-77" aria-hidden="true" tabindex="-1"></a>    align<span class="op">(</span>right<span class="op">)[</span></span>
+<span id="cb24-78"><a href="#cb24-78" aria-hidden="true" tabindex="-1"></a>      <span class="kw">#</span>image<span class="op">(</span><span class="st">"flag.svg"</span><span class="op">)</span></span>
+<span id="cb24-79"><a href="#cb24-79" aria-hidden="true" tabindex="-1"></a>    <span class="op">],</span></span>
+<span id="cb24-80"><a href="#cb24-80" aria-hidden="true" tabindex="-1"></a>    align<span class="op">(</span>right<span class="op">)[],</span></span>
+<span id="cb24-81"><a href="#cb24-81" aria-hidden="true" tabindex="-1"></a>  <span class="op">)</span></span>
+<span id="cb24-82"><a href="#cb24-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-83"><a href="#cb24-83" aria-hidden="true" tabindex="-1"></a>  content</span>
+<span id="cb24-84"><a href="#cb24-84" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>TODO: Explain why you need # inside grid, but not outside of it. See https://3mw.albert-rapp.de/p/creating-beautiful-pdf-reports-with-typst-and-quarto</p>
+</section>
+<section id="add-custom-functions-to-the-typst-template" class="level2">
+<h2 class="anchored" data-anchor-id="add-custom-functions-to-the-typst-template">Add custom functions to the Typst template</h2>
+<p>In the report we made, there are blue lines above and below the grid with the title and flag (as well as other places in the report). Making these blue lines leads us to an advanced Typst technique: making your own custom Typst functions. We can make a function to print these blue lines throughout our report.</p>
+<p>To do this, we add the following code at the top of our <code>typst-template.typ</code> file.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode typ code-with-copy"><code class="sourceCode typst"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="kw">#let</span> <span class="va">blueline</span><span class="op">()</span> <span class="op">=</span> <span class="op">{</span> line<span class="op">(</span>length<span class="op">:</span> <span class="fl">100%</span><span class="op">,</span> stroke<span class="op">:</span> <span class="fl">2pt</span> <span class="op">+</span> rgb<span class="op">(</span><span class="st">"#68ACE5"</span><span class="op">))</span> <span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We can then use the custom <code>blueline()</code> function lower down in our <code>typst-template.typ</code> file. We put <code>blueline()</code> above and below the grid with the title and flag as follows:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode typ code-with-copy"><code class="sourceCode typst"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>blueline()</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>grid(</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  columns: (80%, 15%, 5%),</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>  align(left)[</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">#</span>text<span class="op">(</span></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>      upper<span class="op">(</span>title<span class="op">),</span></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>      font<span class="op">:</span> <span class="st">"Bitter"</span><span class="op">,</span></span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>      size<span class="op">:</span> <span class="fl">20pt</span><span class="op">,</span></span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>      fill<span class="op">:</span> rgb<span class="op">(</span><span class="st">"#002D72"</span><span class="op">),</span></span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>      weight<span class="op">:</span> <span class="st">"bold"</span><span class="op">,</span></span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">)</span></span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>  ],</span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>  align(right)[</span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">#</span>image<span class="op">(</span><span class="st">"flag.svg"</span><span class="op">)</span></span>
+<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a>  ],</span>
+<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a>  align(right)[],</span>
+<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-20"><a href="#cb26-20" aria-hidden="true" tabindex="-1"></a>blueline()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>This now adds the blue line where we want it to appear:</p>
+<p><img src="typst-report-typst-blueline.png" class="img-fluid"></p>
+<p>You can also use the <code>blueline()</code> function in your Quarto document. To do so, you have to tell Quarto that you are creating a Typst code chunk. Here is the first section of the report with a blue line added below it:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode md code-with-copy"><code class="sourceCode markdown"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>This brief illustrates the current status of childhood immunization in Alabama and is intended to inform state-level policy decisions and priorities. Takeaways include:</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>State-level immunization coverage in Alabama for MMR vaccination is above national levels.</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Alabama’s non-medical exemption rate among kindergartners is lower than the U.S. median.</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>State-level per capita public health spending is higher than the national rate.</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Alabama has reported 1 case of measles since January 1, 2025.</span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a><span class="in">```{=typst} </span></span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a><span class="in">#blueline()</span></span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>TODO: Add screenshot of this rendered</p>
+<p>The <code>blueline()</code> function is relatively simple. It takes no arguments, just drawing a blue line wherever it is called. A slightly more complicated example is the <code>source_text()</code> function we used throughout the report to add source information below charts:</p>
+<p><img src="source-text.png" class="img-fluid"></p>
+<p>To create this function, we add the following code at the top of our <code>typst-template.typ</code> file:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode typ code-with-copy"><code class="sourceCode typst"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="kw">#let</span> <span class="va">source_text</span><span class="op">(</span>source_info<span class="op">)</span> <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  align<span class="op">(</span>right<span class="op">)[</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">#</span>text<span class="op">(</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>      source_info<span class="op">,</span></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>      font<span class="op">:</span> <span class="st">"Bitter"</span><span class="op">,</span></span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>      size<span class="op">:</span> <span class="fl">9pt</span><span class="op">,</span></span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>      style<span class="op">:</span> <span class="st">"italic"</span><span class="op">,</span></span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">)]</span></span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>You can see here how our <code>source()</code> function has one argument (<code>source_info</code>). This argument allows us to use the function to style source text while changing the exact content of the source information.</p>
+<p>To use this <code>source_text()</code> function in our Quarto document, we create a Typst code chunk, as follows (adding <code>=typst</code> tells Quarto to treat is as Typst code):</p>
+<pre><code>```{=typst}
+#source_text("Source: ChildVaxView")
+```</code></pre>
+<p>By creating a Typst code chunk, we tell Quarto to treat what is in the chunk as Typst code. So, when Quarto renders the document, it knows to use Typst to render this chunk and <code>#source_text("Source: ChildVaxView")</code> gets turned into nicely formatted source text (the text goes onto the second page, which is why this screenshot looks a bit different than the previous ones):</p>
+<p><img src="typst-report-typst-source-text.png" class="img-fluid"></p>
+<p>You can also make more complicated custom functions. For instance, we use what we called “status boxes” throughout the report to show the status of various items:</p>
+<p><img src="status-box.png" class="img-fluid"></p>
+<p>We create these status boxes with the following code:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode typ code-with-copy"><code class="sourceCode typst"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="kw">#let</span> <span class="va">status-box</span><span class="op">(</span>top-box-text<span class="op">:</span> <span class="st">""</span><span class="op">,</span> bottom-box-text<span class="op">:</span> <span class="st">""</span><span class="op">)</span> <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> <span class="va">top_box</span> <span class="op">=</span> box<span class="op">(</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>    width<span class="op">:</span> <span class="fl">2in</span><span class="op">,</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>    height<span class="op">:</span> <span class="fl">0.7in</span><span class="op">,</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>    fill<span class="op">:</span> rgb<span class="op">(</span><span class="st">"#002D72"</span><span class="op">),</span></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>    inset<span class="op">:</span> <span class="fl">6pt</span><span class="op">,</span></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>    align<span class="op">(</span>center <span class="op">+</span> horizon<span class="op">)[</span></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>      <span class="kw">#</span>text<span class="op">(</span>fill<span class="op">:</span> white<span class="op">,</span> weight<span class="op">:</span> <span class="st">"bold"</span><span class="op">,</span> size<span class="op">:</span> <span class="fl">9pt</span><span class="op">)[</span><span class="kw">#</span>top-box-text<span class="op">]</span></span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">],</span></span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>  <span class="op">)</span></span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> <span class="va">bottom_box</span> <span class="op">=</span> box<span class="op">(</span></span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a>    width<span class="op">:</span> <span class="fl">2in</span><span class="op">,</span></span>
+<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a>    height<span class="op">:</span> <span class="fl">0.7in</span><span class="op">,</span></span>
+<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a>    fill<span class="op">:</span> white<span class="op">,</span></span>
+<span id="cb30-16"><a href="#cb30-16" aria-hidden="true" tabindex="-1"></a>    inset<span class="op">:</span> <span class="fl">6pt</span><span class="op">,</span></span>
+<span id="cb30-17"><a href="#cb30-17" aria-hidden="true" tabindex="-1"></a>    align<span class="op">(</span>center <span class="op">+</span> horizon<span class="op">)[</span></span>
+<span id="cb30-18"><a href="#cb30-18" aria-hidden="true" tabindex="-1"></a>      <span class="kw">#</span>text<span class="op">(</span>fill<span class="op">:</span> black<span class="op">,</span> size<span class="op">:</span> <span class="fl">14pt</span><span class="op">)[</span><span class="kw">#</span>bottom-box-text<span class="op">]</span></span>
+<span id="cb30-19"><a href="#cb30-19" aria-hidden="true" tabindex="-1"></a>    <span class="op">],</span></span>
+<span id="cb30-20"><a href="#cb30-20" aria-hidden="true" tabindex="-1"></a>  <span class="op">)</span></span>
+<span id="cb30-21"><a href="#cb30-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-22"><a href="#cb30-22" aria-hidden="true" tabindex="-1"></a>  stack<span class="op">(</span>top_box<span class="op">,</span> bottom_box<span class="op">,</span> spacing<span class="op">:</span> <span class="fl">0pt</span><span class="op">)</span></span>
+<span id="cb30-23"><a href="#cb30-23" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The <code>status-box()</code> function has two arguments: <code>top-box-text</code> and <code>bottom-box-text</code>. These allow us to customize the text that appears in the top and bottom boxes. The function uses the <code>box()</code> function twice to create the two boxes, styling them as we’ve seen with text styling above. Finally, it uses the <code>stack()</code> function to stack the two boxes on top of each other. The result looks like this:</p>
+<p><img src="typst-report-typst-status-boxes.png" class="img-fluid"></p>
+<p>This is a simple example and doesn’t put the status box into columns, but you could do that using the <code>grid()</code> function we used above.</p>
+</section>
+<section id="additional-custom-elements" class="level2">
+<h2 class="anchored" data-anchor-id="additional-custom-elements">Additional custom elements</h2>
+<p>Typst also has the ability to use HTML and CSS within Typst documents. This is useful for creating custom elements that are difficult to make with Typst alone. For instance, in the childhood immunization reports, we used gray boxes to highlight certain sections:</p>
+<p><img src="gray-box.png" class="img-fluid"></p>
+<p>We create these gray boxes using a bit of HTML and CSS as follows:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode html code-with-copy"><code class="sourceCode html"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">div</span><span class="ot"> style</span><span class="op">=</span><span class="st">"background-color: #F8F8F8;"</span><span class="dt">&gt;</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>### Proportion of 2-year-olds fully protected with DTaP vaccines</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>![](dtap-over-time.svg)</span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>![](dtap-comparison.svg)</span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>In 2023, more 2-year-olds were fully vaccinated against diphtheria, tetanus, and pertussis (received all four doses of DTaP) in Alabama compared to the previous year. Coverage in Alabama is below the HP2030 target of 90%.</span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a>```{=typst}</span>
+<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a>#source_text("Source: ChildVaxView")</span>
+<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a>```</span>
+<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">div</span><span class="dt">&gt;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The <code>div</code> element allows us to create a section with a light gray background color. We then add our text and images within that section. When we render, we can see the gray box around our content:</p>
+<p><img src="typst-report-typst-gray-box.png" class="img-fluid"></p>
+</section>
+<section id="lay-content-out-with-columns" class="level2">
+<h2 class="anchored" data-anchor-id="lay-content-out-with-columns">Lay content out with columns</h2>
+<p>You’ll likely have noticed that in the childhood immunization reports, we often use two columns to display images side-by-side. Quarto does not allow us to create columns directly in Typst (<a href="https://quarto.org/docs/output-formats/typst.html#known-limitations">it is a known limitation at the moment</a>). You can create columns in Typst using the <code>grid()</code> function, as outlined above. Another way to add columns is by using the <code>layout-ncol</code> attribute in Quarto. Here is an example of how to do this:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode html code-with-copy"><code class="sourceCode html"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">div</span><span class="ot"> style</span><span class="op">=</span><span class="st">"background-color: #F8F8F8;"</span><span class="dt">&gt;</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>### Proportion of 2-year-olds fully protected with DTaP vaccines</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>:::{layout-ncol=2}</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>![](dtap-over-time.svg)</span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>![](dtap-comparison.svg)</span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a>In 2023, more 2-year-olds were fully vaccinated against diphtheria, tetanus, and pertussis (received all four doses of DTaP) in Alabama compared to the previous year. Coverage in Alabama is below the HP2030 target of 90%.</span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a>```{=typst}</span>
+<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a>#source_text("Source: ChildVaxView")</span>
+<span id="cb32-15"><a href="#cb32-15" aria-hidden="true" tabindex="-1"></a>```</span>
+<span id="cb32-16"><a href="#cb32-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-17"><a href="#cb32-17" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">div</span><span class="dt">&gt;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The <code>layout-ncol=2</code> attribute tells Quarto to create two columns for the content within it. When we render, we can see our images side-by-side:</p>
+<p><img src="typst-report-typst-gray-box-two-columns.png" class="img-fluid"></p>
+<p>The formatting isn’t perfect here (we might want to add some padding within the gray box, for example), but it’s a good start.</p>
+</section>
+<section id="tools-to-help-you-make-custom-typst-templates" class="level2">
+<h2 class="anchored" data-anchor-id="tools-to-help-you-make-custom-typst-templates">Tools to help you make custom Typst templates</h2>
+<p>There are three tools that help a lot when creating custom Typst templates. These are extensions that work only in Positron, but do not work in RStudio (this is the first time I’ve really felt like Positron has a clear advantage over RStudio).</p>
+<p>The first extension is <a href="https://open-vsx.org/extension/nvarner/typst-lsp">Typst LSP</a>. This extension allows you to see helpful tooltips when writing Typst code. For instance, when I write <code>set page(</code>, I get a tooltip that shows me all of the possible arguments I can use with the <code>page()</code> function:</p>
+<p>[TODO: Add screenshot of me using this]</p>
+<p>This is helpful because I’m a relative Typst newbie and don’t have all of the functions and their arguments memorized yet.</p>
+<p>A second extension to use is <a href="https://open-vsx.org/extension/myriad-dreamin/tinymist">Tinymist Typst</a>. I use this extension to automatically format my Typst code, keeping things neat, tidy, and easy to read.</p>
+<p><img src="tinymist.png" class="img-fluid"></p>
+<p>Finally, if you want to view rendered PDFs directly in Positron, you can use the <a href="https://open-vsx.org/extension/tomoki1207/pdf">vscode-pdf</a> extension.</p>
+<p><img src="vscode-pdf.png" class="img-fluid"></p>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<p>This is really only scratching the surface of what is possible with Typst and Quarto. Typst is a really exciting tool that has a great future ahead of it.</p>
+<p><a href="https://posit.co/blog/posit-and-typst/">With Posit’s recent announcement of their support of Typst</a>, its path forward seems secure. And Typst is making great strides. Its <a href="https://typst.app/blog/2025/typst-0.14/">recent 0.14 release adds support for many accessibility features</a>, which is a requirement for many who make PDFs.</p>
+<p>Good luck making your own reports in Typst! And if you want support in creating reports in Quarto and Typst, feel free to reach out <a href="https://claritydatastudio.com/">Clarity Data Studio</a>.</p>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
