@@ -87,7 +87,7 @@ On rendering, we can see our updated PDF:
 
 YAML options get us started, but they don't let us do things like set different fonts for headings and paragraph text. To do that, let's take a quick detour away from Typst and to `brand.yml`.
 
-## `brand.yml`
+## Customize PDF with `brand.yml`
 
 The next step on our PDF customization journey takes us to [brand.yml](https://posit-dev.github.io/brand-yml/). 
 

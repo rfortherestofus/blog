@@ -86,7 +86,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul>
   <li><a href="#create-a-quarto-document-using-typst" id="toc-create-a-quarto-document-using-typst" class="nav-link active" data-scroll-target="#create-a-quarto-document-using-typst">Create a Quarto document using Typst</a></li>
   <li><a href="#customize-our-document-by-tweaking-yaml-options" id="toc-customize-our-document-by-tweaking-yaml-options" class="nav-link" data-scroll-target="#customize-our-document-by-tweaking-yaml-options">Customize our document by tweaking YAML options</a></li>
-  <li><a href="#brand.yml" id="toc-brand.yml" class="nav-link" data-scroll-target="#brand.yml"><code>brand.yml</code></a></li>
+  <li><a href="#customize-pdf-with-brand.yml" id="toc-customize-pdf-with-brand.yml" class="nav-link" data-scroll-target="#customize-pdf-with-brand.yml">Customize PDF with <code>brand.yml</code></a></li>
   <li><a href="#create-a-custom-typst-template" id="toc-create-a-custom-typst-template" class="nav-link" data-scroll-target="#create-a-custom-typst-template">Create a custom Typst template</a></li>
   <li><a href="#create-typst-template-partial-files" id="toc-create-typst-template-partial-files" class="nav-link" data-scroll-target="#create-typst-template-partial-files">Create Typst template partial files</a></li>
   <li><a href="#set-page-properties" id="toc-set-page-properties" class="nav-link" data-scroll-target="#set-page-properties">Set page properties</a></li>
@@ -183,8 +183,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><img src="typst-report-typst-yaml-options.png" class="img-fluid"></p>
 <p>YAML options get us started, but they don’t let us do things like set different fonts for headings and paragraph text. To do that, let’s take a quick detour away from Typst and to <code>brand.yml</code>.</p>
 </section>
-<section id="brand.yml" class="level2">
-<h2 class="anchored" data-anchor-id="brand.yml"><code>brand.yml</code></h2>
+<section id="customize-pdf-with-brand.yml" class="level2">
+<h2 class="anchored" data-anchor-id="customize-pdf-with-brand.yml">Customize PDF with <code>brand.yml</code></h2>
 <p>The next step on our PDF customization journey takes us to <a href="https://posit-dev.github.io/brand-yml/">brand.yml</a>.</p>
 <p><img src="brandyml-website.png" class="img-fluid"></p>
 <p>This tool, created by Posit developer Garrick Aden-Buie (<a href="https://rfortherestofus.com/2025/06/podcast-episode-27">I spoke with him about it in June 2025</a>), allows you to create a single <code>_brand.yml</code> file that controls the look and feel of files rendered from Quarto docs (this goes beyond the scope of this blog post, but you can use a single <code>_brand.yml</code> file to make multiple formats follow your brand guidelines).</p>
