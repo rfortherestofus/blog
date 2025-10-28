@@ -4,10 +4,10 @@ author: David Keyes
 date: today
 toc: false
 format: 
-  # html: 
-  #   toc: true
-  #   css: styles.css
-  gfm: default
+  html: 
+    toc: true
+    css: styles.css
+  # gfm: default
 wrap: none
 knitr:
   opts_chunk:

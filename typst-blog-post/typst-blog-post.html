@@ -85,17 +85,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul>
   <li><a href="#create-a-quarto-document-using-typst" id="toc-create-a-quarto-document-using-typst" class="nav-link active" data-scroll-target="#create-a-quarto-document-using-typst">Create a Quarto document using Typst</a></li>
-  <li><a href="#customize-our-document-by-tweaking-yaml-options" id="toc-customize-our-document-by-tweaking-yaml-options" class="nav-link" data-scroll-target="#customize-our-document-by-tweaking-yaml-options">Customize our document by tweaking YAML options</a></li>
+  <li><a href="#customize-the-pdf-by-tweaking-yaml-options" id="toc-customize-the-pdf-by-tweaking-yaml-options" class="nav-link" data-scroll-target="#customize-the-pdf-by-tweaking-yaml-options">Customize the PDF by tweaking YAML options</a></li>
   <li><a href="#customize-pdf-with-brand.yml" id="toc-customize-pdf-with-brand.yml" class="nav-link" data-scroll-target="#customize-pdf-with-brand.yml">Customize PDF with <code>brand.yml</code></a></li>
   <li><a href="#create-a-custom-typst-template" id="toc-create-a-custom-typst-template" class="nav-link" data-scroll-target="#create-a-custom-typst-template">Create a custom Typst template</a></li>
   <li><a href="#create-typst-template-partial-files" id="toc-create-typst-template-partial-files" class="nav-link" data-scroll-target="#create-typst-template-partial-files">Create Typst template partial files</a></li>
   <li><a href="#set-page-properties" id="toc-set-page-properties" class="nav-link" data-scroll-target="#set-page-properties">Set page properties</a></li>
   <li><a href="#set-text-style" id="toc-set-text-style" class="nav-link" data-scroll-target="#set-text-style">Set text style</a></li>
-  <li><a href="#style-the-header-and-footer" id="toc-style-the-header-and-footer" class="nav-link" data-scroll-target="#style-the-header-and-footer">Style the header and footer</a></li>
+  <li><a href="#style-the-report-footer" id="toc-style-the-report-footer" class="nav-link" data-scroll-target="#style-the-report-footer">Style the report footer</a></li>
   <li><a href="#add-content-to-the-front-of-the-report" id="toc-add-content-to-the-front-of-the-report" class="nav-link" data-scroll-target="#add-content-to-the-front-of-the-report">Add content to the front of the report</a></li>
   <li><a href="#add-custom-functions-to-the-typst-template" id="toc-add-custom-functions-to-the-typst-template" class="nav-link" data-scroll-target="#add-custom-functions-to-the-typst-template">Add custom functions to the Typst template</a></li>
   <li><a href="#additional-custom-elements" id="toc-additional-custom-elements" class="nav-link" data-scroll-target="#additional-custom-elements">Additional custom elements</a></li>
   <li><a href="#lay-content-out-with-columns" id="toc-lay-content-out-with-columns" class="nav-link" data-scroll-target="#lay-content-out-with-columns">Lay content out with columns</a></li>
+  <li><a href="#understanding-when-to-use-the-has-in-typst" id="toc-understanding-when-to-use-the-has-in-typst" class="nav-link" data-scroll-target="#understanding-when-to-use-the-has-in-typst">Understanding when to use the has (<code>#</code>) in Typst</a></li>
   <li><a href="#tools-to-help-you-make-custom-typst-templates" id="toc-tools-to-help-you-make-custom-typst-templates" class="nav-link" data-scroll-target="#tools-to-help-you-make-custom-typst-templates">Tools to help you make custom Typst templates</a></li>
   <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
   </ul>
@@ -134,17 +135,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>In our consulting work at <a href="https://claritydatastudio.com/">Clarity Data Studio</a>, we make a lot of PDFs, like the <a href="https://publichealth.jhu.edu/ivac/monitoring-childhood-immunization-at-the-state-level">recent reports looking at childhood immunization made for the Johns Hopkins University International Vaccine Access Center.</a></p>
+<p>In our consulting work at <a href="https://claritydatastudio.com/">Clarity Data Studio</a>, many clients come to us for support making highly-branded PDF reports. I spoke about how we make these reports in my 2024 posit::conf talk Report Design in R: Small Tweaks that Make a Big Difference.</p>
+<p>TODO: Embed video: https://www.youtube.com/watch?v=bp1SMhLoz_M&amp;list=PL9HYL-VRX0oSFkdF4fJeY63eGDvgofcbn&amp;index=30&amp;t=1s&amp;ab_channel=PositPBC</p>
+<p>In the last couple years, we’ve moved to <a href="https://quarto.org/docs/output-formats/typst.html">Typst</a> almost exclusively for making PDFs. Of the two promises that Typst makes (powerful and easy to learn), we agree with the first. The second, however, a bit less so. <a href="https://typst.app/docs/">The Typst website has great documentation</a>, but it mostly covers how to write directly in Typst, rather than working in Quarto and rendering with Typst. People often ask me how we make reports with Typst, but I don’t have anywhere to point them to.</p>
+<p>So, in conjunction with consultant <a href="https://barbierjoseph.com/">Joseph Barbier</a> (who has become a true expert in creating custom Typst templates), here is an extended tutorial on making high-quality PDFs using Quarto and Typst. We’ll recreate most elements of the <a href="https://publichealth.jhu.edu/ivac/monitoring-childhood-immunization-at-the-state-level">childhood immunization reports we recently made for the Johns Hopkins University International Vaccine Access Center</a>.</p>
 <p><img src="state-immunization-report-alabama.png" class="img-fluid"></p>
-<p>Many clients come to us for support making highly-branded PDF reports, something I spoke about in my 2024 posit::conf talk <a href="https://www.youtube.com/watch?v=bp1SMhLoz_M&amp;list=PL9HYL-VRX0oSFkdF4fJeY63eGDvgofcbn&amp;index=30&amp;t=1s&amp;ab_channel=PositPBC">Report Design in R: Small Tweaks that Make a Big Difference</a>.</p>
-<p>In the last couple years, we’ve moved to <a href="https://quarto.org/docs/output-formats/typst.html">Typst</a> almost exclusively for making PDFs. Of the two promises that Typst makes (powerful and easy to learn), we agree with the first. The second, however, a bit less so.</p>
-<p><a href="https://typst.app/docs/">The Typst website has great documentation</a>, but it mostly covers how to write directly in Typst, rather than working in Quarto and rendering with Typst. People often ask me how we make reports with Typst, but I don’t have anywhere to point them to.</p>
-<p>So, in conjunction with consultant <a href="https://barbierjoseph.com/">Joseph Barbier</a> (who has become a true expert in creating custom Typst templates), here is an extended tutorial on making high-quality PDFs using Quarto and Typst. We’ll recreate most elements of the <a href="https://publichealth.jhu.edu/ivac/monitoring-childhood-immunization-at-the-state-level">childhood immunization reports made for the Johns Hopkins University International Vaccine Access Center.</a>.</p>
 <p>Let’s get started!</p>
 <section id="create-a-quarto-document-using-typst" class="level2">
 <h2 class="anchored" data-anchor-id="create-a-quarto-document-using-typst">Create a Quarto document using Typst</h2>
-<p>To begin, we’ll create a Quarto document. I’ll add a bunch of the content from the childhood immunization report for Alabama so we have something to work with.</p>
-<p>Initially, when creating a PDF report in Quarto, you might be tempted to use YAML with <code>format: pdf</code>, like so:</p>
+<p>To begin, we’ll create a Quarto document. I’ll add a content from the childhood immunization report for Alabama so we have something to work with.</p>
+<p>Initially, when creating a PDF report in Quarto, you might think to use YAML with <code>format: pdf</code>, like so:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">title</span><span class="kw">:</span><span class="at"> Status of Childhood Immunization in Alabama</span></span>
@@ -163,9 +163,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>If you render your report, it looks quite plain:</p>
 <p><img src="typst-report-typst.png" class="img-fluid"></p>
 </section>
-<section id="customize-our-document-by-tweaking-yaml-options" class="level2">
-<h2 class="anchored" data-anchor-id="customize-our-document-by-tweaking-yaml-options">Customize our document by tweaking YAML options</h2>
-<p>If you look at the <a href="https://quarto.org/docs/output-formats/typst.html">Quarto docs</a>, you’ll see that you can make additional tweaks within the YAML. You can set properties like the font (I’ll change it to something very obviously different), page size and margins:</p>
+<section id="customize-the-pdf-by-tweaking-yaml-options" class="level2">
+<h2 class="anchored" data-anchor-id="customize-the-pdf-by-tweaking-yaml-options">Customize the PDF by tweaking YAML options</h2>
+<p>If you look at the <a href="https://quarto.org/docs/output-formats/typst.html">Quarto docs</a>, you’ll see that you can make additional tweaks within the YAML. You can set properties like the font (I’ll change it to something very obviously different), paper size, and margins:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">title</span><span class="kw">:</span><span class="at"> Status of Childhood Immunization in Alabama</span></span>
@@ -185,10 +185,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="customize-pdf-with-brand.yml" class="level2">
 <h2 class="anchored" data-anchor-id="customize-pdf-with-brand.yml">Customize PDF with <code>brand.yml</code></h2>
-<p>The next step on our PDF customization journey takes us to <a href="https://posit-dev.github.io/brand-yml/">brand.yml</a>.</p>
+<p><a href="https://posit-dev.github.io/brand-yml/"><code>brand.yml</code></a>, created by Posit developer Garrick Aden-Buie (<a href="https://rfortherestofus.com/2025/06/podcast-episode-27">I spoke with him about it in June 2025</a>), is a tool that allows you to create a single <code>_brand.yml</code> file that controls the look and feel of files rendered from Quarto docs (this goes beyond the scope of this blog post, but you can use a single <code>_brand.yml</code> file to make multiple formats follow your brand guidelines).</p>
 <p><img src="brandyml-website.png" class="img-fluid"></p>
-<p>This tool, created by Posit developer Garrick Aden-Buie (<a href="https://rfortherestofus.com/2025/06/podcast-episode-27">I spoke with him about it in June 2025</a>), allows you to create a single <code>_brand.yml</code> file that controls the look and feel of files rendered from Quarto docs (this goes beyond the scope of this blog post, but you can use a single <code>_brand.yml</code> file to make multiple formats follow your brand guidelines).</p>
-<p>Let’s create a <code>_brand.yml</code> file. This file will allow us to use custom fonts (Bitter and Lato, which is close to the actual font, known as Gentian, used for the reports). Additionally, we will set the color of the headings to be a navy blue (#002D72).</p>
+<p>Let’s create a <code>_brand.yml</code> file. This file will allow us to use custom fonts (Bitter and Lato, which is close to the actual font, known as Gentona, used for the reports). Additionally, we will set the color of the headings to be a navy blue (#002D72).</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">typography</span><span class="kw">:</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">base</span><span class="kw">:</span><span class="at"> </span></span>
@@ -198,18 +197,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">family</span><span class="kw">:</span><span class="at"> Bitter</span></span>
 <span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">color</span><span class="kw">:</span><span class="at"> </span><span class="st">"#002D72"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>This gets us a decent part of the way there.</p>
+<p>This gives us a good start:</p>
 <p><img src="typst-report-brandyml.png" class="img-fluid"></p>
-<p>But see how all of the headings are the same size? That’s not ideal and <code>_brand.yml</code> doesn’t give us any tools to fix this. It also doesn’t allow us to make customizations to the header or the footer of our report. Overall, <code>_brand.yml</code> is great if you want to make some simple customizations to a PDF document, but if we want to make a truly unique report, we’ll need to create a custom Typst template.</p>
+<p>But see how all of the headings are the same size? That’s not ideal and <code>_brand.yml</code> doesn’t give us any tools to fix this. It also doesn’t allow us to make customizations to the header or the footer of our report. Overall, <code>_brand.yml</code> is great if you want to make some simple customizations, but if we want to make a truly unique report, we’ll need to create a custom Typst template.</p>
 </section>
 <section id="create-a-custom-typst-template" class="level2">
 <h2 class="anchored" data-anchor-id="create-a-custom-typst-template">Create a custom Typst template</h2>
-<p>In order to make a custom Typst template, we’ll begin by deleting the <code>_brand.yml</code> file. Instead, we’ll create two files, known as template partials:</p>
+<p>In order to make a custom Typst template, we’ll begin by deleting the <code>_brand.yml</code> file. Instead, we’ll create two files, known as <a href="https://quarto.org/docs/output-formats/typst-custom.html#advanced-customization">template partials</a>:</p>
 <ul>
 <li><code>typst-show.typ</code></li>
 <li><code>typst-template.typ</code></li>
 </ul>
-<p>The <code>typst-show.typ</code> file connects Quarto and Typst, enabling us to pass variables from the former to the latter. We’ll see this show up when doing things like adding the title in the footer of the report:</p>
+<p>The <code>typst-show.typ</code> file connects Quarto and Typst, enabling us to pass variables from the former to the latter. We’ll see this show up when doing things like adding the title and date in the footer of the report:</p>
 <p><img src="report-footer.png" class="img-fluid"></p>
 <p>The <code>typst-template.typ</code> file is where we will define our custom template. We’ll use it to do things like set text styles, design headers and footers, and more.</p>
 <p>We also need to tell our Quarto document to use these files, which we can do by adjusting our YAML:</p>
@@ -254,7 +253,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="set-page-properties" class="level2">
 <h2 class="anchored" data-anchor-id="set-page-properties">Set page properties</h2>
-<p>We can begin by adjusting the paper size and margins of our report. We’ll use what’s known as a <a href="https://typst.app/docs/reference/styling/#set-rules">set rule</a> in Typst. The set rule allows us to define the styling of some element. We want to style the report as a whole, which we do using the <code>page()</code> function:</p>
+<p>We can begin by adjusting the paper size and margins of our report. We’ll use what’s known as a <a href="https://typst.app/docs/reference/styling/#set-rules">set rule</a> in Typst. The set rule allows us to define the styling of some element. We want to style the report as a whole, which we do using the <a href="https://www.google.com/search?q=typst+page+function&amp;oq=typst+page+function&amp;sourceid=chrome&amp;ie=UTF-8"><code>page()</code> function</a>:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode typ code-with-copy"><code class="sourceCode typst"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">#let</span> <span class="va">report</span><span class="op">(</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  title<span class="op">:</span> <span class="bu">none</span><span class="op">,</span></span>
@@ -275,7 +274,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="set-text-style" class="level2">
 <h2 class="anchored" data-anchor-id="set-text-style">Set text style</h2>
-<p>Before we adjust the text style, we’ll begin by making our margins a bit more reasonable. Then, to set the text style, we’ll also use a set rule. In this case, we’ll combine the set rule with the <code>text()</code> function. Our updated <code>typst-template.typ</code> file now looks like this:</p>
+<p>Before we adjust the text style, we’ll begin by making our <code>x</code> margins a bit more reasonable (1 inch on each side). Then, to set the text style, we’ll also use a set rule. In this case, we’ll combine the set rule with the <a href="https://typst.app/docs/reference/text/text/"><code>text()</code> function</a>. Our updated <code>typst-template.typ</code> file now looks like this:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode typ code-with-copy"><code class="sourceCode typst"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">#let</span> <span class="va">report</span><span class="op">(</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  title<span class="op">:</span> <span class="bu">none</span><span class="op">,</span></span>
@@ -296,7 +295,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>  content</span>
 <span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>You can see how, within the <code>text()</code> function, we’ve set both the language (English), the region (US), the font family to use (Lato), and the size (11pt). The font family and size will be visible when we render again:</p>
+<p>You can see how, within the <code>text()</code> function, we’ve set both the language (English) and the region (US). These are relevant in terms of how Typst formats language- and region-specific things like quote styles. We also set the font family to use (Lato) and its size (11pt). The font family and size will be visible when we render again:</p>
 <p><img src="typst-report-typst-text.png" class="img-fluid"></p>
 <p>You’ll see that while we’ve changed the font family for both paragraph text and headings in our rendered report, we haven’t changed the size of headings (i.e.&nbsp;the headings still use their default sizes, not 11pt). In order to target headings, we need to use what’s known as a <a href="https://typst.app/docs/reference/styling/#show-rules">show rule</a>. Our <code>typst-template.typ</code> file now looks like this:</p>
 <div class="cell">
@@ -401,8 +400,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><img src="typst-report-typst-headings-complex.png" class="img-fluid"></p>
 <p>One important thing to note here is that Quarto shifts Typst headings up one level on rendering (<a href="https://quarto.org/docs/reference/formats/typst.html#numbering">see details in the <code>shift-heading-levels-by</code> argument on the Quarto docs page</a>). That is, if you have a level 1 heading in your Quarto document, it will be treated as a level 2 heading in Typst. If you look at the Quarto document code we use, the level 2 headings are styled by what we defined as level 1 headings in our <code>typst-template.typ</code> file.</p>
 </section>
-<section id="style-the-header-and-footer" class="level2">
-<h2 class="anchored" data-anchor-id="style-the-header-and-footer">Style the header and footer</h2>
+<section id="style-the-report-footer" class="level2">
+<h2 class="anchored" data-anchor-id="style-the-report-footer">Style the report footer</h2>
 <p>We’ve dealt with paragraph and heading text. Next, let’s customize our report’s footer. In the reports we made, we added the report title as well as the date in the footer:</p>
 <p><img src="report-footer.png" class="img-fluid"></p>
 <p>To do this, we use the <code>footer</code> parameter within the <code>page()</code> function. To start, let’s add the light blue rectangle in the footer. We do this as follows (our <code>typst-template.typ</code> file is getting long so this is only the relevant portion):</p>
@@ -459,7 +458,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb18-32"><a href="#cb18-32" aria-hidden="true" tabindex="-1"></a>    },</span>
 <span id="cb18-33"><a href="#cb18-33" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>The <code>block()</code> function allows us to add content. Within the block, we specify that we are creating a grid, with two columns: the first 75% of the total width and the second 25%. Then, we add our content. The first column is aligned to the left. The <code>#text()</code> function allows us to add content. The line <code>upper(title)</code> takes the title variable (reminder: this was passed in by the <code>typst-show.typ</code> file), make it uppercase with the <code>upper()</code> function. We also set its font (Bitter), color (white), and weight (bold). We do something very similar for the second column, adding the date there.</p>
+<p>The <a href="https://typst.app/docs/reference/layout/block/"><code>block()</code> function</a> allows us to add content. Within the block, we specify that we are creating a grid, with two columns: the first 75% of the total width and the second 25%. Then, we add our content. The first column is aligned to the left. The <code>#text()</code> function allows us to add content. The line <code>upper(title)</code> takes the title variable (reminder: this was passed in by the <code>typst-show.typ</code> file), make it uppercase with the <code>upper()</code> function. We also set its font (Bitter), color (white), and weight (bold). We do something very similar for the second column, adding the date there.</p>
 <p>Rendering again, we can see how things look:</p>
 <p><img src="typst-report-typst-footer-content.png" class="img-fluid"></p>
 <p>There are two main issues now:</p>
@@ -467,7 +466,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><p>The text runs right up against the top of the rectangle.</p></li>
 <li><p>The date should be formatted as “September 2025” rather than “2025-09-01”.</p></li>
 </ol>
-<p>To fix the padding issue, we’ll use the <code>pad()</code> function. Adding it before we use the <code>block()</code> function, we can see our updated Typst code:</p>
+<p>To fix the padding issue, we’ll use the <a href="https://typst.app/docs/reference/layout/pad/"><code>pad()</code> function</a>. Adding it before we use the <code>block()</code> function, we can see our updated Typst code:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode typ code-with-copy"><code class="sourceCode typst"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>set page(</span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    paper: "us-letter",</span>
@@ -524,7 +523,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="add-content-to-the-front-of-the-report" class="level2">
 <h2 class="anchored" data-anchor-id="add-content-to-the-front-of-the-report">Add content to the front of the report</h2>
-<p>Often, when we make reports, we add a cover page. For the childhood vaccination reports, however, the client just wanted their logo at the top of the first page. Let’s discuss how to add that. In the process we’ll also add in the report title, which you may recall, is no longer on the report since we created our custom template.</p>
+<p>Often, when we make reports, we add a cover page. For these reports, however, the client just wanted their logo at the top of the first page. Let’s discuss how to add that. In the process we’ll also add in the report title, which you may recall, is no longer on the report since we created our custom template.</p>
 <p>To add the logo, we use the <code>image()</code> function. Adding <code>image("logo.png", width: 4in)</code> at the bottom of the <code>page()</code> function adds the logo to the top of the first page of the report. Here is the updated <code>typst-template.typ</code> file:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode typ code-with-copy"><code class="sourceCode typst"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="kw">#let</span> <span class="va">report</span><span class="op">(</span></span>
@@ -787,7 +786,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 ```</code></pre>
 <p>By creating a Typst code chunk, we tell Quarto to treat what is in the chunk as Typst code. So, when Quarto renders the document, it knows to use Typst to render this chunk and <code>#source_text("Source: ChildVaxView")</code> gets turned into nicely formatted source text (the text goes onto the second page, which is why this screenshot looks a bit different than the previous ones):</p>
 <p><img src="typst-report-typst-source-text.png" class="img-fluid"></p>
-<p>You can also make more complicated custom functions. For instance, we use what we called “status boxes” throughout the report to show the status of various items:</p>
+<p>You can also make more complicated custom Typst functions. For instance, we use what we called “status boxes” throughout the report to show the status of various items:</p>
 <p><img src="status-box.png" class="img-fluid"></p>
 <p>We create these status boxes with the following code:</p>
 <div class="cell">
@@ -815,13 +814,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb30-22"><a href="#cb30-22" aria-hidden="true" tabindex="-1"></a>  stack<span class="op">(</span>top_box<span class="op">,</span> bottom_box<span class="op">,</span> spacing<span class="op">:</span> <span class="fl">0pt</span><span class="op">)</span></span>
 <span id="cb30-23"><a href="#cb30-23" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>The <code>status-box()</code> function has two arguments: <code>top-box-text</code> and <code>bottom-box-text</code>. These allow us to customize the text that appears in the top and bottom boxes. The function uses the <code>box()</code> function twice to create the two boxes, styling them as we’ve seen with text styling above. Finally, it uses the <code>stack()</code> function to stack the two boxes on top of each other. The result looks like this:</p>
+<p>The <code>status-box()</code> function has two arguments: <code>top-box-text</code> and <code>bottom-box-text</code>. These allow us to customize the text that appears in the top and bottom boxes. The function uses the <a href="https://typst.app/docs/reference/layout/box/"><code>box()</code> function</a> twice to create the two boxes, styling them as we’ve seen with text styling above. Finally, it uses the <a href="https://typst.app/docs/reference/layout/stack/"><code>stack()</code> function</a> to stack the two boxes on top of each other. The result looks like this:</p>
 <p><img src="typst-report-typst-status-boxes.png" class="img-fluid"></p>
 <p>This is a simple example and doesn’t put the status box into columns, but you could do that using the <code>grid()</code> function we used above.</p>
 </section>
 <section id="additional-custom-elements" class="level2">
 <h2 class="anchored" data-anchor-id="additional-custom-elements">Additional custom elements</h2>
-<p>Typst also has the ability to use HTML and CSS within Typst documents. This is useful for creating custom elements that are difficult to make with Typst alone. For instance, in the childhood immunization reports, we used gray boxes to highlight certain sections:</p>
+<p><a href="https://quarto.org/docs/output-formats/typst.html#typst-css">Typst also has the ability to use some basic HTML and CSS within Quarto documents</a>. This is useful for creating custom elements that are difficult to make with Typst alone. For instance, in the childhood immunization reports, we used gray boxes to highlight certain sections:</p>
 <p><img src="gray-box.png" class="img-fluid"></p>
 <p>We create these gray boxes using a bit of HTML and CSS as follows:</p>
 <div class="cell">
@@ -868,14 +867,44 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>The <code>layout-ncol=2</code> attribute tells Quarto to create two columns for the content within it. When we render, we can see our images side-by-side:</p>
 <p><img src="typst-report-typst-gray-box-two-columns.png" class="img-fluid"></p>
-<p>The formatting isn’t perfect here (we might want to add some padding within the gray box, for example), but it’s a good start.</p>
+<p>The formatting doesn’t perfectly match our reports (it’s missing some padding within the gray box, for example), but it’s a good start.</p>
+</section>
+<section id="understanding-when-to-use-the-has-in-typst" class="level2">
+<h2 class="anchored" data-anchor-id="understanding-when-to-use-the-has-in-typst">Understanding when to use the has (<code>#</code>) in Typst</h2>
+<p>One thing you may have wondered throughout this tutorial is when to use the hash symbol (<code>#</code>) in Typst. It is of the trickiest aspects of Typst for newcomers. The <code>#</code> is Typst’s code injection operator, which signals to Typst that you’re switching from markup mode (plain text/content) into code mode (where functions and variables are evaluated).</p>
+<p>The rule to remember is that you need <code>#</code> when you’re inside content (square brackets <code>[ ]</code>) and want to execute code rather than display it as literal text.</p>
+<p>For instance, in the heading styling code from earlier, we used <code>#</code> inside brackets:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode typ code-with-copy"><code class="sourceCode typst"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>align(alignment)[<span class="kw">#</span>formatted_heading]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Here, <code>#formatted_heading</code> executes the code to display the formatted heading variable. Without the <code>#</code>, Typst would display the literal text “formatted_heading” instead of the actual heading content.</p>
+<p>Similarly, when styling the footer text, we used:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode typ code-with-copy"><code class="sourceCode typst"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>align(left)[</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">#</span>text<span class="op">(</span></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>    upper<span class="op">(</span>title<span class="op">),</span></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>    font<span class="op">:</span> <span class="st">"Bitter"</span><span class="op">,</span></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>    fill<span class="op">:</span> white<span class="op">,</span></span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>    weight<span class="op">:</span> <span class="st">"bold"</span><span class="op">,</span></span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>  <span class="op">)</span></span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The <code>#text(...)</code> calls the function to apply styling. Without <code>#</code>, it would just display the text function as plain text rather than executing it.</p>
+<p>When you use <code>{=typst}</code> code chunks in your Quarto document, you’re writing code directly (not inside brackets), so you usually don’t need <code>#</code> for basic syntax. But you do need it when calling custom functions:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="in">```{=typst}</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="in">#blueline()       // # needed - calling your custom function</span></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a><span class="in">#status-box(...)  // # needed - calling your custom function</span></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Knowing when to use the hash is confusing at first, but with practice, it becomes easier.</p>
 </section>
 <section id="tools-to-help-you-make-custom-typst-templates" class="level2">
 <h2 class="anchored" data-anchor-id="tools-to-help-you-make-custom-typst-templates">Tools to help you make custom Typst templates</h2>
-<p>There are three tools that help a lot when creating custom Typst templates. These are extensions that work only in Positron, but do not work in RStudio (this is the first time I’ve really felt like Positron has a clear advantage over RStudio).</p>
-<p>The first extension is <a href="https://open-vsx.org/extension/nvarner/typst-lsp">Typst LSP</a>. This extension allows you to see helpful tooltips when writing Typst code. For instance, when I write <code>report()</code>, I get a tooltip that shows me all of the possible arguments I can use with the <code>page()</code> function:</p>
+<p>Creating custom Typst templates can be challenging, especially when you’re new to Typst. There are some great tools that help a lot in this process. These are extensions that work only in Positron, but do not work in RStudio (this is the first time I’ve really felt like Positron has a clear advantage over RStudio).</p>
+<p>The first extension is <a href="https://open-vsx.org/extension/nvarner/typst-lsp">Typst LSP</a>. This extension allows you to see helpful tooltips when writing Typst code. For instance, when I write <code>page()</code>, I get a tooltip that shows me all of the possible arguments I can use with the <code>page()</code> function:</p>
 <p><img src="typst-lsp-animated.gif" class="img-fluid"></p>
-<p>This is helpful because I’m a relative Typst newbie and don’t have all of the functions and their arguments memorized yet.</p>
+<p>This is helpful because I’m a relative Typst newbie and don’t have all of the functions and their arguments memorized yet. Typst LSP will also alert you when your syntax is off (something that happened to me a lot when writing this blog post!).</p>
 <p>A second extension to use is <a href="https://open-vsx.org/extension/myriad-dreamin/tinymist">Tinymist Typst</a>. I use this extension to automatically format my Typst code, keeping things neat, tidy, and easy to read.</p>
 <p><img src="tinymist.png" class="img-fluid"></p>
 <p>Finally, if you want to view rendered PDFs directly in Positron, you can use the <a href="https://open-vsx.org/extension/tomoki1207/pdf">vscode-pdf</a> extension.</p>
