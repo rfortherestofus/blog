@@ -15,6 +15,7 @@
   )
   show heading: set text(
     font: "Bitter",
+    fill: rgb("#002D72"),
     size: 20pt,
     weight: "bold",
   )

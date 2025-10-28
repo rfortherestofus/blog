@@ -2,14 +2,6 @@
 David Keyes
 2025-10-28
 
-``` r
-library(tidyverse)
-library(pdftools)
-library(magick)
-library(quarto)
-library(fs)
-```
-
 In our consulting work at [Clarity Data Studio](https://claritydatastudio.com/), we make a lot of PDFs, like the [recent reports looking at childhood immunization made for the Johns Hopkins University International Vaccine Access Center.](https://publichealth.jhu.edu/ivac/monitoring-childhood-immunization-at-the-state-level)
 
 ![](state-immunization-report-alabama.png)
@@ -120,6 +112,7 @@ We also need to tell our Quarto document to use these files, which we can do by 
 ``` yaml
 ---
 title: Status of Childhood Immunization in Alabama
+date: September 2025
 format:
    typst:
       template-partials: 
@@ -164,7 +157,7 @@ We can render our report again and see what it looks like:
 
 ![](typst-report-typst-basic.png)
 
-Nothing looks terribly different, though you’ll likely see that the title is no longer there (we’ll add it back soon). For now, though, let’s begin by customizing the look and feel of the report.
+Nothing looks terribly different, though you’ll likely see that the title and date are no longer there (we’ll add them back soon). For now, though, let’s begin by customizing the look and feel of the report.
 
 #### Paper Size, Margins, etc
 
@@ -194,7 +187,7 @@ Now that we’ve adjusted the overall page properties, it’s time to adjust the
 
 #### Set text style
 
-To set the text style, we’ll also use a set rule. In this case, we’ll combine the set rule with the `text()` function. Our updated `typst-template.typ` file now looks like this:
+Before we adjust the text style, we’ll begin by making our margins a bit more reasonable. Then, to set the text style, we’ll also use a set rule. In this case, we’ll combine the set rule with the `text()` function. Our updated `typst-template.typ` file now looks like this:
 
 ``` typ
 #let report(
@@ -243,6 +236,7 @@ You’ll see that while we’ve changed the font family for both paragraph text 
   )
   show heading: set text(
     font: "Bitter",
+    fill: rgb("#002D72"),
     size: 20pt,
     weight: "bold",
   )
@@ -251,7 +245,7 @@ You’ll see that while we’ve changed the font family for both paragraph text 
 }
 ```
 
-Our show rule `show heading` tells Typst to just target headings. From there, we again use a set rule to specify the font, size, and weight. At this point, all of headings are the exact same size:
+Our show rule `show heading` tells Typst to just target headings. From there, we again use a set rule to specify the font, color, size, and weight. At this point, all of the headings are still the exact same size:
 
 ![](typst-report-typst-headings-basic.png)
 
@@ -288,9 +282,9 @@ To do all of this, we need to alter our heading syntax a bit, using instead what
     let alignment = if level == "2" { center } else { left }
 
     set text(
-      size: size,
-      fill: rgb("#002D72"),
       font: "Bitter",
+      fill: rgb("#002D72"),
+      size: size,
       weight: "bold",
     )
     align(alignment)[#formatted_heading]
@@ -465,7 +459,7 @@ set page(
 
 The 16pt padding now puts the footer text in the vertical middle of the blue rectangle.
 
-\[TODO: Add screenshot\]
+![](typst-report-typst-footer-content-padding.png)
 
 Our full `typst-template.typ` file now looks like this:
 
@@ -554,7 +548,7 @@ format:
 
 This addition causes Quarto to pass the date to Typst as “September 2025,” which gives us exactly what we need when rendering.
 
-\[TODO: Add screenshot\]
+![](typst-report-typst-footer-date-formatting.png)
 
 The `page()` function in Typst has a parameter for adding content to the header as well. Conveniently named `header`, it follows the same syntax as `footer`, making it straightforward to add content in the header as well.
 
@@ -636,7 +630,7 @@ To add the logo, we use the `image()` function. Adding `image("logo.png", width:
 
 And here is the rendered report:
 
-\[TODO: Add screenshot\]
+![](typst-report-typst-logo.png)
 
 Next, let’s add the title and the Alabama state flag. We can add the title by adding this code right below the code to add the logo:
 
@@ -652,7 +646,7 @@ text(
 
 When we render, we’ve got the title right below the logo:
 
-\[TODO: Add screenshot\]
+![](typst-report-typst-logo-title.png)
 
 To add the Alabama flag, we can again use the `image()` function. If we add it below the `text()` function that added the title, the flag will show up below the title. In order to put them into two columns, we use the `grid()` function that we used when making the footer.
 
@@ -679,7 +673,7 @@ The code creates three columns: the first takes up 80% and has the title. The se
 
 Our rendered report now looks like this:
 
-\[TODO: Add screenshot\]
+![](typst-report-typst-logo-title-flag.png)
 
 And our full `typst-template.typ` code looks like this:
 
@@ -809,7 +803,7 @@ blueline()
 
 This now adds the blue line where we want it to appear:
 
-\[TODO: Add screenshot\]
+![](typst-report-typst-blueline.png)
 
 You can also use the `blueline()` function in your Quarto document. To do so, you have to tell Quarto that you are creating a Typst code chunk. Here is the first section of the report with a blue line added below it:
 
@@ -828,7 +822,7 @@ This brief illustrates the current status of childhood immunization in Alabama a
 
 The `blueline()` function is relatively simple. It takes no arguments, just drawing a blue line wherever it is called. A slightly more complicated example is the `source_text()` function we used throughout the report to add source information below charts:
 
-\[TODO: Add screenshot\]
+![](source-text.png)
 
 To create this function, we add the following code at the top of our `typst-template.typ` file:
 
@@ -852,18 +846,18 @@ To use this `source_text()` function in our Quarto document, we create a Typst c
     #source_text("Source: ChildVaxView")
     ```
 
-By creating a Typst code chunk, we tell Quarto to treat what is in the chunk as Typst code. So, when Quarto renders the document, it knows to use Typst to render this chunk and `#source_text("Source: ChildVaxView")` gets turned into nicely formatted source text:
+By creating a Typst code chunk, we tell Quarto to treat what is in the chunk as Typst code. So, when Quarto renders the document, it knows to use Typst to render this chunk and `#source_text("Source: ChildVaxView")` gets turned into nicely formatted source text (the text goes onto the second page, which is why this screenshot looks a bit different than the previous ones):
 
-\[TODO: Add screenshot\]
+![](typst-report-typst-source-text.png)
 
 You can also make more complicated custom functions. For instance, we use what we called “status boxes” throughout the report to show the status of various items:
 
-\[TODO: Add screenshot https://show.rfor.us/87LpcmZ5\]
+![](status-box.png)
 
 ``` typ
 #let status-box(top-box-text: "", bottom-box-text: "") = {
   let top_box = box(
-    width: 100%,
+    width: 2in,
     height: 0.7in,
     fill: rgb("#002D72"),
     inset: 6pt,
@@ -873,7 +867,7 @@ You can also make more complicated custom functions. For instance, we use what w
   )
 
   let bottom_box = box(
-    width: 100%,
+    width: 2in,
     height: 0.7in,
     fill: white,
     inset: 6pt,
@@ -882,17 +876,19 @@ You can also make more complicated custom functions. For instance, we use what w
     ],
   )
 
-  stack(dir: ttb, top_box, bottom_box, spacing: 0pt)
+  stack(top_box, bottom_box, spacing: 0pt)
 }
 ```
 
-TODO: Figure out why this isn’t working
+The `status-box()` function has two arguments: `top-box-text` and `bottom-box-text`. These allow us to customize the text that appears in the top and bottom boxes. The function uses the `box()` function twice to create the two boxes, styling them as we’ve seen with text styling above. Finally, it uses the `stack()` function to stack the two boxes on top of each other. The result looks like this:
+
+![](typst-report-typst-status-boxes.png)
 
 #### Custom elements not with Typst (gray boxes)
 
 Typst also has the ability to use HTML and CSS within Typst documents. This is useful for creating custom elements that are difficult to make with Typst alone. For instance, in the childhood immunization reports, we used gray boxes to highlight certain sections:
 
-\[TODO: Add screenshot\]
+![](gray-box.png)
 
 We create these gray boxes using a bit of HTML and CSS as follows:
 
@@ -908,21 +904,19 @@ We create these gray boxes using a bit of HTML and CSS as follows:
 In 2023, more 2-year-olds were fully vaccinated against diphtheria, tetanus, and pertussis (received all four doses of DTaP) in Alabama compared to the previous year. Coverage in Alabama is below the HP2030 target of 90%.
 
 ```{=typst}
-#source("Source: ChildVaxView")
+#source_text("Source: ChildVaxView")
 ```
 
 </div>
 ````
 
-The `div` element allows us to create a section with a light gray background color (it’s actually not visible yet, but will become visible in a minute). We then add our text and images within that section.
+The `div` element allows us to create a section with a light gray background color. We then add our text and images within that section. When we render, we can see the gray box around our content:
+
+![](typst-report-typst-gray-box.png)
 
 ## Columns
 
-You’ll notice that in the childhood immunization reports, we often use two columns to display images side-by-side:
-
-\[TODO: Add screenshot\]
-
-Quarto does not allow us to create columns directly in Typst ([it is a known limitation at the moment](https://quarto.org/docs/output-formats/typst.html#known-limitations)). However, we can achieve the same effect using the `layout-ncol` attribute in Quarto. Here is an example of how to do this:
+You’ll likely have noticed that in the childhood immunization reports, we often use two columns to display images side-by-side. Quarto does not allow us to create columns directly in Typst ([it is a known limitation at the moment](https://quarto.org/docs/output-formats/typst.html#known-limitations)). However, we can achieve the same effect using the `layout-ncol` attribute in Quarto. Here is an example of how to do this:
 
 ```` html
 <div style="background-color: #F8F8F8;">
@@ -938,7 +932,7 @@ Quarto does not allow us to create columns directly in Typst ([it is a known lim
 In 2023, more 2-year-olds were fully vaccinated against diphtheria, tetanus, and pertussis (received all four doses of DTaP) in Alabama compared to the previous year. Coverage in Alabama is below the HP2030 target of 90%.
 
 ```{=typst}
-#source("Source: ChildVaxView")
+#source_text("Source: ChildVaxView")
 ```
 
 </div>
@@ -946,7 +940,7 @@ In 2023, more 2-year-olds were fully vaccinated against diphtheria, tetanus, and
 
 The `layout-ncol=2` attribute tells Quarto to create two columns for the content within it. When we render, we can see our images side-by-side:
 
-\[TODO: Add screenshot\]
+![](typst-report-typst-gray-box-two-columns.png)
 
 The formatting isn’t perfect here (we might want to add some padding within the gray box, for example), but it’s a good start.
 
@@ -956,15 +950,17 @@ There are three tools that help a lot when creating custom Typst templates. Thes
 
 The first extension is [Typst LSP](https://open-vsx.org/extension/nvarner/typst-lsp). This extension allows you to see helpful tooltips when writing Typst code. For instance, when I write `set page(`, I get a tooltip that shows me all of the possible arguments I can use with the `page()` function:
 
-\[TODO: Add screenshot\]
+\[TODO: Add screenshot of me using this\]
 
 This is helpful because I’m a relative Typst newbie and don’t have all of the functions and their arguments memorized yet.
 
 A second extension to use is [Tinymist Typst](https://open-vsx.org/extension/myriad-dreamin/tinymist). I use this extension to automatically format my Typst code, keeping things neat, tidy, and easy to read.
 
-\[TODO: Add screenshot\]
+![](tinymist.png)
 
 Finally, if you want to view rendered PDFs directly in Positron, you can use the [vscode-pdf](https://open-vsx.org/extension/tomoki1207/pdf) extension.
+
+![](vscode-pdf.png)
 
 ## Conclusion
 
@@ -973,5 +969,3 @@ This is really only scratching the surface of what is possible with Typst and Qu
 [With Posit’s recent announcement of their support of Typst](https://posit.co/blog/posit-and-typst/), its path forward seems secure. And Typst is making great strides. Its [recent 0.14 release adds support for many accessibility features](https://typst.app/blog/2025/typst-0.14/), which is a requirement for many who make PDFs.
 
 Good luck making your own reports in Typst. And if you want support in creating reports in Quarto and Typst, feel free to reach out [Clarity Data Studio](https://claritydatastudio.com/).
-
-TODO: clean up all temp png files
