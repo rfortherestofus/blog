@@ -1,0 +1,222 @@
+---
+title: Customizing typst in Quarto
+---
+
+## Typst & Quarto
+
+In the previous [blog post](#), we explained the basics of:
+
+* how to customize typst from the Quarto yaml header
+* how to use typst `set` rules for custom styling
+
+Here we will go over how to do advanced customization such as:
+
+* adding a footer or header
+* using columns in specific areas of the report
+
+For this, we need to create a typst template.
+
+## Typst template
+
+To create a template, we need to create two files: `typst-show.typ` and `typst-template.typ`.
+
+Our project should be organized as such:
+
+```
+my_project/
+├── report.qmd          # Quarto document
+├── typst-show.typ      # Layer between Quarto and Typst
+└── typst-template.typ  # Function of the template
+```
+
+`typst-template.typ` is the most important one. It defines the template (which is just a function) that controls the layout and style of the report. Here let us start with:
+
+```{.typ filename="typst-template.typ"}
+#let article(
+  title: none,
+  date: none,
+  body,
+) = {
+  align(center)[#text(size: 30pt, title)]
+  align(right)[#date]
+
+  body
+}
+```
+
+Here we define an `article()` function with three arguments:
+
+* `title`: defaults to none
+* `date`: defaults to none
+* `body`: no default, because it represents all the content from our Quarto document (charts, code, markdown content, etc.)
+
+`typst-show.typ` should look like this:
+
+```{.typ filename="typst-show.typ"}
+#show: body => article(
+  title: [$title$],
+  date: [$date$],
+  body,
+)
+```
+
+Here we are just "calling" our `article()` function from the template file.
+
+Then, our Quarto document should explicitly mention these files with the `template-partials` flag:
+
+````md
+---
+title: Hello Typst!
+date: September 2025
+format:
+   typst:
+      template-partials: 
+         - typst-show.typ
+         - typst-template.typ
+---
+
+## Section A
+
+Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+````
+
+![](example-1.png)
+
+We can recognize here the centered title as well as the right-aligned date from our typst template.
+
+## Footer
+
+To add a footer, we need `set` rules that, [as explained in the previous blog post](#), change the behavior of a given function.
+
+In particular, we want to change the `footer` argument, as it is the one that defines the content inside the footer. To make it simple, let us just put some very simple text in it:
+
+```{.typ filename="typst-template.typ"}
+#let article(
+  title: none,
+  date: none,
+  body,
+) = {
+
+  set page(footer: [Text in the footer])
+
+  align(center)[#text(size: 30pt, title)]
+  align(right)[#date]
+
+  body
+}
+```
+
+![](example-2.png)
+
+With this simple new line, now **all pages** have a footer with "Text in footer" written.
+
+Now let us see how to make a good looking footer.
+
+```{.typ filename="typst-template.typ"}
+#let article(
+  title: none,
+  date: none,
+  body,
+) = {
+  
+  set page(footer: {
+    rect(
+      width: 100%,
+      height: 0.7in,
+      outset: (x: 20%),
+      fill: rgb("#68ACE5"),
+      align(center + horizon)[#grid(
+          columns: (1fr, 1fr),
+          align(left)[#text(title, fill: white, font: "Roboto")],
+          align(right)[#text(date, fill: white, font: "Roboto")],
+        )
+      ],
+    )
+  })
+
+  align(center)[#text(size: 30pt, title)]
+  align(right)[#date]
+
+  body
+}
+```
+
+![](example-3.png)
+
+This code might look complex at first but it is not. Let us read it step by step. The footer is just:
+
+* a blue rectangle (`rect()`) that covers the full width with a height of 0.7 inches
+* inside that rectangle, there is a grid (`grid()`) with two columns of the same width (`columns: (1fr, 1fr)`)
+* one column is text, left aligned, with the title. The other one is right aligned, with the date.
+
+Now what if we want to create a custom header? Well, it is **exactly the same thing**. The only thing we need to change is the `footer` argument and use `header` instead.
+
+## Image
+
+Now let us see how we can add an image, such as a logo, at the top of the first page.
+
+```{.typ filename="typst-template.typ"}
+#let article(
+  title: none,
+  date: none,
+  body,
+) = {
+
+  align(left)[#text(size: 30pt, title)]
+  align(left)[#date]
+  place(right + top, image("oregon.svg", height: 1.4in), dy: -0.5in)
+
+  body
+}
+```
+
+![](example-4.png)
+
+Here we combine the `place()` function with the `image()` function.
+
+`place()` is useful to define the location of an element that is independent of other elements. A typical usage is adding a single logo image at the top of a report.
+
+`image()` just requires a path to an image file on your computer, but here we also specify its height (width is automatically adjusted).
+
+## Columns
+
+#### Columns
+
+Columns are not well supported in Quarto yet. But we can approximate the behavior by using `layout` instead.
+
+With a Quarto document that looks like this:
+
+````md
+---
+title: "Hello typst"
+format:
+   typst:
+      template-partials:
+         - typst-template.typ
+         - typst-show.typ
+execute:
+  echo: false
+---
+
+::: {layout="[[1,1], [1]]"}
+```{{r}}
+print("Top left cell")
+```
+
+```{{r}}
+print("Top right cell")
+```
+
+```{{r}}
+print("Bottom cell")
+```
+:::
+````
+
+![](example-5.png)
+
+This will not be detailed in depth here as **this is not specific to Typst**. You can learn more about it [here](https://quarto.org/docs/authoring/figures.html).
+
+## What is next?
+
+Now that you have an overview of how to work with Quarto and Typst, the next step is to learn how to [connect R and Typst](#) for dynamic reporting.
