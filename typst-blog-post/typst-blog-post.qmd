@@ -709,8 +709,6 @@ And our full `typst-template.typ` code looks like this:
 }
 ```
 
-TODO: Explain why you need # inside grid, but not outside of it. See https://3mw.albert-rapp.de/p/creating-beautiful-pdf-reports-with-typst-and-quarto
-
 ## Add custom functions to the Typst template
 
 In the report we made, there are blue lines above and below the grid with the title and flag (as well as other places in the report). Making these blue lines leads us to an advanced Typst technique: making your own custom Typst functions. We can make a function to print these blue lines throughout our report.
@@ -765,7 +763,9 @@ This brief illustrates the current status of childhood immunization in Alabama a
 ```
 ````
 
-TODO: Add screenshot of this rendered
+And here is what this looks like when rendered:
+
+![](typst-report-typst-blueline-in-qmd.png)
 
 The `blueline()` function is relatively simple. It takes no arguments, just drawing a blue line wherever it is called. A slightly more complicated example is the `source_text()` function we used throughout the report to add source information below charts:
 
@@ -901,9 +901,9 @@ The formatting isn't perfect here (we might want to add some padding within the 
 
 There are three tools that help a lot when creating custom Typst templates. These are extensions that work only in Positron, but do not work in RStudio (this is the first time I've really felt like Positron has a clear advantage over RStudio).
 
-The first extension is [Typst LSP](https://open-vsx.org/extension/nvarner/typst-lsp). This extension allows you to see helpful tooltips when writing Typst code. For instance, when I write `set page(`, I get a tooltip that shows me all of the possible arguments I can use with the `page()` function:
+The first extension is [Typst LSP](https://open-vsx.org/extension/nvarner/typst-lsp). This extension allows you to see helpful tooltips when writing Typst code. For instance, when I write `report()`, I get a tooltip that shows me all of the possible arguments I can use with the `page()` function:
 
-[TODO: Add screenshot of me using this]
+![](typst-lsp-animated.gif)
 
 This is helpful because I'm a relative Typst newbie and don't have all of the functions and their arguments memorized yet.
 

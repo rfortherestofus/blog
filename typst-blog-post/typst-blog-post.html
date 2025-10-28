@@ -99,7 +99,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#tools-to-help-you-make-custom-typst-templates" id="toc-tools-to-help-you-make-custom-typst-templates" class="nav-link" data-scroll-target="#tools-to-help-you-make-custom-typst-templates">Tools to help you make custom Typst templates</a></li>
   <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
   </ul>
-<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="typst-blog-post.md"><i class="bi bi-file-code"></i>Github (GFM)</a></li></ul></div></nav>
+</nav>
 </div>
 <main class="content" id="quarto-document-content">
 
@@ -718,7 +718,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb24-83"><a href="#cb24-83" aria-hidden="true" tabindex="-1"></a>  content</span>
 <span id="cb24-84"><a href="#cb24-84" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>TODO: Explain why you need # inside grid, but not outside of it. See https://3mw.albert-rapp.de/p/creating-beautiful-pdf-reports-with-typst-and-quarto</p>
 </section>
 <section id="add-custom-functions-to-the-typst-template" class="level2">
 <h2 class="anchored" data-anchor-id="add-custom-functions-to-the-typst-template">Add custom functions to the Typst template</h2>
@@ -765,7 +764,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a><span class="in">#blueline()</span></span>
 <span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>TODO: Add screenshot of this rendered</p>
+<p>And here is what this looks like when rendered:</p>
+<p><img src="typst-report-typst-blueline-in-qmd.png" class="img-fluid"></p>
 <p>The <code>blueline()</code> function is relatively simple. It takes no arguments, just drawing a blue line wherever it is called. A slightly more complicated example is the <code>source_text()</code> function we used throughout the report to add source information below charts:</p>
 <p><img src="source-text.png" class="img-fluid"></p>
 <p>To create this function, we add the following code at the top of our <code>typst-template.typ</code> file:</p>
@@ -873,8 +873,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="tools-to-help-you-make-custom-typst-templates" class="level2">
 <h2 class="anchored" data-anchor-id="tools-to-help-you-make-custom-typst-templates">Tools to help you make custom Typst templates</h2>
 <p>There are three tools that help a lot when creating custom Typst templates. These are extensions that work only in Positron, but do not work in RStudio (this is the first time I’ve really felt like Positron has a clear advantage over RStudio).</p>
-<p>The first extension is <a href="https://open-vsx.org/extension/nvarner/typst-lsp">Typst LSP</a>. This extension allows you to see helpful tooltips when writing Typst code. For instance, when I write <code>set page(</code>, I get a tooltip that shows me all of the possible arguments I can use with the <code>page()</code> function:</p>
-<p>[TODO: Add screenshot of me using this]</p>
+<p>The first extension is <a href="https://open-vsx.org/extension/nvarner/typst-lsp">Typst LSP</a>. This extension allows you to see helpful tooltips when writing Typst code. For instance, when I write <code>report()</code>, I get a tooltip that shows me all of the possible arguments I can use with the <code>page()</code> function:</p>
+<p><img src="typst-lsp-animated.gif" class="img-fluid"></p>
 <p>This is helpful because I’m a relative Typst newbie and don’t have all of the functions and their arguments memorized yet.</p>
 <p>A second extension to use is <a href="https://open-vsx.org/extension/myriad-dreamin/tinymist">Tinymist Typst</a>. I use this extension to automatically format my Typst code, keeping things neat, tidy, and easy to read.</p>
 <p><img src="tinymist.png" class="img-fluid"></p>

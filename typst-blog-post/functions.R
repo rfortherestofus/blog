@@ -236,7 +236,6 @@ change_file_name(
   "typst-reports/typst-template-typst-logo-title-flag.typ"
 )
 
-
 change_file_name(
   "typst-reports/typst-template-typst-blueline.typ",
   "typst-reports/typst-template.typ"
@@ -249,6 +248,20 @@ render_and_save_png(
 change_file_name(
   "typst-reports/typst-template.typ",
   "typst-reports/typst-template-typst-blueline.typ"
+)
+
+change_file_name(
+  "typst-reports/typst-template-typst-blueline-in-qmd.typ",
+  "typst-reports/typst-template.typ"
+)
+
+render_and_save_png(
+  "typst-reports/typst-report-typst-blueline-in-qmd.qmd"
+)
+
+change_file_name(
+  "typst-reports/typst-template.typ",
+  "typst-reports/typst-template-typst-blueline-in-qmd.typ"
 )
 
 change_file_name(
@@ -309,3 +322,19 @@ change_file_name(
   "typst-reports/typst-template.typ",
   "typst-reports/typst-template-typst-gray-box-two-columns.typ"
 )
+
+# Get rid of all .png files in the root --------------------------------------------
+
+png_files <- dir_ls(
+  here(),
+  regexp = ".png$"
+)
+
+png_files
+
+file_delete(png_files)
+
+
+# Beep -------------------------------------------------------------------
+
+beepr::beep()
