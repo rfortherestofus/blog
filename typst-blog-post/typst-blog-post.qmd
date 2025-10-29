@@ -827,7 +827,18 @@ We create these status boxes with the following code:
 }
 ```
 
-The `status-box()` function has two arguments: `top-box-text` and `bottom-box-text`. These allow us to customize the text that appears in the top and bottom boxes. The function uses the [`box()` function](https://typst.app/docs/reference/layout/box/) twice to create the two boxes, styling them as we've seen with text styling above. Finally, it uses the [`stack()` function](https://typst.app/docs/reference/layout/stack/) to stack the two boxes on top of each other. The result looks like this:
+The `status-box()` function has two arguments: `top-box-text` and `bottom-box-text`. These allow us to customize the text that appears in the top and bottom boxes. The function uses the [`box()` function](https://typst.app/docs/reference/layout/box/) twice to create the two boxes, styling them as we've seen with text styling above. Finally, it uses the [`stack()` function](https://typst.app/docs/reference/layout/stack/) to stack the two boxes on top of each other. 
+
+We then use the status box in our Quarto document as follows:
+
+```{=typst}
+#status-box(
+   top-box-text: "Universal Purchaser?", 
+   bottom-box-text: "No"
+   )
+```
+
+The result looks like this:
 
 ![](typst-report-typst-status-boxes.png)
 
@@ -893,7 +904,7 @@ The `layout-ncol=2` attribute tells Quarto to create two columns for the content
 
 The formatting doesn't perfectly match our reports (it's missing some padding within the gray box, for example), but it's a good start.
 
-## Understanding when to use the has (`#`) in Typst
+## When to use the hash in Typst
 
 One thing you may have wondered throughout this tutorial is when to use the hash symbol (`#`) in Typst. It is of the trickiest aspects of Typst for newcomers. The `#` is Typst's code injection operator, which signals to Typst that you're switching from markup mode (plain text/content) into code mode (where functions and variables are evaluated).
 
